@@ -32,7 +32,7 @@ locals {
 }
 
 resource "azurerm_dns_caa_record" "caa_records" {
-  for_each            = {
+  for_each = {
     for zone in local.caa_records : "${zone.zone_name}.${zone.record_name}" => zone
   }
 
@@ -69,7 +69,7 @@ locals {
 }
 
 resource "azurerm_dns_txt_record" "txt_records" {
-  for_each            = {
+  for_each = {
     for zone in local.txt_records : "${zone.zone_name}.${zone.record_name}" => zone
   }
 
