@@ -6,12 +6,7 @@ resource "azurerm_dns_zone" "dns_zone" {
   name                = each.key
   resource_group_name = each.value.resource_group_name
 
-  tags = {
-    Environment = var.environment
-    Portfolio   = var.portfolio
-    Product     = var.product
-    Service     = var.service
-  }
+  tags = var.tags
 }
 
 # CAA record
