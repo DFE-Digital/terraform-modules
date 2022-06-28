@@ -6,12 +6,7 @@ resource "azurerm_dns_zone" "dns_zone" {
   name                = each.key
   resource_group_name = each.value.resource_group_name
 
-  tags = {
-    Environment = var.environment
-    Portfolio   = var.portfolio
-    Product     = var.product
-    Service     = var.service
-  }
+  tags = var.tags
 }
 
 # CAA record
@@ -32,7 +27,7 @@ locals {
 }
 
 resource "azurerm_dns_caa_record" "caa_records" {
-  for_each            = {
+  for_each = {
     for zone in local.caa_records : "${zone.zone_name}.${zone.record_name}" => zone
   }
 
@@ -69,7 +64,7 @@ locals {
 }
 
 resource "azurerm_dns_txt_record" "txt_records" {
-  for_each            = {
+  for_each = {
     for zone in local.txt_records : "${zone.zone_name}.${zone.record_name}" => zone
   }
 
