@@ -2,6 +2,11 @@ variable "hosted_zone" {
   type = map(any)
 }
 
+variable "deploy_default_records" {
+  type    = bool
+  default = true
+}
+
 variable "tags" {}
 
 locals {
@@ -24,6 +29,6 @@ locals {
   }
 
   hosted_zone_with_records = { for zone_name, zone_cfg in var.hosted_zone :
-    zone_name => merge(zone_cfg, local.default_records)
+    zone_name => merge(zone_cfg, var.deploy_default_records ? local.default_records : null)
   }
 }

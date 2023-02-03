@@ -8,7 +8,7 @@ resource "azurerm_dns_txt_record" "main" {
   name                = join(".", ["_dnsauth", "${each.key}"])
   zone_name           = data.azurerm_dns_zone.main.name
   resource_group_name = var.resource_group_name
-  ttl                 = 3600
+  ttl                 = 300
 
   record {
     value = azurerm_cdn_frontdoor_custom_domain.main[each.key].validation_token
@@ -20,7 +20,7 @@ resource "azurerm_dns_txt_record" "apex" {
   name                = "_dnsauth"
   zone_name           = data.azurerm_dns_zone.main.name
   resource_group_name = var.resource_group_name
-  ttl                 = 3600
+  ttl                 = 300
 
   record {
     value = azurerm_cdn_frontdoor_custom_domain.main[each.key].validation_token
@@ -34,7 +34,7 @@ resource "azurerm_dns_cname_record" "main" {
   name                = each.key
   zone_name           = data.azurerm_dns_zone.main.name
   resource_group_name = var.resource_group_name
-  ttl                 = 3600
+  ttl                 = 300
   record              = azurerm_cdn_frontdoor_endpoint.main[each.key].host_name
 }
 

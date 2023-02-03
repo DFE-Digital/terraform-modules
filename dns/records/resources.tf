@@ -1,5 +1,3 @@
-# CNAME records
-
 locals {
   a_records = flatten([
     for zone_name, zone_cfg in var.hosted_zone : [
