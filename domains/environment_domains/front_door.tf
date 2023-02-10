@@ -2,6 +2,7 @@ data "azurerm_cdn_frontdoor_profile" "main" {
   name                = var.front_door_name
   resource_group_name = var.resource_group_name
 }
+
 resource "azurerm_cdn_frontdoor_endpoint" "main" {
   for_each = toset(var.domains)
 
@@ -42,52 +43,6 @@ resource "azurerm_cdn_frontdoor_custom_domain" "main" {
   }
 }
 
-resource "azurerm_dns_txt_record" "main" {
-  for_each = { for k in toset(var.domains) : k => k if k != "apex" }
-  name                = join(".", ["_dnsauth", "${each.key}"])
-  zone_name           = data.azurerm_dns_zone.main.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-
-  record {
-    value = azurerm_cdn_frontdoor_custom_domain.main[each.key].validation_token
-  }
-}
-
-resource "azurerm_dns_txt_record" "apex" {
-  for_each = { for k in toset(var.domains) : k => k if k == "apex" }
-  name                = "_dnsauth"
-  zone_name           = data.azurerm_dns_zone.main.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-
-  record {
-    value = azurerm_cdn_frontdoor_custom_domain.main[each.key].validation_token
-  }
-}
-
-
-resource "azurerm_dns_cname_record" "main" {
-  depends_on = [azurerm_cdn_frontdoor_route.main]
-  for_each = { for k in toset(var.domains) : k => k if k != "apex" }
-
-  name                = each.key
-  zone_name           = data.azurerm_dns_zone.main.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 3600
-  record              = azurerm_cdn_frontdoor_endpoint.main[each.key].host_name
-}
-
-resource "azurerm_dns_a_record" "main" {
-  depends_on          = [azurerm_cdn_frontdoor_route.main]
-  for_each = { for k in toset(var.domains) : k => k if k == "apex" }
-  name                = "@"
-  zone_name           = data.azurerm_dns_zone.main.name
-  resource_group_name = var.resource_group_name
-  ttl                 = 300
-  target_resource_id  = azurerm_cdn_frontdoor_endpoint.main[each.key].id
-}
-
 resource "azurerm_cdn_frontdoor_route" "main" {
   depends_on                      = [azurerm_cdn_frontdoor_origin_group.main, azurerm_cdn_frontdoor_origin.main]
   for_each                        = toset(var.domains)
@@ -105,7 +60,7 @@ resource "azurerm_cdn_frontdoor_route" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_custom_domain_association" "main" {
-  for_each                        = toset(var.domains)
+  for_each                       = toset(var.domains)
   cdn_frontdoor_custom_domain_id = azurerm_cdn_frontdoor_custom_domain.main[each.key].id
   cdn_frontdoor_route_ids        = [azurerm_cdn_frontdoor_route.main[each.key].id]
 }
