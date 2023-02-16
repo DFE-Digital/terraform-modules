@@ -15,8 +15,10 @@ variable "multiple_hosted_zones" {
 }
 
 locals {
-  # If true, removes .gov.uk and replaces remaining period with a hypthen e.g. 'domain.education.gov.uk' becomes domain-education.
+  # If true, removes .gov.uk and replaces remaining period with a hypthen e.g. 'domain.education.gov.uk' becomes domain-edu.
+  # We shorten the zone name as the fd endpoint name can only be a maximum of 46 chars
   # This works around an issue where two front doors in the same resource group can't have an endpoint with the same name.
   # If false, removes anything after the first full stop/period e.g. 'domain.education.gov.uk' becomes just 'domain'.
-  endpoint_zone_name = var.multiple_hosted_zones ? replace(replace(var.zone, ".gov.uk", ""), ".", "-") : replace(var.zone, "/\\..+$/", "")
+  short_zone_name = substr(replace(var.zone, "/^[^.]*[.]/", ""), 0, 3)
+  endpoint_zone_name = var.multiple_hosted_zones ? replace(replace(var.zone, "/\\..+$/", "-${local.short_zone_name}"), ".", "-") : replace(var.zone, "/\\..+$/", "")
 }
