@@ -28,7 +28,7 @@ resource "azurerm_cdn_frontdoor_origin" "main" {
   certificate_name_check_enabled = true
   enabled                        = true
   host_name                      = var.host_name
-  origin_host_header             = var.host_name
+  origin_host_header             = var.null_host_header == false ? var.host_name : null
 }
 
 resource "azurerm_cdn_frontdoor_custom_domain" "main" {
