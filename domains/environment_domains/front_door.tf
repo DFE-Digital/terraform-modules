@@ -59,6 +59,25 @@ resource "azurerm_cdn_frontdoor_route" "main" {
   supported_protocols             = ["Http", "Https"]
 }
 
+resource "azurerm_cdn_frontdoor_route" "cached" {
+  for_each                        = var.cached_paths != [] ? toset(var.domains) : toset([])
+  name                            = "${var.environment}-cached-rt"
+  cdn_frontdoor_endpoint_id       = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+  cdn_frontdoor_origin_group_id   = azurerm_cdn_frontdoor_origin_group.main.id
+  cdn_frontdoor_origin_ids        = [azurerm_cdn_frontdoor_origin.main.id]
+  cdn_frontdoor_rule_set_ids      = var.rule_set_ids
+  link_to_default_domain          = false
+  cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.main[each.key].id]
+  forwarding_protocol             = "HttpsOnly"
+  https_redirect_enabled          = true
+  patterns_to_match               = var.cached_paths
+  supported_protocols             = ["Http", "Https"]
+
+  cache {
+    query_string_caching_behavior = "IgnoreQueryString"
+  }
+}
+
 resource "azurerm_cdn_frontdoor_custom_domain_association" "main" {
   for_each                       = toset(var.domains)
   cdn_frontdoor_custom_domain_id = azurerm_cdn_frontdoor_custom_domain.main[each.key].id
