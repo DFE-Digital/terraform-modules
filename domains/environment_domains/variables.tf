@@ -18,6 +18,11 @@ variable "multiple_hosted_zones" {
   type = bool
   default = false
 }
+variable "cached_paths" {
+  type = list(string)
+  default = []
+  description = "List of path patterns such as /packs/* that front door will cache"
+}
 
 locals {
   # If true, removes .gov.uk and replaces remaining period with a hyphen e.g. 'domain.education.gov.uk' becomes domain-edu.
