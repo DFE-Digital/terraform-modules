@@ -60,7 +60,7 @@ resource "azurerm_cdn_frontdoor_route" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_route" "cached" {
-  for_each                        = var.cached_paths != [] ? toset(var.domains) : toset([])
+  for_each                        = toset(local.cached_domain_list)
   name                            = "${var.environment}-cached-rt"
   cdn_frontdoor_endpoint_id       = azurerm_cdn_frontdoor_endpoint.main[each.key].id
   cdn_frontdoor_origin_group_id   = azurerm_cdn_frontdoor_origin_group.main.id

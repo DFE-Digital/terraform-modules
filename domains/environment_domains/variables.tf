@@ -31,4 +31,5 @@ locals {
   # If false, removes anything after the first full stop/period e.g. 'domain.education.gov.uk' becomes just 'domain'.
   short_zone_name    = substr(replace(var.zone, "/^[^.]+\\./", ""), 0, 3)
   endpoint_zone_name = var.multiple_hosted_zones ? replace(var.zone, "/\\..+$/", "-${local.short_zone_name}") : replace(var.zone, "/\\..+$/", "")
+  cached_domain_list = length(var.cached_paths) > 0 ? var.domains : []
 }
