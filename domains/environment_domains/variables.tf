@@ -15,12 +15,12 @@ variable "rule_set_ids" {
 }
 
 variable "multiple_hosted_zones" {
-  type = bool
+  type    = bool
   default = false
 }
 variable "cached_paths" {
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
   description = "List of path patterns such as /packs/* that front door will cache"
 }
 
