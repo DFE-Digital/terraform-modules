@@ -4,6 +4,7 @@ Shared modules used by various DfE services.
 
 ## Modules
 
+- [aks/application](aks/application)
 - [aks/cluster_data](aks/cluster_data)
 - [aks/redis](aks/redis)
 - [dns/records](dns/records)
