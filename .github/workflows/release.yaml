@@ -11,7 +11,7 @@ jobs:
     if: ${{ !github.event.release.prerelease }}
     steps:
       - uses: actions/checkout@v3
-        with: {ref: "${{ github.event.release.target_commitish }}"}
+        with: {ref: "${{ github.event.release.tag_name }}"}
       - uses: EndBug/latest-tag@latest
         with: {ref: stable}
 
@@ -20,6 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with: {ref: "${{ github.event.release.target_commitish }}"}
+        with: {ref: "${{ github.event.release.tag_name }}"}
       - uses: EndBug/latest-tag@latest
         with: {ref: testing}
