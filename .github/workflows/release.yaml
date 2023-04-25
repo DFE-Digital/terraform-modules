@@ -11,9 +11,9 @@ jobs:
     if: ${{ !github.event.release.prerelease }}
     steps:
       - uses: actions/checkout@v3
-        with: { ref: "${{ github.event.release.target_commitish }}" }
+        with: {ref: "${{ github.event.release.target_commitish }}"}
       - uses: EndBug/latest-tag@latest
-        with: { ref: stable }
+        with: {ref: stable}
 
   update-testing-tag:
     name: Update testing tag
@@ -21,6 +21,6 @@ jobs:
     if: ${{ github.event.release.prerelease }}
     steps:
       - uses: actions/checkout@v3
-        with: { ref: "${{ github.event.release.target_commitish }}" }
+        with: {ref: "${{ github.event.release.target_commitish }}"}
       - uses: EndBug/latest-tag@latest
-        with: { ref: testing }
+        with: {ref: testing}
