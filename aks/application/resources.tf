@@ -132,9 +132,9 @@ resource "kubernetes_ingress_v1" "main" {
         path {
           backend {
             service {
-              name = kubernetes_service.main.metadata[0].name
+              name = kubernetes_service.main[0].metadata[0].name
               port {
-                number = kubernetes_service.main.spec[0].port[0].port
+                number = kubernetes_service.main[0].spec[0].port[0].port
               }
             }
           }
