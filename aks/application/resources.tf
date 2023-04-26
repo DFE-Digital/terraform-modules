@@ -111,7 +111,7 @@ resource "kubernetes_service" "main" {
 
 locals {
   host_name  = var.cluster_configuration_map.dns_zone_prefix != null ? "${local.app_name}.${var.cluster_configuration_map.dns_zone_prefix}.teacherservices.cloud" : "${local.app_name}.teacherservices.cloud"
-  hostnames = var.is_web ? concat([host_name], var.external_hostnames) : []
+  hostnames = var.is_web ? concat(local.host_name, var.external_hostnames) : []
 }
 
 resource "kubernetes_ingress_v1" "main" {
