@@ -110,7 +110,7 @@ resource "kubernetes_service" "main" {
 }
 
 locals {
-  hostname  = var.cluster_configuration_map.dns_zone_prefix != null ? "${local.app_name}.${var.cluster_configuration_map.dns_zone_prefix}.teacherservices.cloud" : "${local.app_name}.teacherservices.cloud"
+  host_name  = var.cluster_configuration_map.dns_zone_prefix != null ? "${local.app_name}.${var.cluster_configuration_map.dns_zone_prefix}.teacherservices.cloud" : "${local.app_name}.teacherservices.cloud"
   hostnames = var.is_web ? concat([host_name], var.external_hostnames) : []
 }
 

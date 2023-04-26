@@ -1,3 +1,3 @@
 output "host_name" {
-  value = local.hostname
+  value = local.host_name
 }
