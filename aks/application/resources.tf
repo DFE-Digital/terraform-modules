@@ -152,7 +152,7 @@ resource "kubernetes_ingress_v1" "main" {
   wait_for_load_balancer = true
 
   metadata {
-    name      = local.app_name
+    name      = each.value
     namespace = var.namespace
   }
 
