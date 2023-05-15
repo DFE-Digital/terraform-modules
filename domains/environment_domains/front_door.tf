@@ -6,7 +6,7 @@ data "azurerm_cdn_frontdoor_profile" "main" {
 resource "azurerm_cdn_frontdoor_endpoint" "main" {
   for_each = toset(var.domains)
 
-  name                     = "${each.value}-${local.endpoint_zone_name}"
+  name                     = substr("${each.value}-${local.endpoint_zone_name}", 0, local.max_frontdoor_endpoint_name_length)
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
   lifecycle {
     ignore_changes = [
