@@ -162,7 +162,8 @@ resource "kubernetes_service" "main" {
       port = 6379
     }
     selector = {
-      app = local.kubernetes_name
+      # Gets the exact label from kubernetes deployment resource to force an explicit dependancy to create deployment before service
+      app = kubernetes_deployment.main[0].spec[0].template[0].metadata[0].labels["app"]
     }
   }
 }
