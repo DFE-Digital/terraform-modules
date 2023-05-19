@@ -195,3 +195,20 @@ resource "kubernetes_ingress_v1" "main" {
     }
   }
 }
+
+resource "kubernetes_pod_disruption_budget_v1" "main" {
+  count = var.replicas > 1 ? 1 : 0
+
+  metadata {
+    name      = local.app_name
+    namespace = var.namespace
+  }
+  spec {
+    min_available = "50%"
+    selector {
+      match_labels = {
+        app = local.app_name
+      }
+    }
+  }
+}
