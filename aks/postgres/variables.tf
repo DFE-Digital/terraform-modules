@@ -111,3 +111,8 @@ variable "azure_maintenance_window" {
   })
   default = null
 }
+
+variable "azure_backup_storage_account" {
+  type    = bool
+  default = true
+}
