@@ -19,6 +19,11 @@ variable "azure_resource_prefix" {
   description = "Prefix of Azure resources for the service"
 }
 
+variable "service_name" {
+  type        = string
+  description = "Name of the service"
+}
+
 variable "service_short" {
   type        = string
   description = "Short name of the service"
