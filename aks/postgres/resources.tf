@@ -6,7 +6,7 @@ locals {
   azure_name                  = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
   azure_private_endpoint_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}-pe"
 
-  kubernetes_name = "${var.service_short}-${var.environment}-postgres${local.name_suffix}"
+  kubernetes_name = "${var.service_name}-${var.environment}-postgres${local.name_suffix}"
 }
 
 # Username & password

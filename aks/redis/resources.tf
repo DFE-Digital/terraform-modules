@@ -4,7 +4,7 @@ locals {
   azure_name                  = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-redis${local.name_suffix}"
   azure_private_endpoint_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-redis${local.name_suffix}-pe"
 
-  kubernetes_name = "${var.service_short}-${var.environment}-redis${local.name_suffix}"
+  kubernetes_name = "${var.service_name}-${var.environment}-redis${local.name_suffix}"
 }
 
 # Azure

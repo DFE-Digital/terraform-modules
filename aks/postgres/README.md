@@ -13,8 +13,9 @@ module "postgres" {
   namespace             = var.namespace
   environment           = "${var.app_environment}${var.app_suffix}"
   azure_resource_prefix = var.azure_resource_prefix
-  service_short         = var.service_short
-  config_short          = var.config_short
+  service_name          = "apply-for-qts"
+  service_short         = "afqts"
+  config_short          = "dv"
 
   cluster_configuration_map = module.aks_cluster_data.configuration_map
 
