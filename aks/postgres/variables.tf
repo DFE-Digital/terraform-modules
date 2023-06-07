@@ -117,7 +117,7 @@ variable "azure_maintenance_window" {
   default = null
 }
 
-variable "azure_backup_storage_account" {
+variable "azure_enable_backup_storage" {
   type    = bool
   default = true
 }

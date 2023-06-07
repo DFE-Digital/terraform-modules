@@ -5,6 +5,7 @@ locals {
 
   azure_name                  = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
   azure_private_endpoint_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}-pe"
+  azure_enable_backup_storage = var.use_azure && var.azure_enable_backup_storage
 
   kubernetes_name = "${var.service_name}-${var.environment}-postgres${local.name_suffix}"
 }
@@ -103,7 +104,7 @@ resource "azurerm_postgresql_flexible_server_database" "main" {
 }
 
 resource "azurerm_storage_account" "backup" {
-  count = var.use_azure && var.azure_backup_storage_account ? 1 : 0
+  count = local.azure_enable_backup_storage ? 1 : 0
 
   name                     = "${var.azure_resource_prefix}${var.service_short}dbbkp${var.config_short}sa"
   location                 = data.azurerm_resource_group.main[0].location
@@ -115,7 +116,7 @@ resource "azurerm_storage_account" "backup" {
 }
 
 resource "azurerm_storage_management_policy" "backup" {
-  count = var.use_azure && var.azure_backup_storage_account ? 1 : 0
+  count = local.azure_enable_backup_storage ? 1 : 0
 
   storage_account_id = azurerm_storage_account.backup[0].id
 
@@ -134,7 +135,7 @@ resource "azurerm_storage_management_policy" "backup" {
 }
 
 resource "azurerm_storage_container" "backup" {
-  count = var.use_azure && var.azure_backup_storage_account ? 1 : 0
+  count = local.azure_enable_backup_storage ? 1 : 0
 
   name                  = "database-backup"
   storage_account_name  = azurerm_storage_account.backup[0].name

@@ -50,3 +50,11 @@ The name of the database.
 ### `url`
 
 The URL used to connect to the PostgreSQL instance.
+
+### `azure_backup_storage_account_name`
+
+The name of the storage account that can be used to store backups.
+
+### `azure_backup_storage_container_name`
+
+The name of the storage container that can be used to store backups.

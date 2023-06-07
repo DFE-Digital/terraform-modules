@@ -29,3 +29,11 @@ output "url" {
   value     = "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${local.database_name}"
   sensitive = true
 }
+
+output "azure_backup_storage_account_name" {
+  value = local.azure_enable_backup_storage ? azurerm_storage_account.backup[0].name : null
+}
+
+output "azure_backup_storage_container_name" {
+  value = local.azure_enable_backup_storage ? azurerm_storage_container.backup[0].name : null
+}
