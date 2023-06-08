@@ -19,9 +19,15 @@ data "azurerm_private_dns_zone" "main" {
   resource_group_name = "${var.cluster_configuration_map.resource_prefix}-bs-rg"
 }
 
+data "azurerm_resource_group" "monitoring" {
+  count = local.azure_enable_monitoring ? 1 : 0
+
+  name = "${var.azure_resource_prefix}-${var.service_short}-mn-rg"
+}
+
 data "azurerm_monitor_action_group" "main" {
   count = local.azure_enable_monitoring ? 1 : 0
 
   name                = "${var.azure_resource_prefix}-${var.service_name}"
-  resource_group_name = data.azurerm_resource_group.main[0].name
+  resource_group_name = data.azurerm_resource_group.monitoring[0].name
 }
