@@ -20,7 +20,7 @@ data "azurerm_private_dns_zone" "main" {
 }
 
 data "azurerm_monitor_action_group" "main" {
-  count = var.use_azure && var.azure_enable_monitoring ? 1 : 0
+  count = local.azure_enable_monitoring ? 1 : 0
 
   name                = "${data.azurerm_resource_group.main[0].name}-monitoring"
   resource_group_name = data.azurerm_resource_group.main[0].name
