@@ -3,6 +3,7 @@ locals {
 
   azure_name                  = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-redis${local.name_suffix}"
   azure_private_endpoint_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-redis${local.name_suffix}-pe"
+  azure_enable_monitoring     = var.use_azure && var.azure_enable_monitoring
 
   kubernetes_name = "${var.service_name}-${var.environment}-redis${local.name_suffix}"
 }
@@ -76,7 +77,7 @@ resource "azurerm_private_endpoint" "main" {
 }
 
 resource "azurerm_monitor_metric_alert" "memory" {
-  count = var.use_azure && var.azure_enable_monitoring ? 1 : 0
+  count = local.azure_enable_monitoring ? 1 : 0
 
   name                = "${azurerm_redis_cache.main[0].name}-memory"
   resource_group_name = data.azurerm_resource_group.main[0].name
