@@ -22,6 +22,6 @@ data "azurerm_private_dns_zone" "main" {
 data "azurerm_monitor_action_group" "main" {
   count = local.azure_enable_monitoring ? 1 : 0
 
-  name                = "${data.azurerm_resource_group.main[0].name}-monitoring"
+  name                = "${var.azure_resource_prefix}-${var.service_name}"
   resource_group_name = data.azurerm_resource_group.main[0].name
 }
