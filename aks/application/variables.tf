@@ -92,3 +92,14 @@ variable "probe_command" {
   description = "Command for the liveness and startup probe"
 }
 
+variable "enable_statuscake" {
+  type        = bool
+  default     = false
+  description = "Whether to set up StatusCake alerts for web applications"
+}
+
+variable "statuscake_contact_groups" {
+  type        = list(string)
+  default     = []
+  description = "Contact groups for the StatusCake alerts"
+}
