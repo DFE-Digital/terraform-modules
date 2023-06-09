@@ -17,12 +17,7 @@ resource "kubernetes_config_map" "main" {
 }
 
 locals {
-  secret_data = merge(
-    yamldecode(data.azurerm_key_vault_secret.main.value),
-    var.secret_variables,
-  )
-
-  secret_hash = sha1(join("-", [for k, v in local.secret_data : "${k}:${v}" if v != null]))
+  secret_hash = sha1(join("-", [for k, v in var.secret_variables : "${k}:${v}" if v != null]))
 }
 
 resource "kubernetes_secret" "main" {
@@ -31,5 +26,5 @@ resource "kubernetes_secret" "main" {
     namespace = var.namespace
   }
 
-  data = local.secret_data
+  data = var.secret_variables
 }

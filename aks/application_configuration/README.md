@@ -17,7 +17,7 @@ module "application_configuration" {
   config_variables      = {}
   config_variables_path = "config.yaml"
 
-  secret_variables      = {}
+  secret_variables      = module.secrets.application
 }
 ```
 

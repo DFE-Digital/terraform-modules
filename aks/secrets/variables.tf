@@ -23,20 +23,14 @@ variable "config_short" {
   description = "Short name of the configuration"
 }
 
-variable "config_variables" {
-  type        = map(string)
-  default     = {}
-  description = "Additional configuration variables"
-}
-
-variable "config_variables_path" {
+variable "application_key_vault_secret_name" {
   type        = string
-  default     = null
-  description = "Path to load additional configuration variables from"
+  description = "Secret name of the key vault to load application secrets from"
+  default     = "APPLICATION"
 }
 
-variable "secret_variables" {
-  type        = map(string)
-  default     = {}
-  description = "Additional secret variables"
+variable "infrastructure_key_vault_secret_name" {
+  type        = string
+  description = "Secret name of the key vault to load infrastructure secrets from"
+  default     = "INFRASTRUCTURE"
 }

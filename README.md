@@ -9,6 +9,7 @@ Shared modules used by various DfE services.
 - [aks/cluster_data](aks/cluster_data)
 - [aks/postgres](aks/postgres)
 - [aks/redis](aks/redis)
+- [aks/secrets](aks/secrets)
 - [dns/records](dns/records)
 - [dns/zones](dns/zones)
 - [domains/environment_domains](domains/environment_domains)
