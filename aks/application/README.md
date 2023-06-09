@@ -43,6 +43,52 @@ module "worker_application" {
 }
 ```
 
+### Health checks
+
+For web applications, the default `probe_path` is set to `/healthcheck`. The probe can be turned off by setting the variable to `null`.
+
+#### Rails
+
+A simple one-line health check for a Rails application can be added to the `routes.rb` file:
+
+```rb
+get "/healthcheck", to: proc { [200, {}, ['OK']] }
+```
+
+For more complex health checks, the [OkComputer Gem] provides some advanced functionality, for example:
+
+```rb
+OkComputer.mount_at = "healthcheck"
+
+OkComputer::Registry.register "database", OkComputer::ActiveRecordCheck.new
+```
+
+[OkComputer Gem]: https://github.com/sportngin/okcomputer/
+
+#### .NET
+
+A simple one-line health check for an ASP.NET application can be added to the endpoints:
+
+```cs
+endpoints.MapGet("/healthcheck", async context => {
+    await context.Response.WriteAsync("OK");
+});
+```
+
+For more complex health checks, the [ASP.NET Core Health Checks Middleware] can be used, for example:
+
+```cs
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHealthChecks();
+
+var app = builder.Build();
+
+app.MapHealthChecks("/healthcheck/all");
+```
+
+[ASP.NET Core Health Checks Middleware]: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-7.0
+
 ## Outputs
 
 ### `hostname`
