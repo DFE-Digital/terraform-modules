@@ -43,6 +43,10 @@ module "worker_application" {
 }
 ```
 
+### Health checks
+
+For web applications, the default `probe_path` is set to `/healthcheck`.
+
 ## Outputs
 
 ### `hostname`

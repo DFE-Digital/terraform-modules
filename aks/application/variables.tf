@@ -82,7 +82,7 @@ variable "web_port" {
 
 variable "probe_path" {
   type        = string
-  default     = null
+  default     = "/healthcheck"
   description = "Path for the liveness and startup probe"
 }
 
