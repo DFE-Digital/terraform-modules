@@ -25,8 +25,14 @@ variable "config_short" {
 
 variable "key_vault_secret_name" {
   type        = string
-  description = "Secret name of the key vault to load secrets from"
   default     = "APPLICATION"
+  description = "Secret name of the key vault to load secrets from"
+}
+
+variable "is_rails_application" {
+  type        = bool
+  default     = false
+  description = "If true, sets config variables for a Rails application"
 }
 
 variable "config_variables" {
