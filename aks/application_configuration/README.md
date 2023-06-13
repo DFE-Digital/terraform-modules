@@ -21,6 +21,15 @@ module "application_configuration" {
 }
 ```
 
+### Rails applications
+
+If `is_rails_application` is set to `true`, this will automatically set the following config variables:
+
+```sh
+RAILS_SERVE_STATIC_FILES=true
+RAILS_LOG_TO_STDOUT=true
+```
+
 ## Outputs
 
 ### `kubernetes_config_map_name`

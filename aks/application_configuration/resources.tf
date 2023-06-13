@@ -1,5 +1,11 @@
 locals {
+  rails_config_map_data = {
+    RAILS_SERVE_STATIC_FILES = "true",
+    RAILS_LOG_TO_STDOUT      = "true"
+  }
+
   config_map_data = merge(
+    var.is_rails_application ? local.rails_config_map_data : {},
     try(yamldecode(file(var.config_variables_path)), {}),
     var.config_variables,
   )
