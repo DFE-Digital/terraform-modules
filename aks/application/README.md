@@ -43,6 +43,10 @@ module "worker_application" {
 }
 ```
 
+### Health checks
+
+For web applications, the default `probe_path` is set to `/healthcheck`. Set `enable_statuscake` to `true` to add StatusCake uptime alerts as well.
+
 ## Outputs
 
 ### `hostname`

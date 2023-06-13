@@ -1,7 +1,10 @@
 locals {
   name_suffix = var.name != null ? "-${var.name}" : ""
+  app_name    = "${var.service_name}-${var.environment}${local.name_suffix}"
 
-  app_name = "${var.service_name}-${var.environment}${local.name_suffix}"
+  http_probe_enabled = var.is_web && var.probe_path != null
+  exec_probe_enabled = !var.is_web && length(var.probe_command) != 0
+  probe_enabled      = local.http_probe_enabled || local.exec_probe_enabled
 }
 
 resource "kubernetes_deployment" "main" {
@@ -210,5 +213,33 @@ resource "kubernetes_pod_disruption_budget_v1" "main" {
         app = local.app_name
       }
     }
+  }
+}
+
+locals {
+  statuscake_enabled   = local.http_probe_enabled && var.enable_statuscake
+  statuscake_hostnames = local.statuscake_enabled ? local.hostnames : []
+}
+
+resource "statuscake_uptime_check" "main" {
+  for_each = local.statuscake_hostnames
+
+  name           = each.value
+  contact_groups = var.statuscake_contact_groups
+  confirmation   = 2
+  trigger_rate   = 0
+  check_interval = 30
+  regions        = ["london", "dublin"]
+
+  http_check {
+    follow_redirects = true
+    timeout          = 40
+    request_method   = "HTTP"
+    status_codes     = ["204", "205", "206", "303", "400", "401", "403", "404", "405", "406", "408", "410", "413", "444", "429", "494", "495", "496", "499", "500", "501", "502", "503", "504", "505", "506", "507", "508", "509", "510", "511", "521", "522", "523", "524", "520", "598", "599"]
+    validate_ssl     = false
+  }
+
+  monitored_resource {
+    address = "https://${each.value}${var.probe_path}"
   }
 }
