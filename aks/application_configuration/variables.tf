@@ -23,6 +23,12 @@ variable "config_short" {
   description = "Short name of the configuration"
 }
 
+variable "key_vault_name" {
+  type        = string
+  default     = null
+  description = "Overrides the default Key Vault name. The default is $${var.azure_resource_prefix}-$${var.service_short}-$${var.config_short}-kv"
+}
+
 variable "key_vault_secret_name" {
   type        = string
   default     = "APPLICATION"
