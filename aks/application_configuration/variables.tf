@@ -23,18 +23,6 @@ variable "config_short" {
   description = "Short name of the configuration"
 }
 
-variable "key_vault_name" {
-  type        = string
-  default     = null
-  description = "Overrides the default Key Vault name. The default is $${var.azure_resource_prefix}-$${var.service_short}-$${var.config_short}-kv"
-}
-
-variable "key_vault_secret_name" {
-  type        = string
-  default     = "APPLICATION"
-  description = "Secret name of the key vault to load secrets from"
-}
-
 variable "is_rails_application" {
   type        = bool
   default     = false
@@ -51,6 +39,18 @@ variable "config_variables_path" {
   type        = string
   default     = null
   description = "Path to load additional configuration variables from"
+}
+
+variable "secret_key_vault_short" {
+  type        = string
+  default     = null
+  description = "Short name of the key vault which stores application secrets"
+}
+
+variable "secret_yaml_key" {
+  type        = string
+  default     = null
+  description = "If set, secrets will also be extracted from a YAML key"
 }
 
 variable "secret_variables" {
