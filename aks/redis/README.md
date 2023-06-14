@@ -35,3 +35,7 @@ If `azure_enable_monitoring` is `true`, it’s expected that the following resou
 ### `url`
 
 The URL of the Redis instance.
+
+### `connection_string`
+
+A connection string that's compatible with .NET applications to the Redis instance.
