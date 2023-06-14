@@ -1,5 +1,5 @@
 data "azurerm_key_vault" "main" {
-  name                = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-kv"
+  name                = var.key_vault_name != null ? var.key_vault_name : "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-kv"
   resource_group_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-rg"
 }
 
