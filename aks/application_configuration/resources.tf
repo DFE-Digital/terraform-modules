@@ -22,9 +22,20 @@ resource "kubernetes_config_map" "main" {
   data = local.config_map_data
 }
 
+module "secret_application" {
+  source = "../secret"
+
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  name    = var.key_vault_secret_name
+  is_yaml = true
+}
+
 locals {
   secret_data = merge(
-    yamldecode(data.azurerm_key_vault_secret.main.value),
+    module.secret_application.value,
     var.secret_variables,
   )
 
