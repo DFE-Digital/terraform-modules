@@ -82,7 +82,7 @@ variable "web_port" {
 
 variable "probe_path" {
   type        = string
-  default     = "/healthcheck"
+  default     = null
   description = "Path for the liveness and startup probe"
 }
 
@@ -92,14 +92,8 @@ variable "probe_command" {
   description = "Command for the liveness and startup probe"
 }
 
-variable "enable_statuscake" {
-  type        = bool
-  default     = false
-  description = "Whether to set up StatusCake alerts for web applications"
-}
-
-variable "statuscake_contact_groups" {
-  type        = list(string)
-  default     = []
-  description = "Contact groups for the StatusCake alerts"
+locals {
+  http_probe_enabled = var.is_web && var.probe_path != null
+  exec_probe_enabled = !var.is_web && length(var.probe_command) != 0
+  probe_enabled      = local.http_probe_enabled || local.exec_probe_enabled
 }
