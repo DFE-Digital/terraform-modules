@@ -153,7 +153,7 @@ resource "kubernetes_service" "main" {
     type = "ClusterIP"
     port {
       port        = 80
-      target_port = 3000
+      target_port = var.web_port
     }
     selector = {
       app = local.app_name
