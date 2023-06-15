@@ -58,6 +58,10 @@ The name of the database.
 
 The URL used to connect to the PostgreSQL instance.
 
+### `dotnet_connection_string`
+
+A connection string that's compatible with .NET applications to the PostgreSQL instance.
+
 ### `azure_backup_storage_account_name`
 
 The name of the storage account that can be used to store backups.

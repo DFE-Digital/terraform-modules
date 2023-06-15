@@ -30,6 +30,11 @@ output "url" {
   sensitive = true
 }
 
+output "dotnet_connection_string" {
+  value     = "Server=${local.host};Database=${local.database_name};Port=${local.port};User Id=${local.database_username};Password='${local.database_password}';Ssl Mode=Require;Trust Server Certificate=true"
+  sensitive = true
+}
+
 output "azure_backup_storage_account_name" {
   value = local.azure_enable_backup_storage ? azurerm_storage_account.backup[0].name : null
 }
