@@ -6,7 +6,7 @@ data "azurerm_cdn_frontdoor_profile" "main" {
 resource "azurerm_cdn_frontdoor_endpoint" "main" {
   for_each = toset(var.domains)
 
-  name                     = substr("${each.value}-${local.endpoint_zone_name}", 0, local.max_frontdoor_endpoint_name_length)
+  name                     = substr("${replace(each.value, ".", "-")}-${local.endpoint_zone_name}", 0, local.max_frontdoor_endpoint_name_length)
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
   lifecycle {
     ignore_changes = [
@@ -33,7 +33,7 @@ resource "azurerm_cdn_frontdoor_origin" "main" {
 
 resource "azurerm_cdn_frontdoor_custom_domain" "main" {
   for_each                 = toset(var.domains)
-  name                     = each.key
+  name                     = replace(each.key, ".", "-")
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
   dns_zone_id              = data.azurerm_dns_zone.main.id
   host_name                = each.key == "apex" ? "${var.zone}" : "${each.key}.${var.zone}"
