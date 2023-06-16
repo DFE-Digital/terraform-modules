@@ -48,3 +48,11 @@ module "worker_application" {
 ### `hostname`
 
 The hostname of the deployed application.
+
+### `url`
+
+The URL of the deployed application.
+
+### `probe_url`
+
+The URL of the deployed application combined with the probe path.
