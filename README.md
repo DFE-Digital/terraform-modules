@@ -15,6 +15,10 @@ Shared modules used by various DfE services.
 - [domains/environment_domains](domains/environment_domains)
 - [domains/infrastructure](domains/infrastructure)
 
+## Example deployment
+
+The [Example Rails deployment](EXAMPLE.md) document outlines the minimum steps required to set up a Rails application deployed using AKS. 
+
 ## Release process
 
 ### Updating `testing` tag
