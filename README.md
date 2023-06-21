@@ -29,6 +29,9 @@ Creating a pre-release for this repo will automatically update the `testing` tag
 
 Creating a release for this repo will automatically update the `stable` tag used by production apps.
 
-### Creating terraforn-docs
+## Updating [Terraform Docs](https://terraform-docs.io/)
 
-To simply add [terraform-docs](https://terraform-docs.io/), run 'docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.16.0 markdown /terraform-docs > tfdocs.md' in the module directory to create a terraform-docs file, tfdocs.md.  (leave out  '-u $(id -u)'  when running on windows)
+Run the following command in each module directory where the docs need to be updated:
+
+```sh
+docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.16.0 markdown /terraform-docs > tfdocs.md
