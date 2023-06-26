@@ -304,8 +304,8 @@ resource "azurerm_log_analytics_workspace" "postgres" {
   count = var.azure_enable_backing_services ? 1 : 0
 
   name                = "${azurerm_postgresql_flexible_server.main[0].name}-log"
-  location               = data.azurerm_resource_group.main[0].location
-  resource_group_name    = data.azurerm_resource_group.main[0].name
+  location            = data.azurerm_resource_group.main[0].location
+  resource_group_name = data.azurerm_resource_group.main[0].name
   sku                 = "PerGB2018"
 }
 resource "azurerm_monitor_diagnostic_setting" "postgres" {
