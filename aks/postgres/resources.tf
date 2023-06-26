@@ -300,23 +300,23 @@ resource "kubernetes_service" "main" {
     }
   }
 }
-resource "azurerm_log_analytics_workspace" "postgres" {
-  count = var.azure_enable_backing_services ? 1 : 0
+resource "azurerm_log_analytics_workspace" "main" {
+  count = local.azure_enable_monitoring ? 1 : 0
 
   name                = "${azurerm_postgresql_flexible_server.main[0].name}-log"
   location            = data.azurerm_resource_group.main[0].location
   resource_group_name = data.azurerm_resource_group.main[0].name
   sku                 = "PerGB2018"
 }
-resource "azurerm_monitor_diagnostic_setting" "postgres" {
-  count = var.azure_enable_backing_services ? 1 : 0
+resource "azurerm_monitor_diagnostic_setting" "main" {
+  count = local.azure_enable_monitoring ? 1 : 0
 
-  name                       = "${azurerm_postgresql_flexible_server.main[0].name}-diag"
+  name                       = "${azurerm_postgresql_flexible_server.main[0].name}-diagnotics"
   target_resource_id         = azurerm_postgresql_flexible_server.main[0].id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.postgres[0].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main[0].id
 
   dynamic "enabled_log" {
-    for_each = data.azurerm_monitor_diagnostic_categories.postgres[0].log_category_types
+    for_each = data.azurerm_monitor_diagnostic_categories.main[0].log_category_types
     content {
       category = enabled_log.value
     }

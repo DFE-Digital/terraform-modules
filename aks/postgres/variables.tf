@@ -121,8 +121,3 @@ variable "azure_enable_backup_storage" {
   type    = bool
   default = true
 }
-
-variable "azure_enable_backing_services" {
-  type    = bool
-  default = false
-}
