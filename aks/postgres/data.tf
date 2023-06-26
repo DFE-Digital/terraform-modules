@@ -31,3 +31,9 @@ data "azurerm_monitor_action_group" "main" {
   name                = "${var.azure_resource_prefix}-${var.service_name}"
   resource_group_name = data.azurerm_resource_group.monitoring[0].name
 }
+
+data "azurerm_monitor_diagnostic_categories" "postgres" {
+  count = var.azure_enable_backing_services ? 1 : 0
+
+  resource_id = var.azure_enable_backing_services == true ? azurerm_postgresql_flexible_server.main[0].id : null
+}
