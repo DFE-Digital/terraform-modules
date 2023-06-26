@@ -300,6 +300,7 @@ resource "kubernetes_service" "main" {
     }
   }
 }
+
 resource "azurerm_log_analytics_workspace" "main" {
   count = local.azure_enable_monitoring ? 1 : 0
 
@@ -308,6 +309,7 @@ resource "azurerm_log_analytics_workspace" "main" {
   resource_group_name = data.azurerm_resource_group.main[0].name
   sku                 = "PerGB2018"
 }
+
 resource "azurerm_monitor_diagnostic_setting" "main" {
   count = local.azure_enable_monitoring ? 1 : 0
 

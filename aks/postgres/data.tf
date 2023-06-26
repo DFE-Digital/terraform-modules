@@ -33,7 +33,7 @@ data "azurerm_monitor_action_group" "main" {
 }
 
 data "azurerm_monitor_diagnostic_categories" "main" {
-  count = var.azure_enable_backing_services ? 1 : 0
+  count = local.azure_enable_monitoring ? 1 : 0
 
-  resource_id = var.azure_enable_backing_services == true ? azurerm_postgresql_flexible_server.main[0].id : null
+  resource_id = azurerm_postgresql_flexible_server.main[0].id
 }
