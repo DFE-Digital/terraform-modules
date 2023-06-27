@@ -95,6 +95,11 @@ variable "azure_enable_monitoring" {
   default = true
 }
 
+variable "redis_replica_zones" {
+  type    = bool
+  default = true
+}
+
 variable "azure_patch_schedule" {
   type = list(object({
     day_of_week        = string,
