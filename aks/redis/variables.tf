@@ -98,7 +98,7 @@ variable "azure_enable_monitoring" {
 variable "azure_zones" {
   type        = list(string)
   description = "List of availability zones for replicas"
-  default     = null
+  default     = ["1", "2"]
 }
 
 variable "azure_patch_schedule" {
