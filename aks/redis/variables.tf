@@ -95,7 +95,7 @@ variable "azure_enable_monitoring" {
   default = true
 }
 
-variable "redis_replica_zones" {
+variable "azure_redis_replica_zones" {
   type    = bool
   default = true
 }
