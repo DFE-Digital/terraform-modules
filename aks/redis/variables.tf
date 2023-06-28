@@ -95,12 +95,6 @@ variable "azure_enable_monitoring" {
   default = true
 }
 
-variable "azure_zones" {
-  type        = list(string)
-  description = "List of availability zones for replicas"
-  default     = ["1", "2"]
-}
-
 variable "azure_patch_schedule" {
   type = list(object({
     day_of_week        = string,

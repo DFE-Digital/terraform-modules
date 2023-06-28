@@ -22,7 +22,7 @@ resource "azurerm_redis_cache" "main" {
   minimum_tls_version           = var.azure_minimum_tls_version
   public_network_access_enabled = var.azure_public_network_access_enabled
   redis_version                 = var.server_version
-  zones                         = var.azure_sku_name == "Standard" ? null : var.azure_zones
+  zones                         = var.azure_sku_name != "Premium" ? null : ["1", "2" ]
 
   redis_configuration {
     maxmemory_policy = var.azure_maxmemory_policy
