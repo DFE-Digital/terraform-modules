@@ -34,7 +34,10 @@ module "application_secrets" {
 locals {
   secret_data = merge(
     var.secret_yaml_key != null ? yamldecode(module.application_secrets.map[var.secret_yaml_key]) : {},
+
+    # Azure Key Vault disallows keys with underscores so we convert dashes to underscores
     { for k, v in module.application_secrets.map : replace(k, "-", "_") => v },
+
     var.secret_variables,
   )
 
