@@ -4,4 +4,6 @@ resource "azurerm_cdn_frontdoor_profile" "main" {
   resource_group_name = each.value.resource_group_name
   sku_name            = "Standard_AzureFrontDoor"
   tags                = var.tags
+
+  lifecycle { ignore_changes = [tags] }
 }

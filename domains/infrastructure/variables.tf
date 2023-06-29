@@ -7,7 +7,9 @@ variable "deploy_default_records" {
   default = true
 }
 
-variable "tags" {}
+variable "tags" {
+  default = null
+}
 
 locals {
   default_records = {
