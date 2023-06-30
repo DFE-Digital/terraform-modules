@@ -29,10 +29,13 @@ Creating a pre-release for this repo will automatically update the `testing` tag
 
 Creating a release for this repo will automatically update the `stable` tag used by production apps.
 
-## Updating [Terraform Docs](https://terraform-docs.io/)
+## Updating [Terraform Docs]
 
-Run the following command in each module directory where the docs need to be updated:
+- [Install Terraform Docs] according to the instructions for your platform.
+- Run `terraform-docs [module]` for each module, where `module` is the path, for example:
+  ```sh
+  $ terraform-docs aks/application
+  ```
 
-```sh
-docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.16.0 markdown /terraform-docs > tfdocs.md
-```
+[Terraform Docs]: https://terraform-docs.io/
+[Install Terraform Docs]: https://terraform-docs.io/user-guide/installation/
