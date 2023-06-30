@@ -1,0 +1,5 @@
+formatter: markdown table
+output:
+  mode: replace
+  file: tfdocs.md
+  template: "{{ .Content }}\n"

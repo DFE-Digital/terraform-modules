@@ -3,8 +3,8 @@ name: Lint
 on: pull_request
 
 jobs:
-  terraform:
-    name: Terraform
+  terraform-format:
+    name: Terraform Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,6 +13,22 @@ jobs:
           terraform_version: "1.4.5"
       - name: Check formatting
         run: terraform fmt -recursive -check
+
+  terraform-docs:
+    name: Terraform Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: terraform-docs/gh-actions@main
+        with:
+          find-dir: .
+          fail-on-diff: true
+          config-file: .terraform-docs.yaml
+          # these are set in the configuration file
+          output-method: ""
+          output-file: ""
+          output-format: ""
+          template: ""
 
   yaml:
     name: YAML
