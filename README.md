@@ -35,3 +35,4 @@ Run the following command in each module directory where the docs need to be upd
 
 ```sh
 docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.16.0 markdown /terraform-docs > tfdocs.md
+```
