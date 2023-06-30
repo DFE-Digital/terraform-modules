@@ -12,7 +12,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_dns"></a> [dns](#module\_dns) | git::https://github.com/DFE-Digital/terraform-modules.git//dns/zones | 0.5.2 |
+| <a name="module_dns"></a> [dns](#module\_dns) | ../../dns/zones | n/a |
 
 ## Resources
 
@@ -26,7 +26,7 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | <a name="input_deploy_default_records"></a> [deploy\_default\_records](#input\_deploy\_default\_records) | n/a | `bool` | `true` | no |
 | <a name="input_hosted_zone"></a> [hosted\_zone](#input\_hosted\_zone) | n/a | `map(any)` | n/a | yes |
-| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `any` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `any` | `null` | no |
 
 ## Outputs
 
