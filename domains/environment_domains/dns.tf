@@ -29,7 +29,7 @@ resource "azurerm_dns_txt_record" "apex" {
 
 resource "azurerm_dns_cname_record" "main" {
   depends_on = [azurerm_cdn_frontdoor_route.main]
-  for_each   = { for k in toset(var.domains) : k => k if k != "apex" }
+  for_each   = { for k in toset(var.domains) : k => k if !contains(concat(["apex"], var.exclude_cnames), k) }
 
   name                = each.key
   zone_name           = data.azurerm_dns_zone.main.name
