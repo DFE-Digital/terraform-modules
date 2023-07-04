@@ -32,3 +32,8 @@ locals {
     zone_name => merge(zone_cfg, var.deploy_default_records ? local.default_records : null)
   }
 }
+
+variable "azure_enable_monitoring" {
+  type        = bool
+  description = "Enable monitoring and logging in Azure"
+}
