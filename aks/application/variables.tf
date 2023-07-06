@@ -82,8 +82,8 @@ variable "web_port" {
 
 variable "probe_path" {
   type        = string
-  default     = null
-  description = "Path for the liveness and startup probe"
+  default     = "/healthcheck"
+  description = "Path for the liveness and startup probe. The probe can be disabled by setting this to null."
 }
 
 variable "probe_command" {
@@ -92,8 +92,3 @@ variable "probe_command" {
   description = "Command for the liveness and startup probe"
 }
 
-locals {
-  http_probe_enabled = var.is_web && var.probe_path != null
-  exec_probe_enabled = !var.is_web && length(var.probe_command) != 0
-  probe_enabled      = local.http_probe_enabled || local.exec_probe_enabled
-}

@@ -40,7 +40,7 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | Name of the application | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
 | <a name="input_probe_command"></a> [probe\_command](#input\_probe\_command) | Command for the liveness and startup probe | `list(string)` | `[]` | no |
-| <a name="input_probe_path"></a> [probe\_path](#input\_probe\_path) | Path for the liveness and startup probe | `string` | `null` | no |
+| <a name="input_probe_path"></a> [probe\_path](#input\_probe\_path) | Path for the liveness and startup probe. The probe can be disabled by setting this to null. | `string` | `"/healthcheck"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of application instances | `number` | `1` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_web_external_hostnames"></a> [web\_external\_hostnames](#input\_web\_external\_hostnames) | List of external hostnames for the web application | `list(string)` | `[]` | no |
