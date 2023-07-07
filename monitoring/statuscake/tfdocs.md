@@ -1,15 +1,12 @@
 ## Requirements
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.4 |
-| <a name="requirement_statuscake"></a> [statuscake](#requirement\_statuscake) | >= 2.1 |
+No requirements.
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_statuscake"></a> [statuscake](#provider\_statuscake) | >= 2.1 |
+| <a name="provider_statuscake"></a> [statuscake](#provider\_statuscake) | n/a |
 
 ## Modules
 
@@ -19,8 +16,8 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [statuscake_ssl_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/ssl_check) | resource |
-| [statuscake_uptime_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/uptime_check) | resource |
+| [statuscake_ssl_check.main](https://registry.terraform.io/providers/hashicorp/statuscake/latest/docs/resources/ssl_check) | resource |
+| [statuscake_uptime_check.main](https://registry.terraform.io/providers/hashicorp/statuscake/latest/docs/resources/uptime_check) | resource |
 
 ## Inputs
 
