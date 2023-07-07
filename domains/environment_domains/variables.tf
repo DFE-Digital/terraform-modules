@@ -24,3 +24,8 @@ variable "cached_paths" {
   default     = []
   description = "List of path patterns such as /packs/* that front door will cache"
 }
+
+variable "exclude_cnames" {
+  default     = []
+  description = "Don't create the CNAME for this record from var.domains. We set this when we want to configure front door for a services domain that we are migrating so we do not need to wait for the certificate to validate and front door to propagate the configuration."
+}
