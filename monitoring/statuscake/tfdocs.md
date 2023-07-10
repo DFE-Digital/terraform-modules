@@ -16,8 +16,8 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [statuscake_ssl_check.main](https://registry.terraform.io/providers/hashicorp/statuscake/latest/docs/resources/ssl_check) | resource |
-| [statuscake_uptime_check.main](https://registry.terraform.io/providers/hashicorp/statuscake/latest/docs/resources/uptime_check) | resource |
+| [statuscake_ssl_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/ssl_check) | resource |
+| [statuscake_uptime_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/uptime_check) | resource |
 
 ## Inputs
 
