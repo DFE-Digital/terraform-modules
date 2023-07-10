@@ -55,6 +55,14 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
+        dynamic "image_pull_secrets" {
+          for_each = var.github_username != null ? ["this"] : []
+
+          content {
+            name = kubernetes_secret.ghcr_auth[0].metadata[0].name
+          }
+        }
+
         container {
           name    = local.app_name
           image   = var.docker_image
@@ -213,5 +221,26 @@ resource "kubernetes_pod_disruption_budget_v1" "main" {
         app = local.app_name
       }
     }
+  }
+}
+
+resource "kubernetes_secret" "ghcr_auth" {
+  count = var.github_username != null ? 1 : 0
+
+  metadata {
+    name      = "ghcr-auth"
+    namespace = var.namespace
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      "auths" = {
+        "https://ghcr.io" = {
+          "auth" : base64encode("${var.github_username}:${var.github_personal_access_token}")
+        }
+      }
+    })
   }
 }

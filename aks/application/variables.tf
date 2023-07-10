@@ -92,3 +92,13 @@ variable "probe_command" {
   description = "Command for the liveness and startup probe"
 }
 
+variable "github_username" {
+  type        = string
+  default     = null
+  description = "Github user authorised to access the private registry"
+}
+variable "github_personal_access_token" {
+  type        = string
+  default     = null
+  description = "Github Personal Access Token (PAT) of github_username"
+}
