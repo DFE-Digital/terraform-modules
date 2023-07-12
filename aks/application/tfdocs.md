@@ -19,6 +19,7 @@ No modules.
 | [kubernetes_deployment.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_ingress_v1.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress_v1) | resource |
 | [kubernetes_pod_disruption_budget_v1.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget_v1) | resource |
+| [kubernetes_secret.ghcr_auth](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_service.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 
 ## Inputs
@@ -29,6 +30,8 @@ No modules.
 | <a name="input_command"></a> [command](#input\_command) | Custom command that overwrites Docker image | `list(string)` | `[]` | no |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Path to the docker image | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
+| <a name="input_github_personal_access_token"></a> [github\_personal\_access\_token](#input\_github\_personal\_access\_token) | Github Personal Access Token (PAT) of github\_username | `string` | `null` | no |
+| <a name="input_github_username"></a> [github\_username](#input\_github\_username) | Github user authorised to access the private registry | `string` | `null` | no |
 | <a name="input_is_web"></a> [is\_web](#input\_is\_web) | Whether this a web application | `bool` | `true` | no |
 | <a name="input_kubernetes_config_map_name"></a> [kubernetes\_config\_map\_name](#input\_kubernetes\_config\_map\_name) | Name of the Kubernetes configuration map | `string` | n/a | yes |
 | <a name="input_kubernetes_secret_name"></a> [kubernetes\_secret\_name](#input\_kubernetes\_secret\_name) | Name of the Kubernetes secrets | `string` | n/a | yes |
