@@ -74,6 +74,7 @@ No modules.
 |------|-------------|
 | <a name="output_azure_backup_storage_account_name"></a> [azure\_backup\_storage\_account\_name](#output\_azure\_backup\_storage\_account\_name) | n/a |
 | <a name="output_azure_backup_storage_container_name"></a> [azure\_backup\_storage\_container\_name](#output\_azure\_backup\_storage\_container\_name) | n/a |
+| <a name="output_azure_server_id"></a> [azure\_server\_id](#output\_azure\_server\_id) | n/a |
 | <a name="output_dotnet_connection_string"></a> [dotnet\_connection\_string](#output\_dotnet\_connection\_string) | n/a |
 | <a name="output_host"></a> [host](#output\_host) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |

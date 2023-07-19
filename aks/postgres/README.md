@@ -69,3 +69,7 @@ The name of the storage account that can be used to store backups.
 ### `azure_backup_storage_container_name`
 
 The name of the storage container that can be used to store backups.
+
+### `azure_server_id`
+
+ID of the database server in terraform. It can be used to create more databases in the same server (only available when using Azure postgres).
