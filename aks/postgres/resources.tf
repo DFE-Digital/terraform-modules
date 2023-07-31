@@ -308,6 +308,12 @@ resource "azurerm_log_analytics_workspace" "main" {
   location            = data.azurerm_resource_group.main[0].location
   resource_group_name = data.azurerm_resource_group.main[0].name
   sku                 = "PerGB2018"
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 resource "azurerm_monitor_diagnostic_setting" "main" {
@@ -321,6 +327,13 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
     for_each = data.azurerm_monitor_diagnostic_categories.main[0].log_category_types
     content {
       category = enabled_log.value
+    }
+  }
+  metric {
+    category = "AllMetrics"
+    enabled  = false
+    retention_policy {
+      enabled = false
     }
   }
 }
