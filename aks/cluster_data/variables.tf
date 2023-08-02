@@ -9,7 +9,7 @@ locals {
       resource_group_name = "s189d01-tsc-dv-rg"
       resource_prefix     = "s189d01-tsc-cluster1"
       dns_zone_prefix     = "cluster1.development"
-      cpu_min             = 0.1
+      cpu_min             = 1
     }
 
     cluster2 = {
