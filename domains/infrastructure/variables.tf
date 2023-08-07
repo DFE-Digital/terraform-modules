@@ -11,6 +11,13 @@ variable "tags" {
   default = null
 }
 
+variable "azure_enable_monitoring" {
+  type        = bool
+  description = "Enable monitoring and logging in Azure"
+  default     = false
+}
+
+
 locals {
   default_records = {
     "caa_records" = {
@@ -33,9 +40,4 @@ locals {
   hosted_zone_with_records = { for zone_name, zone_cfg in var.hosted_zone :
     zone_name => merge(zone_cfg, var.deploy_default_records ? local.default_records : null)
   }
-}
-
-variable "azure_enable_monitoring" {
-  type        = bool
-  description = "Enable monitoring and logging in Azure"
 }
