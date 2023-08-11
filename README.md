@@ -34,6 +34,9 @@ Given the `stable` tag points to tag `v0.x.0` and `testing` points to `v0.y.0`. 
 
 ## Updating [Terraform Docs]
 
+Terraform Docs can be used in two ways:
+### Install
+
 - [Install Terraform Docs] according to the instructions for your platform.
 - Run `terraform-docs [module]` for each module, where `module` is the path, for example:
   ```sh
@@ -42,3 +45,11 @@ Given the `stable` tag points to tag `v0.x.0` and `testing` points to `v0.y.0`. 
 
 [Terraform Docs]: https://terraform-docs.io/
 [Install Terraform Docs]: https://terraform-docs.io/user-guide/installation/
+
+### Run as a Docker container
+
+- Run the following command in each module directory where the docs need to be updated:
+
+```sh
+docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.16.0 markdown /terraform-docs > tfdocs.md
+```
