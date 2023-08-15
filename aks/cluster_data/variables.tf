@@ -65,7 +65,7 @@ locals {
       resource_group_name = "s189p01-tsc-pd-rg"
       resource_prefix     = "s189p01-tsc-production"
       dns_zone_prefix     = null
-      cpu_min             = 1
+      cpu_min             = 0.8
     }
   }
 
