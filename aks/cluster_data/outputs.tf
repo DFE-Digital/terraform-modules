@@ -17,3 +17,7 @@ output "kubernetes_client_key" {
 output "kubernetes_cluster_ca_certificate" {
   value = base64decode(data.azurerm_kubernetes_cluster.main.kube_config.0.cluster_ca_certificate)
 }
+
+output "ingress_domain" {
+  value = "${local.dns_zone_prefix_with_optional_dot}teacherservices.cloud"
+}

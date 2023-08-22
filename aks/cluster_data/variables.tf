@@ -69,5 +69,6 @@ locals {
     }
   }
 
-  configuration_map = local.configuration_maps[var.name]
+  configuration_map                 = local.configuration_maps[var.name]
+  dns_zone_prefix_with_optional_dot = local.configuration_map.dns_zone_prefix == null ? "" : "${local.configuration_map.dns_zone_prefix}."
 }

@@ -48,3 +48,12 @@ The client key to use to connect to the Kubernetes cluster.
 ### `kubenetes_cluster_ca_certificate`
 
 The client cluster CA certificate to use to connect to the Kubernetes cluster.
+
+### `ingress_domain`
+
+Generic domain for all web applications on the cluster.
+
+For example the test cluster ingress domain is "test.teacherservices.cloud". The web application apply-review-1234 full domain is:
+
+`<app name>.<ingress domain>` or
+"apply-review-1234.test.teacherservices.cloud"

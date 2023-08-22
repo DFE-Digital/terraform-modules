@@ -29,6 +29,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_configuration_map"></a> [configuration\_map](#output\_configuration\_map) | n/a |
+| <a name="output_ingress_domain"></a> [ingress\_domain](#output\_ingress\_domain) | n/a |
 | <a name="output_kubernetes_client_certificate"></a> [kubernetes\_client\_certificate](#output\_kubernetes\_client\_certificate) | n/a |
 | <a name="output_kubernetes_client_key"></a> [kubernetes\_client\_key](#output\_kubernetes\_client\_key) | n/a |
 | <a name="output_kubernetes_cluster_ca_certificate"></a> [kubernetes\_cluster\_ca\_certificate](#output\_kubernetes\_cluster\_ca\_certificate) | n/a |
