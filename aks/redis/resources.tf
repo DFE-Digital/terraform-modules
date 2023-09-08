@@ -30,8 +30,8 @@ resource "azurerm_redis_cache" "main" {
   }
 
   timeouts {
-    create = "30m"
-    update = "30m"
+    create = "1h"
+    update = "1h"
   }
 
   lifecycle {
