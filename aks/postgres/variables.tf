@@ -44,6 +44,12 @@ variable "cluster_configuration_map" {
   description = "Configuration map for the cluster"
 }
 
+variable "server_docker_image" {
+  type        = string
+  default     = "postgres:14-alpine"
+  description = "Database image to use with kubernetes deployment, eg. postgis/postgis:14-3.4"
+}
+
 variable "server_version" {
   type        = string
   default     = "14"

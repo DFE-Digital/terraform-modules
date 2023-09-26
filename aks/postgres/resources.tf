@@ -252,7 +252,7 @@ resource "kubernetes_deployment" "main" {
         }
         container {
           name  = local.kubernetes_name
-          image = "postgres:${var.server_version}-alpine"
+          image = var.server_docker_image
           resources {
             requests = {
               cpu    = var.cluster_configuration_map.cpu_min
