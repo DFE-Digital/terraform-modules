@@ -44,13 +44,16 @@ resource "azurerm_cdn_frontdoor_custom_domain" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_route" "main" {
-  depends_on                      = [azurerm_cdn_frontdoor_origin_group.main, azurerm_cdn_frontdoor_origin.main]
-  for_each                        = toset(var.domains)
-  name                            = "${var.environment}-rt"
-  cdn_frontdoor_endpoint_id       = azurerm_cdn_frontdoor_endpoint.main[each.key].id
-  cdn_frontdoor_origin_group_id   = azurerm_cdn_frontdoor_origin_group.main.id
-  cdn_frontdoor_origin_ids        = [azurerm_cdn_frontdoor_origin.main.id]
-  cdn_frontdoor_rule_set_ids      = var.rule_set_ids
+  depends_on                    = [azurerm_cdn_frontdoor_origin_group.main, azurerm_cdn_frontdoor_origin.main]
+  for_each                      = toset(var.domains)
+  name                          = "${var.environment}-rt"
+  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
+  cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
+  cdn_frontdoor_rule_set_ids = concat(
+    var.rule_set_ids,
+    azurerm_cdn_frontdoor_rule_set.redirects[*].id
+  )
   link_to_default_domain          = false
   cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.main[each.key].id]
   forwarding_protocol             = "HttpsOnly"
@@ -60,12 +63,15 @@ resource "azurerm_cdn_frontdoor_route" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_route" "cached" {
-  for_each                        = toset(local.cached_domain_list)
-  name                            = "${var.environment}-cached-rt"
-  cdn_frontdoor_endpoint_id       = azurerm_cdn_frontdoor_endpoint.main[each.key].id
-  cdn_frontdoor_origin_group_id   = azurerm_cdn_frontdoor_origin_group.main.id
-  cdn_frontdoor_origin_ids        = [azurerm_cdn_frontdoor_origin.main.id]
-  cdn_frontdoor_rule_set_ids      = var.rule_set_ids
+  for_each                      = toset(local.cached_domain_list)
+  name                          = "${var.environment}-cached-rt"
+  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
+  cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
+  cdn_frontdoor_rule_set_ids = concat(
+    var.rule_set_ids,
+    azurerm_cdn_frontdoor_rule_set.redirects[*].id
+  )
   link_to_default_domain          = false
   cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.main[each.key].id]
   forwarding_protocol             = "HttpsOnly"
