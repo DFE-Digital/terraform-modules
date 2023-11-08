@@ -37,7 +37,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_cached_paths"></a> [cached\_paths](#input\_cached\_paths) | List of path patterns such as /packs/* that front door will cache | `list(string)` | `[]` | no |
-| <a name="input_domains"></a> [domains](#input\_domains) | n/a | `any` | n/a | yes |
+| <a name="input_domains"></a> [domains](#input\_domains) | List of subdomains of the zone e.g. "staging". For apex domain use "apex" or "apex<something>" if apex is already in use | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `any` | n/a | yes |
 | <a name="input_exclude_cnames"></a> [exclude\_cnames](#input\_exclude\_cnames) | Don't create the CNAME for this record from var.domains. We set this when we want to configure front door for a services domain that we are migrating so we do not need to wait for the certificate to validate and front door to propagate the configuration. | `list` | `[]` | no |
 | <a name="input_front_door_name"></a> [front\_door\_name](#input\_front\_door\_name) | n/a | `any` | n/a | yes |

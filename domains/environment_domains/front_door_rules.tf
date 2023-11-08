@@ -17,7 +17,7 @@ resource "azurerm_cdn_frontdoor_rule" "rule" {
   conditions {
     host_name_condition {
       operator     = "Equal"
-      match_values = [for d in [var.redirect_rules[count.index]["from-domain"]] : d == "apex" ? "${var.zone}" : "${d}.${var.zone}"]
+      match_values = [for d in [var.redirect_rules[count.index]["from-domain"]] : startswith(d, "apex") ? "${var.zone}" : "${d}.${var.zone}"]
     }
   }
 
