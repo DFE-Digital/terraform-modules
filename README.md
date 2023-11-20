@@ -31,6 +31,7 @@ Given the `stable` tag points to tag `v0.x.0` and `testing` points to `v0.y.0`. 
 - Delete the current pre-release pointing to `v0.y.0`
 - Create a new release with tag `v0.y.0`, target testing and generate changelog `v0.y.0 ... v0.x.0`
 - If there are new commits in `main` that we want to promote to `testing`: increment `v0.y.0` to `v0.z.0`, then create a new pre-release with new tag `v0.z.0`, target main and generate changelog `v0.z.0 ... v0.y.0`
+        * Select [Draft new release] -> Click [Choose a tag] -> Enter 'v0.z.0' -> Select [Create new tag] -> Select [Generate release notes] -> Select [Set as a pre-release] checkbox -> Select [Publish release]
 
 ## Updating [Terraform Docs]
 
