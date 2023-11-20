@@ -107,11 +107,12 @@ resource "azurerm_postgresql_flexible_server_database" "main" {
 resource "azurerm_storage_account" "backup" {
   count = local.azure_enable_backup_storage ? 1 : 0
 
-  name                     = "${var.azure_resource_prefix}${var.service_short}dbbkp${var.config_short}sa"
-  location                 = data.azurerm_resource_group.main[0].location
-  resource_group_name      = data.azurerm_resource_group.main[0].name
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
+  name                            = "${var.azure_resource_prefix}${var.service_short}dbbkp${var.config_short}sa"
+  location                        = data.azurerm_resource_group.main[0].location
+  resource_group_name             = data.azurerm_resource_group.main[0].name
+  account_tier                    = "Standard"
+  account_replication_type        = "GRS"
+  allow_nested_items_to_be_public = false
 
   lifecycle { ignore_changes = [tags] }
 }
