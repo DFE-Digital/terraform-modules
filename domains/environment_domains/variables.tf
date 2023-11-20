@@ -1,7 +1,11 @@
 variable "zone" {}
 variable "front_door_name" {}
 variable "resource_group_name" {}
-variable "domains" {}
+variable "domains" {
+  description = <<EOF
+    List of subdomains of the zone e.g. "staging". For apex domain use "apex" or "apex<something>" if apex is already in use
+  EOF
+}
 variable "environment" {}
 variable "host_name" {
   default     = "not-in-use.education.gov.uk"
