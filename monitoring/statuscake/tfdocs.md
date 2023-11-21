@@ -23,6 +23,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_confirmation"></a> [confirmation](#input\_confirmation) | Retry the check when an error is detected to avoid false positives and micro downtimes | `number` | `2` | no |
 | <a name="input_contact_groups"></a> [contact\_groups](#input\_contact\_groups) | Contact groups for the alerts | `list(string)` | `[]` | no |
 | <a name="input_ssl_urls"></a> [ssl\_urls](#input\_ssl\_urls) | Set of URLs to perform SSL checks on | `list(string)` | `[]` | no |
 | <a name="input_uptime_urls"></a> [uptime\_urls](#input\_uptime\_urls) | Set of URLs to perform uptime checks on | `list(string)` | `[]` | no |

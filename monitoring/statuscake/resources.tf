@@ -3,7 +3,7 @@ resource "statuscake_uptime_check" "main" {
 
   name           = each.value
   contact_groups = var.contact_groups
-  confirmation   = 2
+  confirmation   = var.confirmation
   trigger_rate   = 0
   check_interval = 30
   regions        = ["london", "dublin"]
