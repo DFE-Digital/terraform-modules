@@ -15,3 +15,9 @@ variable "contact_groups" {
   description = "Contact groups for the alerts"
   default     = []
 }
+
+variable "confirmation" {
+  type        = number
+  description = "Retry the check when an error is detected to avoid false positives and micro downtimes"
+  default     = 2
+}
