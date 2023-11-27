@@ -32,6 +32,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H | `string` | `"PT5M"` | no |
 | <a name="input_azure_capacity"></a> [azure\_capacity](#input\_azure\_capacity) | n/a | `number` | `1` | no |
 | <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | n/a | `bool` | `true` | no |
 | <a name="input_azure_family"></a> [azure\_family](#input\_azure\_family) | n/a | `string` | `"C"` | no |

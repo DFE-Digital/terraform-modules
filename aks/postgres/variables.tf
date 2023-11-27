@@ -114,6 +114,12 @@ variable "azure_enable_monitoring" {
   default = true
 }
 
+variable "alert_window_size" {
+  type        = string
+  default     = "PT5M"
+  description = "The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H"
+}
+
 variable "azure_maintenance_window" {
   type = object({
     day_of_week  = optional(number)
