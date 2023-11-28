@@ -151,6 +151,7 @@ resource "azurerm_monitor_metric_alert" "memory" {
   resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
   description         = "Action will be triggered when memory use is greater than 75%"
+  window_size         = var.alert_window_size
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
@@ -178,6 +179,7 @@ resource "azurerm_monitor_metric_alert" "cpu" {
   resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
   description         = "Action will be triggered when cpu use is greater than 60%"
+  window_size         = var.alert_window_size
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
@@ -205,6 +207,7 @@ resource "azurerm_monitor_metric_alert" "storage" {
   resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
   description         = "Action will be triggered when storage use is greater than 75%"
+  window_size         = var.alert_window_size
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"

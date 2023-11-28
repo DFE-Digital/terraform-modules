@@ -47,6 +47,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | Password of the admin user | `string` | `null` | no |
 | <a name="input_admin_username"></a> [admin\_username](#input\_admin\_username) | Username of the admin user | `string` | `null` | no |
+| <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H | `string` | `"PT5M"` | no |
 | <a name="input_azure_cpu_threshold"></a> [azure\_cpu\_threshold](#input\_azure\_cpu\_threshold) | n/a | `number` | `60` | no |
 | <a name="input_azure_enable_backup_storage"></a> [azure\_enable\_backup\_storage](#input\_azure\_enable\_backup\_storage) | n/a | `bool` | `true` | no |
 | <a name="input_azure_enable_high_availability"></a> [azure\_enable\_high\_availability](#input\_azure\_enable\_high\_availability) | n/a | `bool` | `false` | no |
