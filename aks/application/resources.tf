@@ -244,3 +244,37 @@ resource "kubernetes_secret" "ghcr_auth" {
     })
   }
 }
+
+resource "azurerm_monitor_metric_alert" "container_restarts" {
+  count = var.azure_enable_monitoring ? 1 : 0
+
+  name                = "${local.app_name}-container-restarts"
+  resource_group_name = data.azurerm_resource_group.monitoring[0].name
+  scopes              = [data.azurerm_kubernetes_cluster.main[0].id]
+  description         = "Action will be triggered when container restarts is greater than 0"
+  window_size         = "PT30M"
+
+  criteria {
+    metric_namespace = "Insights.container/pods"
+    metric_name      = "restartingContainerCount"
+    aggregation      = "Maximum"
+    operator         = "GreaterThan"
+    threshold        = 0
+
+    dimension {
+      name     = "controllerName"
+      operator = "StartsWith"
+      values   = ["${local.app_name}"]
+    }
+  }
+
+  action {
+    action_group_id = data.azurerm_monitor_action_group.main[0].id
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
