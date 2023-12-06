@@ -122,6 +122,7 @@ variable "azure_resource_prefix" {
 }
 
 variable "azure_enable_monitoring" {
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
+  description = "Whether to enable monitoring of container failures"
 }
