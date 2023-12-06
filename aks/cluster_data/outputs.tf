@@ -6,6 +6,10 @@ output "kubernetes_host" {
   value = data.azurerm_kubernetes_cluster.main.kube_config.0.host
 }
 
+output "kubernetes_id" {
+  value = data.azurerm_kubernetes_cluster.main.id
+}
+
 output "kubernetes_client_certificate" {
   value = base64decode(data.azurerm_kubernetes_cluster.main.kube_config.0.client_certificate)
 }

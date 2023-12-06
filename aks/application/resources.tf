@@ -250,7 +250,7 @@ resource "azurerm_monitor_metric_alert" "container_restarts" {
 
   name                = "${local.app_name}-container-restarts"
   resource_group_name = data.azurerm_resource_group.monitoring[0].name
-  scopes              = [data.azurerm_kubernetes_cluster.main[0].id]
+  scopes              = [var.kubernetes_cluster_id]
   description         = "Action will be triggered when container restarts is greater than 0"
   window_size         = "PT30M"
 

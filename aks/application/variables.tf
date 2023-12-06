@@ -51,6 +51,12 @@ variable "kubernetes_secret_name" {
   description = "Name of the Kubernetes secrets"
 }
 
+variable "kubernetes_cluster_id" {
+  type        = string
+  default     = null
+  description = "ID of the Kubernetes cluster"
+}
+
 variable "docker_image" {
   type        = string
   description = "Path to the docker image"

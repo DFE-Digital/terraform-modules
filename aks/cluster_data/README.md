@@ -37,6 +37,10 @@ object({
 
 The host to use to connect to the Kubernetes cluster.
 
+### `kubernetes_id`
+
+The ID of the Kubernetes Managed Cluster.
+
 ### `kubernetes_client_certificate`
 
 The client certificate to use to connect to the Kubernetes cluster.
