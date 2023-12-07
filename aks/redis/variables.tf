@@ -46,6 +46,7 @@ variable "cluster_configuration_map" {
 
 variable "server_version" {
   type        = string
+  nullable    = false
   default     = "6"
   description = "Version of Redis server"
 }
@@ -71,13 +72,15 @@ variable "azure_sku_name" {
 }
 
 variable "azure_minimum_tls_version" {
-  type    = string
-  default = "1.2"
+  type     = string
+  nullable = false
+  default  = "1.2"
 }
 
 variable "azure_public_network_access_enabled" {
-  type    = bool
-  default = false
+  type     = bool
+  nullable = false
+  default  = false
 }
 
 variable "azure_memory_threshold" {
@@ -86,13 +89,15 @@ variable "azure_memory_threshold" {
 }
 
 variable "azure_maxmemory_policy" {
-  type    = string
-  default = "allkeys-lru"
+  type     = string
+  nullable = false
+  default  = "allkeys-lru"
 }
 
 variable "azure_enable_monitoring" {
-  type    = bool
-  default = true
+  type     = bool
+  nullable = false
+  default  = true
 }
 
 variable "azure_patch_schedule" {
@@ -101,12 +106,14 @@ variable "azure_patch_schedule" {
     start_hour_utc     = optional(number),
     maintenance_window = optional(string)
   }))
-  default = []
+  nullable = false
+  default  = []
 }
 
 variable "alert_window_size" {
   type        = string
   default     = "PT5M"
+  nullable    = false
   description = "The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H"
 }
 

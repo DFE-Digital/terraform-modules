@@ -46,6 +46,7 @@ variable "cluster_configuration_map" {
 
 variable "server_docker_image" {
   type        = string
+  nullable    = false
   default     = "postgres:14-alpine"
   description = "Database image to use with kubernetes deployment, eg. postgis/postgis:14-3.4"
 }
@@ -85,13 +86,15 @@ variable "azure_sku_name" {
 }
 
 variable "azure_enable_high_availability" {
-  type    = bool
-  default = false
+  type     = bool
+  nullable = false
+  default  = false
 }
 
 variable "azure_extensions" {
-  type    = list(string)
-  default = []
+  type     = list(string)
+  nullable = false
+  default  = []
 }
 
 variable "azure_memory_threshold" {
@@ -110,12 +113,14 @@ variable "azure_storage_threshold" {
 }
 
 variable "azure_enable_monitoring" {
-  type    = bool
-  default = true
+  type     = bool
+  nullable = false
+  default  = true
 }
 
 variable "alert_window_size" {
   type        = string
+  nullable    = false
   default     = "PT5M"
   description = "The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H"
 }
@@ -130,6 +135,7 @@ variable "azure_maintenance_window" {
 }
 
 variable "azure_enable_backup_storage" {
-  type    = bool
-  default = true
+  type     = bool
+  nullable = false
+  default  = true
 }

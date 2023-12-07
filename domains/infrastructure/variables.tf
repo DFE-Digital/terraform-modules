@@ -3,8 +3,9 @@ variable "hosted_zone" {
 }
 
 variable "deploy_default_records" {
-  type    = bool
-  default = true
+  nullable = false
+  type     = bool
+  default  = true
 }
 
 variable "tags" {
@@ -12,6 +13,7 @@ variable "tags" {
 }
 
 variable "azure_enable_monitoring" {
+  nullable    = false
   type        = bool
   description = "Enable monitoring and logging in Azure"
   default     = false
