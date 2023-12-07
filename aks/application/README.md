@@ -16,10 +16,10 @@ module "web_application" {
   service_name = local.service_name
 
   cluster_configuration_map = module.cluster_data.configuration_map
-  
+
   kubernetes_config_map_name = module.application_configuration.kubernetes_config_map_name
   kubernetes_secret_name     = module.application_configuration.kubernetes_secret_name
-  
+
   docker_image = var.docker_image
 }
 
@@ -88,6 +88,13 @@ app.MapHealthChecks("/healthcheck/all");
 ```
 
 [ASP.NET Core Health Checks Middleware]: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-7.0
+
+### Monitoring
+
+If `azure_enable_monitoring` is `true`, it’s expected that the following resources already exist:
+
+- A resource group named `${azure_resource_prefix}-${service_short}-mn-rg` (where `mn` stands for monitoring and `rg` stands for resource group).
+- A monitor action group named `${azure_resource_prefix}-${service_name}` within the above resource group.
 
 ## Outputs
 

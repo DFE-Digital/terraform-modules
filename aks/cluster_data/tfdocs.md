@@ -34,3 +34,4 @@ No modules.
 | <a name="output_kubernetes_client_key"></a> [kubernetes\_client\_key](#output\_kubernetes\_client\_key) | n/a |
 | <a name="output_kubernetes_cluster_ca_certificate"></a> [kubernetes\_cluster\_ca\_certificate](#output\_kubernetes\_cluster\_ca\_certificate) | n/a |
 | <a name="output_kubernetes_host"></a> [kubernetes\_host](#output\_kubernetes\_host) | n/a |
+| <a name="output_kubernetes_id"></a> [kubernetes\_id](#output\_kubernetes\_id) | n/a |

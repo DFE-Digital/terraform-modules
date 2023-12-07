@@ -19,6 +19,12 @@ variable "service_name" {
   description = "Name of the service"
 }
 
+variable "service_short" {
+  type        = string
+  default     = null
+  description = "Short name of the service"
+}
+
 variable "cluster_configuration_map" {
   type = object({
     resource_group_name = string,
@@ -43,6 +49,12 @@ variable "kubernetes_config_map_name" {
 variable "kubernetes_secret_name" {
   type        = string
   description = "Name of the Kubernetes secrets"
+}
+
+variable "kubernetes_cluster_id" {
+  type        = string
+  default     = null
+  description = "ID of the Kubernetes cluster"
 }
 
 variable "docker_image" {
@@ -101,4 +113,16 @@ variable "github_personal_access_token" {
   type        = string
   default     = null
   description = "Github Personal Access Token (PAT) of github_username"
+}
+
+variable "azure_resource_prefix" {
+  type        = string
+  default     = null
+  description = "Prefix of Azure resources for the service"
+}
+
+variable "azure_enable_monitoring" {
+  type        = bool
+  default     = false
+  description = "Whether to enable monitoring of container failures"
 }
