@@ -37,6 +37,7 @@ variable "cluster_configuration_map" {
 
 variable "replicas" {
   type        = number
+  nullable    = false
   default     = 1
   description = "Number of application instances"
 }
@@ -64,42 +65,49 @@ variable "docker_image" {
 
 variable "command" {
   type        = list(string)
+  nullable    = false
   default     = []
   description = "Custom command that overwrites Docker image"
 }
 
 variable "max_memory" {
   type        = string
+  nullable    = false
   default     = "1Gi"
   description = "Maximum memory of the instance"
 }
 
 variable "is_web" {
   type        = bool
+  nullable    = false
   default     = true
   description = "Whether this a web application"
 }
 
 variable "web_external_hostnames" {
   type        = list(string)
+  nullable    = false
   default     = []
   description = "List of external hostnames for the web application"
 }
 
 variable "web_port" {
   type        = number
+  nullable    = false
   default     = 3000
   description = "Port of the web application"
 }
 
 variable "probe_path" {
   type        = string
+  nullable    = false
   default     = "/healthcheck"
   description = "Path for the liveness and startup probe. The probe can be disabled by setting this to null."
 }
 
 variable "probe_command" {
   type        = list(string)
+  nullable    = false
   default     = []
   description = "Command for the liveness and startup probe"
 }
@@ -123,6 +131,7 @@ variable "azure_resource_prefix" {
 
 variable "azure_enable_monitoring" {
   type        = bool
+  nullable    = false
   default     = false
   description = "Whether to enable monitoring of container failures"
 }

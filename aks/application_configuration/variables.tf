@@ -25,12 +25,14 @@ variable "config_short" {
 
 variable "is_rails_application" {
   type        = bool
+  nullable    = false
   default     = false
   description = "If true, sets config variables for a Rails application"
 }
 
 variable "config_variables" {
   type        = map(string)
+  nullable    = false
   default     = {}
   description = "Additional configuration variables"
 }
@@ -55,6 +57,7 @@ variable "secret_yaml_key" {
 
 variable "secret_variables" {
   type        = map(string)
+  nullable    = false
   default     = {}
   description = "Additional secret variables"
 }
