@@ -26,7 +26,7 @@ resource "kubernetes_deployment" "main" {
       metadata {
         labels = {
           app = local.app_name
-          azure.workload.identity/use = var.use_workload_identity
+          "azure.workload.identity/use" = var.use_workload_identity
         }
       }
 
