@@ -134,3 +134,15 @@ variable "azure_enable_monitoring" {
   default     = false
   description = "Whether to enable monitoring of container failures"
 }
+
+variable "pod_service_account_name" {
+  type        = string
+  default     = null
+  description = "Name of the Kuberneted service account to run this pod"
+}
+
+variable "use_workload_identity" {
+  type        = string
+  default     = "false"
+  description = "Use workload identity to get a token"
+}

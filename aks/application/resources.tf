@@ -26,10 +26,13 @@ resource "kubernetes_deployment" "main" {
       metadata {
         labels = {
           app = local.app_name
+          azure.workload.identity/use = var.use_workload_identity
         }
       }
 
       spec {
+        service_account_name = var.pod_service_account_name
+
         node_selector = {
           "teacherservices.cloud/node_pool" = "applications"
           "kubernetes.io/os"                = "linux"
