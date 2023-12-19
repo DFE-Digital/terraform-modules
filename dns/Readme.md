@@ -61,7 +61,7 @@ So we add the following 3 records to indicate we don't send mail from these doma
 
 - CAA record
 ```
-0 issue "amazon.com"
+0 issue "globalsign.com"
 ```
 
 # Records
@@ -82,7 +82,7 @@ To create (or update) records to an existing zone
 - Run the make command with DNS_ENV set to the environment you are adding records too
 
     - make ${zone} dnsrecord-plan DNS_ENV=${env}
-    - make ${zone} dnsrecord-apply DNS_ENV=$env}
+    - make ${zone} dnsrecord-apply DNS_ENV=${env}
         - e.g. make register dnsrecord-plan DNS_ENV=qa
 
 Note;

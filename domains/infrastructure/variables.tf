@@ -22,13 +22,7 @@ variable "azure_enable_monitoring" {
 
 locals {
   default_records = {
-    "caa_records" = {
-      "@" = {
-        "flags" = 0,
-        "tag"   = "issue",
-        "value" = "digicert.com"
-      }
-    }
+    "caa_record_list" = ["globalsign.com", "digicert.com"],
     "txt_records" = {
       "@" = {
         "value" = "v=spf1 -all"
