@@ -100,7 +100,6 @@ variable "web_port" {
 
 variable "probe_path" {
   type        = string
-  nullable    = false
   default     = "/healthcheck"
   description = "Path for the liveness and startup probe. The probe can be disabled by setting this to null."
 }
