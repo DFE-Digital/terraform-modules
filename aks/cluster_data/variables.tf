@@ -51,7 +51,7 @@ locals {
       resource_group_name = "s189t01-tsc-ts-rg"
       resource_prefix     = "s189t01-tsc-test"
       dns_zone_prefix     = "test"
-      cpu_min             = 0.1
+      cpu_min             = 0.05
     }
 
     platform-test = {
@@ -65,7 +65,7 @@ locals {
       resource_group_name = "s189p01-tsc-pd-rg"
       resource_prefix     = "s189p01-tsc-production"
       dns_zone_prefix     = null
-      cpu_min             = 0.8
+      cpu_min             = 0.5
     }
   }
 
