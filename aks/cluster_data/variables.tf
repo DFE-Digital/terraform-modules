@@ -40,6 +40,13 @@ locals {
       cpu_min             = 0.1
     }
 
+    cluster5clone = {
+      resource_group_name = "s189d01-tsc-dv-rg"
+      resource_prefix     = "s189d01-tsc-cluster5-clone"
+      dns_zone_prefix     = "cluster5.development"
+      cpu_min             = 0.1
+    }
+
     cluster6 = {
       resource_group_name = "s189d01-tsc-dv-rg"
       resource_prefix     = "s189d01-tsc-cluster6"
