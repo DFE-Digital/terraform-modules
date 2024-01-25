@@ -43,15 +43,41 @@ The ID of the Kubernetes Managed Cluster.
 
 ### `kubernetes_client_certificate`
 
-The client certificate to use to connect to the Kubernetes cluster.
+The client certificate to use to connect to the Kubernetes cluster. `null` when the cluster uses Azure RBAC.
 
 ### `kubernetes_client_key`
 
-The client key to use to connect to the Kubernetes cluster.
+The client key to use to connect to the Kubernetes cluster. `null` when the cluster uses Azure RBAC.
 
 ### `kubenetes_cluster_ca_certificate`
 
 The client cluster CA certificate to use to connect to the Kubernetes cluster.
+
+### `azure_RBAC_enabled`
+
+`true` if the cluster uses Azure RBAC
+
+### `kubelogin_args`
+
+Arguments for [kubelogin](https://azure.github.io/kubelogin/) to authenticate to a cluster using Azure RBAC. Used in the kubernetes provider configuration:
+
+```hcl
+provider "kubernetes" {
+  host                   = module.cluster_data.kubernetes_host
+  client_certificate     = module.cluster_data.kubernetes_client_certificate
+  client_key             = module.cluster_data.kubernetes_client_key
+  cluster_ca_certificate = module.cluster_data.kubernetes_cluster_ca_certificate
+
+  dynamic "exec" {
+    for_each = module.cluster_data.azure_RBAC_enabled ? [1] : []
+    content {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "kubelogin"
+      args        = module.cluster_data.kubelogin_args
+    }
+  }
+}
+```
 
 ### `ingress_domain`
 
