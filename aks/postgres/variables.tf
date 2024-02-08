@@ -4,6 +4,12 @@ variable "name" {
   default     = null
 }
 
+variable "azure_name_override" {
+  type        = string
+  description = "Replace the generated name with hardcoded name"
+  default     = null
+}
+
 variable "namespace" {
   type        = string
   description = "Current namespace"

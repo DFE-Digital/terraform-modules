@@ -3,8 +3,9 @@ locals {
 
   name_suffix = var.name != null ? "-${var.name}" : ""
 
-  azure_name                  = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
-  azure_private_endpoint_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}-pe"
+  azure_generated_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
+  azure_name           = var.azure_name_override == null ? local.azure_generated_name : var.azure_name_override
+
   azure_enable_backup_storage = var.use_azure && var.azure_enable_backup_storage
   azure_enable_monitoring     = var.use_azure && var.azure_enable_monitoring
 
