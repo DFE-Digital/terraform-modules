@@ -55,6 +55,7 @@ No modules.
 | <a name="input_azure_extensions"></a> [azure\_extensions](#input\_azure\_extensions) | n/a | `list(string)` | `[]` | no |
 | <a name="input_azure_maintenance_window"></a> [azure\_maintenance\_window](#input\_azure\_maintenance\_window) | n/a | <pre>object({<br>    day_of_week  = optional(number)<br>    start_hour   = optional(number)<br>    start_minute = optional(number)<br>  })</pre> | `null` | no |
 | <a name="input_azure_memory_threshold"></a> [azure\_memory\_threshold](#input\_azure\_memory\_threshold) | n/a | `number` | `75` | no |
+| <a name="input_azure_name_override"></a> [azure\_name\_override](#input\_azure\_name\_override) | Replace the generated name with hardcoded name | `string` | `null` | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | n/a | yes |
 | <a name="input_azure_sku_name"></a> [azure\_sku\_name](#input\_azure\_sku\_name) | n/a | `string` | `"B_Standard_B1ms"` | no |
 | <a name="input_azure_storage_mb"></a> [azure\_storage\_mb](#input\_azure\_storage\_mb) | n/a | `number` | `32768` | no |
