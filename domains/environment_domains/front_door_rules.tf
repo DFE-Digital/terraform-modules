@@ -23,7 +23,7 @@ resource "azurerm_cdn_frontdoor_rule" "rule" {
 
   actions {
     url_redirect_action {
-      redirect_type        = "Moved"
+      redirect_type        = "PermanentRedirect"
       redirect_protocol    = "Https"
       destination_hostname = var.redirect_rules[count.index]["to-domain"]
       destination_path     = try(var.redirect_rules[count.index]["to-path"], null)
