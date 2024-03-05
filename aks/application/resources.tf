@@ -5,6 +5,11 @@ locals {
   http_probe_enabled = var.is_web && var.probe_path != null
   exec_probe_enabled = !var.is_web && length(var.probe_command) != 0
   probe_enabled      = local.http_probe_enabled || local.exec_probe_enabled
+  prometheus_scrape_annotations = {
+    "prometheus.io/scrape" = "true"
+    "prometheus.io/path"   = "/metrics"
+    "prometheus.io/port"   = var.web_port
+  }
 }
 
 resource "kubernetes_deployment" "main" {
@@ -27,6 +32,9 @@ resource "kubernetes_deployment" "main" {
         labels = {
           app = local.app_name
         }
+
+        annotations = var.enable_prometheus_monitoring ? local.prometheus_scrape_annotations : {}
+
       }
 
       spec {

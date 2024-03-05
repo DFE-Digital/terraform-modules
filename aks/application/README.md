@@ -96,6 +96,7 @@ If `azure_enable_monitoring` is `true`, it’s expected that the following resou
 - A resource group named `${azure_resource_prefix}-${service_short}-mn-rg` (where `mn` stands for monitoring and `rg` stands for resource group).
 - A monitor action group named `${azure_resource_prefix}-${service_name}` within the above resource group.
 
+If custom metrics are required to be scraped by an application then the application needs to set enable_prometheus_monitoring variable to true. this is false by default
 ## Outputs
 
 ### `hostname`
