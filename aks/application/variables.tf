@@ -104,6 +104,12 @@ variable "probe_path" {
   description = "Path for the liveness and startup probe. The probe can be disabled by setting this to null."
 }
 
+variable "enable_prometheus_monitoring" {
+  type        = bool
+  default     = false
+  description = " a boolean to indicate whether to scrape(true) custom metrics for application or not(false)"
+}
+
 variable "probe_command" {
   type        = list(string)
   nullable    = false
