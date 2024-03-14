@@ -140,3 +140,9 @@ variable "azure_enable_monitoring" {
   default     = false
   description = "Whether to enable monitoring of container failures"
 }
+
+variable "enable_logit" {
+  type        = bool
+  default     = false
+  description = "A boolean to indicate whether to enable sending container logs to logit.io"
+}
