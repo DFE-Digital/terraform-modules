@@ -5,11 +5,13 @@ locals {
   http_probe_enabled = var.is_web && var.probe_path != null
   exec_probe_enabled = !var.is_web && length(var.probe_command) != 0
   probe_enabled      = local.http_probe_enabled || local.exec_probe_enabled
-  prometheus_scrape_annotations = {
+
+  prometheus_scrape_annotations = var.enable_prometheus_monitoring ? {
     "prometheus.io/scrape" = "true"
     "prometheus.io/path"   = "/metrics"
     "prometheus.io/port"   = var.web_port
-  }
+  } : {}
+  logit_annotations = var.enable_logit ? { "logit.io/send" = "true" } : {}
 }
 
 resource "kubernetes_deployment" "main" {
@@ -33,7 +35,7 @@ resource "kubernetes_deployment" "main" {
           app = local.app_name
         }
 
-        annotations = var.enable_prometheus_monitoring ? local.prometheus_scrape_annotations : {}
+        annotations = merge(local.prometheus_scrape_annotations, local.logit_annotations)
 
       }
 
