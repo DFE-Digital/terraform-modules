@@ -50,6 +50,7 @@ No modules.
 | <a name="input_probe_command"></a> [probe\_command](#input\_probe\_command) | Command for the liveness and startup probe | `list(string)` | `[]` | no |
 | <a name="input_probe_path"></a> [probe\_path](#input\_probe\_path) | Path for the liveness and startup probe. The probe can be disabled by setting this to null. | `string` | `"/healthcheck"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of application instances | `number` | `1` | no |
+| <a name="input_send_traffic_to_maintenance_page"></a> [send\_traffic\_to\_maintenance\_page](#input\_send\_traffic\_to\_maintenance\_page) | During a maintenance operation, keep sending traffic to the maintenance page instead of resetting the ingress | `bool` | `false` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | `null` | no |
 | <a name="input_web_external_hostnames"></a> [web\_external\_hostnames](#input\_web\_external\_hostnames) | List of external hostnames for the web application | `list(string)` | `[]` | no |
