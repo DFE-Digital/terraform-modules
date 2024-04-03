@@ -174,10 +174,10 @@ resource "kubernetes_service" "main" {
     type = "ClusterIP"
     port {
       port        = 80
-      target_port = var.web_port
+      target_port = var.maintenance_app_port != null ? var.maintenance_app_port: var.web_port
     }
     selector = {
-      app = local.app_name
+      app = var.maintenance_app_name != null ? var.maintenance_app_name : local.app_name
     }
   }
 }

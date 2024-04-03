@@ -146,3 +146,13 @@ variable "enable_logit" {
   default     = false
   description = "A boolean to indicate whether to enable sending container logs to logit.io"
 }
+
+variable "maintenance_app_name" {
+  type        = string
+  default     = null
+}
+
+variable "maintenance_app_port" {
+  type        = number
+  default     = null
+}
