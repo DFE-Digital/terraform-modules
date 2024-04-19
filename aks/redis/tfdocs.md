@@ -37,7 +37,7 @@ No modules.
 | <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | n/a | `bool` | `true` | no |
 | <a name="input_azure_family"></a> [azure\_family](#input\_azure\_family) | n/a | `string` | `"C"` | no |
 | <a name="input_azure_maxmemory_policy"></a> [azure\_maxmemory\_policy](#input\_azure\_maxmemory\_policy) | n/a | `string` | `"allkeys-lru"` | no |
-| <a name="input_azure_memory_threshold"></a> [azure\_memory\_threshold](#input\_azure\_memory\_threshold) | n/a | `number` | `60` | no |
+| <a name="input_azure_memory_threshold"></a> [azure\_memory\_threshold](#input\_azure\_memory\_threshold) | n/a | `number` | `80` | no |
 | <a name="input_azure_minimum_tls_version"></a> [azure\_minimum\_tls\_version](#input\_azure\_minimum\_tls\_version) | n/a | `string` | `"1.2"` | no |
 | <a name="input_azure_patch_schedule"></a> [azure\_patch\_schedule](#input\_azure\_patch\_schedule) | n/a | <pre>list(object({<br>    day_of_week        = string,<br>    start_hour_utc     = optional(number),<br>    maintenance_window = optional(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_azure_public_network_access_enabled"></a> [azure\_public\_network\_access\_enabled](#input\_azure\_public\_network\_access\_enabled) | n/a | `bool` | `false` | no |

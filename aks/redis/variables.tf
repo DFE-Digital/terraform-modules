@@ -85,7 +85,7 @@ variable "azure_public_network_access_enabled" {
 
 variable "azure_memory_threshold" {
   type    = number
-  default = 60
+  default = 80
 }
 
 variable "azure_maxmemory_policy" {
@@ -116,4 +116,3 @@ variable "alert_window_size" {
   nullable    = false
   description = "The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H"
 }
-

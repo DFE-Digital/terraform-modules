@@ -105,17 +105,17 @@ variable "azure_extensions" {
 
 variable "azure_memory_threshold" {
   type    = number
-  default = 75
+  default = 80
 }
 
 variable "azure_cpu_threshold" {
   type    = number
-  default = 60
+  default = 80
 }
 
 variable "azure_storage_threshold" {
   type    = number
-  default = 75
+  default = 80
 }
 
 variable "azure_enable_monitoring" {
