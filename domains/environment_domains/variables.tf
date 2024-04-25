@@ -1,5 +1,9 @@
 variable "zone" {}
-variable "front_door_name" {}
+variable "front_door_name" {
+  description = "Name of the front door where the domains will be created. Use var.add_to_front_door if adding to existing domains."
+  default     = null
+}
+
 variable "resource_group_name" {}
 variable "domains" {
   description = <<EOF
@@ -25,9 +29,16 @@ variable "rule_set_ids" {
 }
 
 variable "multiple_hosted_zones" {
-  type     = bool
-  nullable = false
-  default  = false
+  type        = bool
+  nullable    = false
+  default     = false
+  description = "Avoid endpoint naming clash when using multiple zones (one for each front door)"
+}
+
+variable "add_to_front_door" {
+  type        = string
+  default     = null
+  description = "Add domains of a different zone to existing front door domains"
 }
 
 variable "cached_paths" {

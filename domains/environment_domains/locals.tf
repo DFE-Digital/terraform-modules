@@ -9,4 +9,6 @@ locals {
   cached_domain_list = length(var.cached_paths) > 0 ? var.domains : []
 
   max_frontdoor_endpoint_name_length = 46
+
+  name_suffix = replace(var.zone, ".", "-")
 }

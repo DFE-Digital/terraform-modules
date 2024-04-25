@@ -1,7 +1,7 @@
 resource "azurerm_cdn_frontdoor_rule_set" "redirects" {
   count = length(var.redirect_rules) > 0 ? 1 : 0
 
-  name                     = "${var.environment}Redirects"
+  name                     = var.add_to_front_door == null ? "${var.environment}Redirects" : "${var.environment}${local.name_suffix}Redirects"
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
 }
 

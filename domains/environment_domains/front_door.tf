@@ -1,5 +1,5 @@
 data "azurerm_cdn_frontdoor_profile" "main" {
-  name                = var.front_door_name
+  name                = var.add_to_front_door == null ? var.front_door_name : var.add_to_front_door
   resource_group_name = var.resource_group_name
 }
 
@@ -16,14 +16,14 @@ resource "azurerm_cdn_frontdoor_endpoint" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_origin_group" "main" {
-  name                     = "${var.environment}-og"
+  name                     = var.add_to_front_door == null ? "${var.environment}-og" : "${var.environment}-${local.name_suffix}-og"
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
   session_affinity_enabled = false
   load_balancing {}
 }
 
 resource "azurerm_cdn_frontdoor_origin" "main" {
-  name                           = "${var.environment}-org"
+  name                           = var.add_to_front_door == null ? "${var.environment}-org" : "${var.environment}-${local.name_suffix}-org"
   cdn_frontdoor_origin_group_id  = azurerm_cdn_frontdoor_origin_group.main.id
   certificate_name_check_enabled = true
   enabled                        = true
@@ -33,7 +33,7 @@ resource "azurerm_cdn_frontdoor_origin" "main" {
 
 resource "azurerm_cdn_frontdoor_custom_domain" "main" {
   for_each                 = toset(var.domains)
-  name                     = replace(each.key, ".", "-")
+  name                     = var.add_to_front_door == null ? replace(each.key, ".", "-") : "${each.key}-${local.name_suffix}"
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
   dns_zone_id              = data.azurerm_dns_zone.main.id
   host_name                = startswith(each.key, "apex") ? "${var.zone}" : "${each.key}.${var.zone}"
@@ -46,7 +46,7 @@ resource "azurerm_cdn_frontdoor_custom_domain" "main" {
 resource "azurerm_cdn_frontdoor_route" "main" {
   depends_on                    = [azurerm_cdn_frontdoor_origin_group.main, azurerm_cdn_frontdoor_origin.main]
   for_each                      = toset(var.domains)
-  name                          = "${var.environment}-rt"
+  name                          = var.add_to_front_door == null ? "${var.environment}-rt" : "${var.environment}-${local.name_suffix}-rt"
   cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main[each.key].id
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
@@ -64,7 +64,7 @@ resource "azurerm_cdn_frontdoor_route" "main" {
 
 resource "azurerm_cdn_frontdoor_route" "cached" {
   for_each                      = toset(local.cached_domain_list)
-  name                          = "${var.environment}-cached-rt"
+  name                          = var.add_to_front_door == null ? "${var.environment}-cached-rt" : "${var.environment}-${local.name_suffix}-cached-rt"
   cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main[each.key].id
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]

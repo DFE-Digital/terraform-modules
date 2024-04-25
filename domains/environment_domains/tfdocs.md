@@ -36,13 +36,14 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_add_to_front_door"></a> [add\_to\_front\_door](#input\_add\_to\_front\_door) | Add domains of a different zone to existing front door domains | `string` | `null` | no |
 | <a name="input_cached_paths"></a> [cached\_paths](#input\_cached\_paths) | List of path patterns such as /packs/* that front door will cache | `list(string)` | `[]` | no |
 | <a name="input_domains"></a> [domains](#input\_domains) | List of subdomains of the zone e.g. "staging". For apex domain use "apex" or "apex<something>" if apex is already in use | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `any` | n/a | yes |
 | <a name="input_exclude_cnames"></a> [exclude\_cnames](#input\_exclude\_cnames) | Don't create the CNAME for this record from var.domains. We set this when we want to configure front door for a services domain that we are migrating so we do not need to wait for the certificate to validate and front door to propagate the configuration. | `list` | `[]` | no |
-| <a name="input_front_door_name"></a> [front\_door\_name](#input\_front\_door\_name) | n/a | `any` | n/a | yes |
+| <a name="input_front_door_name"></a> [front\_door\_name](#input\_front\_door\_name) | Name of the front door where the domains will be created. Use var.add\_to\_front\_door if adding to existing domains. | `any` | `null` | no |
 | <a name="input_host_name"></a> [host\_name](#input\_host\_name) | Origin host name ie domain to where front door sends the requests. It may not be used if all requests are redirected. | `string` | `"not-in-use.education.gov.uk"` | no |
-| <a name="input_multiple_hosted_zones"></a> [multiple\_hosted\_zones](#input\_multiple\_hosted\_zones) | n/a | `bool` | `false` | no |
+| <a name="input_multiple_hosted_zones"></a> [multiple\_hosted\_zones](#input\_multiple\_hosted\_zones) | Avoid endpoint naming clash when using multiple zones (one for each front door) | `bool` | `false` | no |
 | <a name="input_null_host_header"></a> [null\_host\_header](#input\_null\_host\_header) | The origin\_host\_header for the azurerm\_cdn\_frontdoor\_origin resource will be var.host\_name (if false) or null (if true). If null then the host name from the incoming request will be used. | `bool` | `false` | no |
 | <a name="input_redirect_rules"></a> [redirect\_rules](#input\_redirect\_rules) | List of ordered redirect rules with format:<br>    [<br>      {<br>        "from-domain": "One of the domains from var.domains to redirect from",<br>        "to-domain": "Redirect destination domain",<br>        "to-path": "Optional path appended to the destination URL. If not provided, the path will be the same as in the incoming request",<br>        "to-query-string": "Optional path appended to the destination URL. If not provided, defaults to empty string"<br>      },<br>      {<br>        ...<br>      }<br>    ] | `map` | `{}` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `any` | n/a | yes |
