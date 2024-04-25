@@ -71,3 +71,10 @@ variable "redirect_rules" {
     ]
   EOF
 }
+
+variable "add_to_endpoint_host_name" {
+  default = null
+}
+variable "add_to_endpoint_id" {
+  default = null
+}

@@ -36,7 +36,7 @@ resource "azurerm_dns_cname_record" "main" {
   zone_name           = data.azurerm_dns_zone.main.name
   resource_group_name = var.resource_group_name
   ttl                 = 300
-  record              = azurerm_cdn_frontdoor_endpoint.main[each.key].host_name
+  record              = var.add_to_endpoint_host_name == null ? azurerm_cdn_frontdoor_endpoint.main[each.key].host_name : var.add_to_endpoint_host_name
 }
 
 resource "azurerm_dns_a_record" "main" {
@@ -46,5 +46,5 @@ resource "azurerm_dns_a_record" "main" {
   zone_name           = data.azurerm_dns_zone.main.name
   resource_group_name = var.resource_group_name
   ttl                 = 300
-  target_resource_id  = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+  target_resource_id  = var.add_to_endpoint_id == null ? azurerm_cdn_frontdoor_endpoint.main[each.key].id : var.add_to_endpoint_id
 }

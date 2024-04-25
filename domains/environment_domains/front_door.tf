@@ -4,7 +4,7 @@ data "azurerm_cdn_frontdoor_profile" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_endpoint" "main" {
-  for_each = toset(var.domains)
+  for_each = var.add_to_front_door == null ? toset(var.domains) : {}
 
   name                     = substr("${replace(each.value, ".", "-")}-${local.endpoint_zone_name}", 0, local.max_frontdoor_endpoint_name_length)
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
@@ -47,7 +47,7 @@ resource "azurerm_cdn_frontdoor_route" "main" {
   depends_on                    = [azurerm_cdn_frontdoor_origin_group.main, azurerm_cdn_frontdoor_origin.main]
   for_each                      = toset(var.domains)
   name                          = var.add_to_front_door == null ? "${var.environment}-rt" : "${var.environment}-${local.name_suffix}-rt"
-  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+  cdn_frontdoor_endpoint_id     = var.add_to_endpoint_id == null ? azurerm_cdn_frontdoor_endpoint.main[each.key].id : var.add_to_endpoint_id
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
   cdn_frontdoor_rule_set_ids = concat(
@@ -65,7 +65,7 @@ resource "azurerm_cdn_frontdoor_route" "main" {
 resource "azurerm_cdn_frontdoor_route" "cached" {
   for_each                      = toset(local.cached_domain_list)
   name                          = var.add_to_front_door == null ? "${var.environment}-cached-rt" : "${var.environment}-${local.name_suffix}-cached-rt"
-  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+  cdn_frontdoor_endpoint_id     = var.add_to_endpoint_id == null ? azurerm_cdn_frontdoor_endpoint.main[each.key].id : var.add_to_endpoint_id
   cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.main.id
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
   cdn_frontdoor_rule_set_ids = concat(
