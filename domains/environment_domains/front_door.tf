@@ -4,7 +4,7 @@ data "azurerm_cdn_frontdoor_profile" "main" {
 }
 
 resource "azurerm_cdn_frontdoor_endpoint" "main" {
-  for_each = var.add_to_front_door == null ? toset(var.domains) : toset({})
+  for_each = var.add_to_front_door == null ? toset(var.domains) : toset([])
 
   name                     = substr("${replace(each.value, ".", "-")}-${local.endpoint_zone_name}", 0, local.max_frontdoor_endpoint_name_length)
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
