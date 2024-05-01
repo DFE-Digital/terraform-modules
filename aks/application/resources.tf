@@ -11,7 +11,11 @@ locals {
     "prometheus.io/path"   = "/metrics"
     "prometheus.io/port"   = var.web_port
   } : {}
-  logit_annotations = var.enable_logit ? { "logit.io/send" = "true" } : {}
+
+  logit_annotations = var.enable_logit ? {
+    "logit.io/send"        = "true"
+    "fluentbit.io/exclude" = "true"
+  } : {}
 
   maintenance_service_port = 80
 }
