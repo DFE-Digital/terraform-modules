@@ -145,4 +145,11 @@ variable "enable_logit" {
   type        = bool
   default     = false
   description = "A boolean to indicate whether to enable sending container logs to logit.io"
+  nullable    = false
+}
+variable "send_traffic_to_maintenance_page" {
+  description = "During a maintenance operation, keep sending traffic to the maintenance page instead of resetting the ingress"
+  type        = bool
+  default     = false
+  nullable    = false
 }

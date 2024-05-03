@@ -12,6 +12,8 @@ locals {
     "prometheus.io/port"   = var.web_port
   } : {}
   logit_annotations = var.enable_logit ? { "logit.io/send" = "true" } : {}
+
+  maintenance_service_port = 80
 }
 
 resource "kubernetes_deployment" "main" {
@@ -205,9 +207,9 @@ resource "kubernetes_ingress_v1" "main" {
         path {
           backend {
             service {
-              name = kubernetes_service.main[0].metadata[0].name
+              name = var.send_traffic_to_maintenance_page ? "${var.service_name}-maintenance" : kubernetes_service.main[0].metadata[0].name
               port {
-                number = kubernetes_service.main[0].spec[0].port[0].port
+                number = var.send_traffic_to_maintenance_page ? local.maintenance_service_port : kubernetes_service.main[0].spec[0].port[0].port
               }
             }
           }
