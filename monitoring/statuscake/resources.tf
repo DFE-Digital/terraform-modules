@@ -24,9 +24,8 @@ resource "statuscake_uptime_check" "main" {
 resource "statuscake_ssl_check" "main" {
   for_each = toset(var.ssl_urls)
 
-  contact_groups   = var.contact_groups
-  check_interval   = 3600
-  follow_redirects = true
+  contact_groups = var.contact_groups
+  check_interval = 3600
 
   alert_config {
     alert_at = [3, 7, 30] # 1 month, 1 week then 3 days before expiration
