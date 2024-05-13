@@ -84,7 +84,7 @@ resource "azurerm_monitor_metric_alert" "memory" {
   name                = "${azurerm_redis_cache.main[0].name}-memory"
   resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_redis_cache.main[0].id]
-  description         = "Action will be triggered when memory use is greater than 60%"
+  description         = "Action will be triggered when memory use is greater than ${var.azure_memory_threshold}%"
   window_size         = var.alert_window_size
 
   criteria {

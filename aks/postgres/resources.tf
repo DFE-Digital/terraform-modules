@@ -179,7 +179,7 @@ resource "azurerm_monitor_metric_alert" "cpu" {
   name                = "${azurerm_postgresql_flexible_server.main[0].name}-cpu"
   resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
-  description         = "Action will be triggered when cpu use is greater than 60%"
+  description         = "Action will be triggered when cpu use is greater than ${var.azure_cpu_threshold}%"
   window_size         = var.alert_window_size
 
   criteria {
@@ -207,7 +207,7 @@ resource "azurerm_monitor_metric_alert" "storage" {
   name                = "${azurerm_postgresql_flexible_server.main[0].name}-storage"
   resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
-  description         = "Action will be triggered when storage use is greater than 75%"
+  description         = "Action will be triggered when storage use is greater than ${var.azure_storage_threshold}%"
   window_size         = var.alert_window_size
 
   criteria {
