@@ -79,11 +79,28 @@ resource "kubernetes_deployment" "main" {
           }
         }
 
+        automount_service_account_token = false
+
         container {
           name    = local.app_name
           image   = var.docker_image
           command = try(slice(var.command, 0, 1), null)
           args    = try(slice(var.command, 1, length(var.command)), null)
+
+          security_context {
+            allow_privilege_escalation = false
+            run_as_non_root = true
+#            read_only_root_filesystem = true
+#            run_as_user = 10001
+#            run_as_group = 20001
+            capabilities {
+              drop = ["ALL"]
+              add = ["NET_BIND_SERVICE"]
+            }
+            seccomp_profile {
+              type = "RuntimeDefault"
+            }
+          }
 
           env_from {
             config_map_ref {
