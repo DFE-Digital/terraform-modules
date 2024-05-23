@@ -153,3 +153,9 @@ variable "send_traffic_to_maintenance_page" {
   default     = false
   nullable    = false
 }
+
+variable "enable_gcp_wif" {
+  type        = string
+  default     = false
+  description = "Let the deployment use the GCP workload identity federation service account to get a token"
+}
