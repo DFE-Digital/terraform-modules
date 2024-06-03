@@ -17,6 +17,10 @@ locals {
     "fluentbit.io/exclude" = "true"
   } : {}
 
+  gcp_wif_label = var.enable_gcp_wif ? {
+    "azure.workload.identity/use" = "true"
+  } : {}
+
   maintenance_service_port = 80
 }
 
@@ -37,15 +41,13 @@ resource "kubernetes_deployment" "main" {
 
     template {
       metadata {
-        labels = {
-          app = local.app_name
-        }
-
+        labels      = merge({ app = local.app_name }, local.gcp_wif_label)
         annotations = merge(local.prometheus_scrape_annotations, local.logit_annotations)
-
       }
 
       spec {
+        service_account_name = var.enable_gcp_wif ? "gcp-wif" : null
+
         node_selector = {
           "teacherservices.cloud/node_pool" = "applications"
           "kubernetes.io/os"                = "linux"
