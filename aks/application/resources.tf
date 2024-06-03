@@ -136,9 +136,9 @@ resource "kubernetes_deployment" "main" {
                 }
               }
 
-              failure_threshold = 10
-              period_seconds    = 1
-              timeout_seconds   = 10
+              failure_threshold = 5
+              period_seconds    = 5
+              timeout_seconds   = 5
             }
           }
 
