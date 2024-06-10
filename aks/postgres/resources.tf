@@ -116,6 +116,16 @@ resource "azurerm_storage_account" "backup" {
   allow_nested_items_to_be_public  = false
   cross_tenant_replication_enabled = false
 
+  blob_properties {
+    delete_retention_policy {
+      days = 7
+    }
+
+    container_delete_retention_policy {
+      days = 7
+    }
+  }
+
   lifecycle { ignore_changes = [tags] }
 }
 
