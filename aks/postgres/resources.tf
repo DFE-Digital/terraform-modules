@@ -96,6 +96,14 @@ resource "azurerm_postgresql_flexible_server_configuration" "max_connections" {
   value     = 856 # Maximum on GP_Standard_D2ds_v4. See: https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-limits#maximum-connections
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "connection_throttling" {
+  count = var.use_azure ? 1 : 0
+  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  name      = "connection_throttle.enable"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = "on"
+}
+
 resource "azurerm_postgresql_flexible_server_database" "main" {
   count = var.use_azure ? 1 : 0
 
