@@ -46,7 +46,8 @@ resource "kubernetes_deployment" "main" {
       }
 
       spec {
-        service_account_name = var.enable_gcp_wif ? "gcp-wif" : null
+        service_account_name            = var.enable_gcp_wif ? "gcp-wif" : null
+        automount_service_account_token = false
 
         node_selector = {
           "teacherservices.cloud/node_pool" = "applications"
