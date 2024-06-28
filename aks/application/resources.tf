@@ -165,6 +165,12 @@ resource "kubernetes_deployment" "main" {
               period_seconds    = 5
             }
           }
+
+          security_context {
+            seccomp_profile {
+              type = "RuntimeDefault"
+            }
+          }
         }
       }
     }
