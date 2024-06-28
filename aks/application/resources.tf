@@ -167,6 +167,8 @@ resource "kubernetes_deployment" "main" {
           }
 
           security_context {
+            allow_privilege_escalation = false
+
             seccomp_profile {
               type = "RuntimeDefault"
             }
