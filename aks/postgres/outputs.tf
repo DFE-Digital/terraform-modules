@@ -26,14 +26,15 @@ output "name" {
 }
 
 output "url" {
-  value     = "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${local.database_name}"
+  value     = "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${local.database_name}?sslmode=${var.use_azure ? "require" : "prefer"}"
   sensitive = true
 }
 
 output "dotnet_connection_string" {
-  value     = "Server=${local.host};Database=${local.database_name};Port=${local.port};User Id=${local.database_username};Password='${local.database_password}';Ssl Mode=Require;Trust Server Certificate=true"
+  value     = "Server=${local.host};Database=${local.database_name};Port=${local.port};User Id=${local.database_username};Password='${local.database_password}';Ssl Mode=${var.use_azure ? "Require" : "Prefer"};Trust Server Certificate=true"
   sensitive = true
 }
+
 
 output "azure_backup_storage_account_name" {
   value = local.azure_enable_backup_storage ? azurerm_storage_account.backup[0].name : null
