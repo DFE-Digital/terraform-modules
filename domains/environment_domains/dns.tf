@@ -5,7 +5,7 @@ data "azurerm_dns_zone" "main" {
 
 resource "azurerm_dns_txt_record" "main" {
   for_each            = { for k in toset(var.domains) : k => k if !startswith(k, "apex") }
-  name                = join(".", ["_dnsauth", "${each.key}"])
+  name                = join(".", ["_dnsauth", each.key])
   zone_name           = data.azurerm_dns_zone.main.name
   resource_group_name = var.resource_group_name
   ttl                 = 300
