@@ -43,8 +43,9 @@ variable "exclude_cnames" {
 }
 
 variable "redirect_rules" {
+  type        = list(any)
   nullable    = false
-  default     = {}
+  default     = []
   description = <<EOF
     List of ordered redirect rules with format:
     [
