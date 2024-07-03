@@ -172,6 +172,11 @@ resource "kubernetes_deployment" "main" {
             seccomp_profile {
               type = "RuntimeDefault"
             }
+
+            capabilities {
+              drop = ["ALL"]
+              add  = ["NET_BIND_SERVICE"]
+            }
           }
         }
       }
