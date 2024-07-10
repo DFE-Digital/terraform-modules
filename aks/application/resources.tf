@@ -9,7 +9,7 @@ locals {
   prometheus_scrape_annotations = var.enable_prometheus_monitoring ? {
     "prometheus.io/scrape" = "true"
     "prometheus.io/path"   = "/metrics"
-    "prometheus.io/port"   = var.web_port
+    "prometheus.io/port"   = var.is_web ? var.web_port : var.worker_port
   } : {}
 
   logit_annotations = var.enable_logit ? {

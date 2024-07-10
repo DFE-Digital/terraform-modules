@@ -98,6 +98,13 @@ variable "web_port" {
   description = "Port of the web application"
 }
 
+variable "worker_port" {
+  type        = number
+  nullable    = false
+  default     = 9394
+  description = "Port of the worker application"
+}
+
 variable "probe_path" {
   type        = string
   default     = "/healthcheck"
