@@ -124,11 +124,17 @@ variable "azure_enable_monitoring" {
   default  = true
 }
 
+
+
 variable "alert_window_size" {
-  type        = string
-  nullable    = false
-  default     = "PT5M"
-  description = "The period of time that is used to monitor alert activity e.g PT1M, PT5M, PT15M, PT30M, PT1H, PT6H or PT12H"
+  type     = string
+  nullable = false
+  default  = "PT5M"
+  validation {
+    condition     = contains(["PT1M", "PT5M", "PT15M", "PT30M", "PT1H", "PT6H", "PT12H"], var.alert_window_size)
+    error_message = "The alert_window_size must be one of: PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H"
+  }
+  description = "The period of time that is used to monitor alert activity e.g. PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H. The interval between checks is adjusted accordingly."
 }
 
 variable "azure_maintenance_window" {

@@ -10,6 +10,16 @@ locals {
   azure_enable_monitoring     = var.use_azure && var.azure_enable_monitoring
 
   kubernetes_name = "${var.service_name}-${var.environment}-postgres${local.name_suffix}"
+
+  alert_frequency_map = {
+    PT5M  = "PT1M"
+    PT15M = "PT1M"
+    PT30M = "PT1M"
+    PT1H  = "PT1M"
+    PT6H  = "PT5M"
+    PT12H = "PT5M"
+  }
+  alert_frequency = local.alert_frequency_map[var.alert_window_size]
 }
 
 # Username & password
@@ -172,6 +182,7 @@ resource "azurerm_monitor_metric_alert" "memory" {
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
   description         = "Action will be triggered when memory use is greater than 75%"
   window_size         = var.alert_window_size
+  frequency           = local.alert_frequency
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
@@ -200,6 +211,7 @@ resource "azurerm_monitor_metric_alert" "cpu" {
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
   description         = "Action will be triggered when cpu use is greater than ${var.azure_cpu_threshold}%"
   window_size         = var.alert_window_size
+  frequency           = local.alert_frequency
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
@@ -228,6 +240,7 @@ resource "azurerm_monitor_metric_alert" "storage" {
   scopes              = [azurerm_postgresql_flexible_server.main[0].id]
   description         = "Action will be triggered when storage use is greater than ${var.azure_storage_threshold}%"
   window_size         = var.alert_window_size
+  frequency           = local.alert_frequency
 
   criteria {
     metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
