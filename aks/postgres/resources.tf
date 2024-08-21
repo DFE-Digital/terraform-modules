@@ -49,17 +49,18 @@ locals {
 resource "azurerm_postgresql_flexible_server" "main" {
   count = var.use_azure ? 1 : 0
 
-  name                   = local.azure_name
-  location               = data.azurerm_resource_group.main[0].location
-  resource_group_name    = data.azurerm_resource_group.main[0].name
-  version                = var.server_version
-  administrator_login    = local.database_username
-  administrator_password = local.database_password
-  create_mode            = "Default"
-  storage_mb             = var.azure_storage_mb
-  sku_name               = var.azure_sku_name
-  delegated_subnet_id    = data.azurerm_subnet.main[0].id
-  private_dns_zone_id    = data.azurerm_private_dns_zone.main[0].id
+  name                          = local.azure_name
+  location                      = data.azurerm_resource_group.main[0].location
+  resource_group_name           = data.azurerm_resource_group.main[0].name
+  version                       = var.server_version
+  administrator_login           = local.database_username
+  administrator_password        = local.database_password
+  create_mode                   = "Default"
+  storage_mb                    = var.azure_storage_mb
+  sku_name                      = var.azure_sku_name
+  delegated_subnet_id           = data.azurerm_subnet.main[0].id
+  private_dns_zone_id           = data.azurerm_private_dns_zone.main[0].id
+  public_network_access_enabled = false
 
   dynamic "high_availability" {
     for_each = var.azure_enable_high_availability ? [1] : []
@@ -85,8 +86,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
       # Allow Azure to manage primary and standby server on fail-over. Ignore changes.
       high_availability[0].standby_availability_zone,
       # Required for import because of https://github.com/hashicorp/terraform-provider-azurerm/issues/15586
-      create_mode,
-      public_network_access_enabled
+      create_mode
     ]
   }
 }
