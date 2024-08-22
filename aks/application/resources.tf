@@ -39,6 +39,10 @@ resource "kubernetes_deployment" "main" {
       }
     }
 
+    strategy {
+      type = var.is_web ? "RollingUpdate" : "Recreate"
+    }
+
     template {
       metadata {
         labels      = merge({ app = local.app_name }, local.gcp_wif_label)
