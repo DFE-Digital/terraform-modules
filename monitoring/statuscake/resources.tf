@@ -21,6 +21,18 @@ resource "statuscake_uptime_check" "main" {
   }
 }
 
+resource "statuscake_heartbeat_check" "main" {
+  for_each = toset(var.heartbeat_names)
+
+  name           = each.value
+  period         = var.heartbeat_period
+  contact_groups = var.contact_groups
+}
+
+output "heartbeat_check_urls" {
+  value = { for name in var.heartbeat_names : name => statuscake_heartbeat_check.main[name].check_url }
+}
+
 resource "statuscake_ssl_check" "main" {
   for_each = toset(var.ssl_urls)
 

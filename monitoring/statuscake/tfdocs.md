@@ -16,6 +16,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [statuscake_heartbeat_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/heartbeat_check) | resource |
 | [statuscake_ssl_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/ssl_check) | resource |
 | [statuscake_uptime_check.main](https://registry.terraform.io/providers/StatusCakeDev/statuscake/latest/docs/resources/uptime_check) | resource |
 
@@ -25,9 +26,13 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_confirmation"></a> [confirmation](#input\_confirmation) | Retry the check when an error is detected to avoid false positives and micro downtimes | `number` | `2` | no |
 | <a name="input_contact_groups"></a> [contact\_groups](#input\_contact\_groups) | Contact groups for the alerts | `list(string)` | `[]` | no |
+| <a name="input_heartbeat_names"></a> [heartbeat\_names](#input\_heartbeat\_names) | List of names for the heartbeat checks | `list(string)` | `[]` | no |
+| <a name="input_heartbeat_period"></a> [heartbeat\_period](#input\_heartbeat\_period) | The period in seconds within which a heartbeat must be received | `number` | `600` | no |
 | <a name="input_ssl_urls"></a> [ssl\_urls](#input\_ssl\_urls) | Set of URLs to perform SSL checks on | `list(string)` | `[]` | no |
 | <a name="input_uptime_urls"></a> [uptime\_urls](#input\_uptime\_urls) | Set of URLs to perform uptime checks on | `list(string)` | `[]` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_heartbeat_check_urls"></a> [heartbeat\_check\_urls](#output\_heartbeat\_check\_urls) | n/a |
