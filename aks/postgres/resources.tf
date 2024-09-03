@@ -42,10 +42,10 @@ resource "random_password" "password" {
 locals {
   database_username = var.admin_username != null ? var.admin_username : "u${random_string.username[0].result}"
 
+  original_database_password = var.admin_password != null ? var.admin_password : random_password.password[0].result
   # Remove sequences of multiple dollar signs. Fix setting up the database password
   # on the container as we use a shell environment variable for that
-  sanitised_password_string = replace(random_password.password[0].result, "/\\$+/", "$")
-  database_password         = var.admin_password != null ? var.admin_password : local.sanitised_password_string
+  database_password = replace(local.original_database_password, "/\\$+/", "$")
 }
 
 # Azure
