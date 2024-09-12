@@ -29,6 +29,7 @@ No modules.
 | <a name="input_heartbeat_names"></a> [heartbeat\_names](#input\_heartbeat\_names) | List of names for the heartbeat checks | `list(string)` | `[]` | no |
 | <a name="input_heartbeat_period"></a> [heartbeat\_period](#input\_heartbeat\_period) | The period in seconds within which a heartbeat must be received | `number` | `600` | no |
 | <a name="input_ssl_urls"></a> [ssl\_urls](#input\_ssl\_urls) | Set of URLs to perform SSL checks on | `list(string)` | `[]` | no |
+| <a name="input_trigger_rate"></a> [trigger\_rate](#input\_trigger\_rate) | The number of minutes to wait before sending an alert | `number` | `0` | no |
 | <a name="input_uptime_urls"></a> [uptime\_urls](#input\_uptime\_urls) | Set of URLs to perform uptime checks on | `list(string)` | `[]` | no |
 
 ## Outputs

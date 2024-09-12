@@ -39,3 +39,10 @@ variable "heartbeat_period" {
   type        = number
   default     = 600
 }
+
+variable "trigger_rate" {
+  type        = number
+  description = "The number of minutes to wait before sending an alert"
+  default     = 0
+
+}
