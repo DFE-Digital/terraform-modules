@@ -6,7 +6,7 @@ resource "statuscake_uptime_check" "main" {
   confirmation   = var.confirmation
   trigger_rate   = var.trigger_rate
   check_interval = 30
-  regions        = ["london", "dublin"]
+  regions        = ["london", "london", "london"]
 
   http_check {
     follow_redirects = true
