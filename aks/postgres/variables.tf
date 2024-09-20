@@ -53,13 +53,13 @@ variable "cluster_configuration_map" {
 variable "server_docker_image" {
   type        = string
   nullable    = false
-  default     = "postgres:14-alpine"
-  description = "Database image to use with kubernetes deployment, eg. postgis/postgis:14-3.4"
+  default     = "postgres:16-alpine"
+  description = "Database image to use with kubernetes deployment, eg. postgis/postgis:16-3.4"
 }
 
 variable "server_version" {
   type        = string
-  default     = "14"
+  default     = "16"
   description = "Version of PostgreSQL server"
 }
 
