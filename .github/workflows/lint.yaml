@@ -7,10 +7,10 @@ jobs:
     name: Terraform Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: hashicorp/setup-terraform@v2
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.4.5"
+          terraform_version: "1.9.5"
       - name: Check formatting
         run: terraform fmt -recursive -check
 
@@ -18,8 +18,8 @@ jobs:
     name: Terraform Docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: terraform-docs/gh-actions@main
+      - uses: actions/checkout@v4
+      - uses: terraform-docs/gh-actions@v1.2.2
         with:
           find-dir: .
           fail-on-diff: true
@@ -34,6 +34,6 @@ jobs:
     name: YAML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check formatting
         uses: karancode/yamllint-github-action@v2.1.1
