@@ -179,7 +179,6 @@ resource "kubernetes_deployment" "main" {
 
             capabilities {
               drop = ["ALL"]
-              add  = ["NET_BIND_SERVICE"]
             }
           }
         }
