@@ -1,22 +1,22 @@
 variable "azure_resource_prefix" {
   type        = string
-  description = "Prefix of Azure resources for the service"
+  description = "Prefix of Azure resources for the service. Required"
 }
 variable "cluster" {
   type        = string
-  description = "AKS cluster name e.g. test, production..."
+  description = "AKS cluster name e.g. test, production... Required"
 }
 variable "namespace" {
   type        = string
-  description = "AKS Namespace where the service is deployed to"
+  description = "AKS Namespace where the service is deployed to. Required"
 }
 variable "service_short" {
   type        = string
-  description = "Short name for the service e.g. att, aytq..."
+  description = "Short name for the service e.g. att, aytq... Required"
 }
 variable "environment" {
   type        = string
-  description = "Service environment name e.g. production, test, pr-1234..."
+  description = "Service environment name e.g. production, test, pr-1234... Required"
 }
 
 variable "gcp_dataset" {
@@ -26,29 +26,27 @@ variable "gcp_dataset" {
 }
 variable "gcp_keyring" {
   type        = string
-  description = "Name of an existing keyring. Optional: if not provided, create a new keyring"
-  default     = null
+  description = "Name of an existing keyring. Required"
 }
 variable "gcp_key" {
   type        = string
-  description = "Name of an existing customer-managed encryption key (CMEK). Optional: if not provided, create a new key"
-  default     = null
+  description = "Name of an existing customer-managed encryption key (CMEK). Required"
 }
 variable "gcp_project_id" {
   type        = string
-  description = "ID of the Google cloud project e.g. 'rugged-abacus-218110', 'apply-for-qts-in-england'..."
+  description = "ID of the Google cloud project e.g. 'rugged-abacus-218110', 'apply-for-qts-in-england'... Required"
 }
 variable "gcp_project_number" {
   type        = number
-  description = "Google cloud project number"
+  description = "Google cloud project number. Required"
 }
 variable "gcp_taxonomy_id" {
   type        = number
-  description = "Policy tags taxonomy ID"
+  description = "Policy tags taxonomy ID. Required"
 }
 variable "gcp_policy_tag_id" {
   type        = number
-  description = "Policy tag ID"
+  description = "Policy tag ID. Required"
 }
 variable "gcp_table_deletion_protection" {
   type        = bool
@@ -62,8 +60,6 @@ locals {
   gcp_table_name       = "events"
   gcp_workload_id_pool = "azure-cip-identity-pool"
 
-  gcp_key_ring               = "bigquery-${var.service_short}-${var.environment}"
-  gcp_key                    = "bigquery-${var.service_short}-${var.environment}"
   gcp_dataset_name           = var.gcp_dataset == null ? replace("${var.service_short}_events_${var.environment}_spike", "-", "_") : var.gcp_dataset
   gcp_principal              = "principal://iam.googleapis.com/projects/${var.gcp_project_number}/locations/global/workloadIdentityPools/${local.gcp_workload_id_pool}"
   gcp_principal_with_subject = "${local.gcp_principal}/subject/${data.azurerm_user_assigned_identity.gcp_wif.principal_id}"

@@ -12,28 +12,37 @@ resource "google_service_account_iam_binding" "appender" {
   ]
 }
 
-# Create key ring if it doesn't exist
-resource "google_kms_key_ring" "bigquery" {
-  count = var.gcp_keyring == null ? 1 : 0
+# # Create key ring if it doesn't exist
+# resource "google_kms_key_ring" "bigquery" {
+#   count = var.gcp_keyring == null ? 1 : 0
 
-  name     = local.gcp_key_ring
-  location = local.gcp_region
-}
+#   name     = local.gcp_key_ring
+#   location = local.gcp_region
+# }
 
-# Create key if it doesn't exist
-resource "google_kms_crypto_key" "bigquery" {
-  count = var.gcp_key == null ? 1 : 0
+# # Create key if it doesn't exist
+# resource "google_kms_crypto_key" "bigquery" {
+#   count = var.gcp_key == null ? 1 : 0
 
-  name     = local.gcp_key
-  key_ring = google_kms_key_ring.bigquery[0].id
-}
+#   name     = local.gcp_key
+#   key_ring = google_kms_key_ring.bigquery[0].id
+# }
 
 # Add permission if key didn't exist
 data "google_bigquery_default_service_account" "main" {}
-resource "google_kms_crypto_key_iam_member" "bigquery" {
-  count = var.gcp_key == null ? 1 : 0
 
-  crypto_key_id = google_kms_crypto_key.bigquery[0].id
+data "google_kms_key_ring" "main" {
+  name     = var.gcp_keyring
+  location = local.gcp_region
+}
+
+data "google_kms_crypto_key" "main" {
+  name     = var.gcp_key
+  key_ring = data.google_kms_key_ring.main.id
+}
+
+resource "google_kms_crypto_key_iam_member" "bigquery" {
+  crypto_key_id = data.google_kms_crypto_key.main.id
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
   member        = "serviceAccount:${data.google_bigquery_default_service_account.main.email}"
 }
@@ -45,7 +54,7 @@ resource "google_bigquery_dataset" "main" {
   dataset_id = local.gcp_dataset_name
   location   = local.gcp_region
   default_encryption_configuration {
-    kms_key_name = google_kms_crypto_key_iam_member.bigquery[0].crypto_key_id
+    kms_key_name = data.google_kms_crypto_key.main.id
   }
 }
 
@@ -71,7 +80,7 @@ resource "google_bigquery_table" "events" {
   require_partition_filter = false
 
   encryption_configuration {
-    kms_key_name = google_kms_crypto_key_iam_member.bigquery[0].crypto_key_id
+    kms_key_name = data.google_kms_crypto_key.main.id
   }
 
   time_partitioning {
@@ -81,7 +90,7 @@ resource "google_bigquery_table" "events" {
 
   # https://github.com/DFE-Digital/dfe-analytics/blob/main/docs/create-events-table.sql
   schema = templatefile(
-    "${path.module}/file/events.json.tmpl",
+    "${path.module}/files/events.json.tmpl",
     { policy_tag_name = local.gcp_policy_tag_name }
   )
 }
