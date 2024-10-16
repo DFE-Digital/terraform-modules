@@ -34,13 +34,19 @@ resource "google_bigquery_dataset" "main" {
 }
 
 # Add service account permission to dataset, wether we create it or it already exists
-resource "google_bigquery_dataset_iam_binding" "appender" {
+# resource "google_bigquery_dataset_iam_binding" "appender" {
+#   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
+#   role       = "projects/${var.gcp_project_id}/roles/bigquery_appender_custom"
+
+#   members = [
+#     "serviceAccount:${google_service_account.appender.email}",
+#   ]
+# }
+
+resource "google_bigquery_dataset_iam_member" "appender" {
   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
   role       = "projects/${var.gcp_project_id}/roles/bigquery_appender_custom"
-
-  members = [
-    "serviceAccount:${google_service_account.appender.email}",
-  ]
+  member     = "serviceAccount:${google_service_account.appender.email}"
 }
 
 # Create table if dataset doesn't exist
