@@ -12,25 +12,6 @@ resource "google_service_account_iam_binding" "appender" {
   ]
 }
 
-# # Create key ring if it doesn't exist
-# resource "google_kms_key_ring" "bigquery" {
-#   count = var.gcp_keyring == null ? 1 : 0
-
-#   name     = local.gcp_key_ring
-#   location = local.gcp_region
-# }
-
-# # Create key if it doesn't exist
-# resource "google_kms_crypto_key" "bigquery" {
-#   count = var.gcp_key == null ? 1 : 0
-
-#   name     = local.gcp_key
-#   key_ring = google_kms_key_ring.bigquery[0].id
-# }
-
-# Add permission if key didn't exist
-data "google_bigquery_default_service_account" "main" {}
-
 data "google_kms_key_ring" "main" {
   name     = var.gcp_keyring
   location = local.gcp_region
@@ -39,12 +20,6 @@ data "google_kms_key_ring" "main" {
 data "google_kms_crypto_key" "main" {
   name     = var.gcp_key
   key_ring = data.google_kms_key_ring.main.id
-}
-
-resource "google_kms_crypto_key_iam_member" "bigquery" {
-  crypto_key_id = data.google_kms_crypto_key.main.id
-  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
-  member        = "serviceAccount:${data.google_bigquery_default_service_account.main.email}"
 }
 
 # Create dataset if it doesn't exist
