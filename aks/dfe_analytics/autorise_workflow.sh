@@ -1,13 +1,27 @@
-PROJECT_ID=apply-for-qts-in-england
+#!/usr/bin/env bash
+# Set up Direct Workload Identity Federation
+# See https://github.com/google-github-actions/auth?tab=readme-ov-file#preferred-direct-workload-identity-federation
+
+PROJECT_ID=$1
+REPO=$2
+
+if [[ -z "$PROJECT_ID" || -z "$REPO" ]]; then
+  cat <<EOF
+Set up Direct Workload Identity Federation between Github action workflows from a repository and GCP for setting up Bigquery. The user must have the 'Owner' role on the project.
+Usage: ./authorise_workflow.sh PROJECT_ID REPO - Example: ./authorise_workflow.sh apply-for-qts-in-england apply-for-qualified-teacher-status
+EOF
+  exit 1
+fi
+
+set -eu
+
 GITHUB_ORG=DFE-Digital
-REPO=apply-for-qualified-teacher-status
 ORG_REPO=${GITHUB_ORG}/${REPO}
+# The pool name must be up to 32 characters
+WORKLOAD_ID="${REPO:0:32}"
 
 echo Login to Google cloud. The user must have the Owner role on the project.
 gcloud auth application-default login
-
-# The pool name must be up to 32 characters
-WORKLOAD_ID="${REPO:0:32}"
 
 echo "Create ${WORKLOAD_ID} workload identity pool"
 gcloud iam workload-identity-pools create "${WORKLOAD_ID}" \
@@ -41,7 +55,7 @@ WORKLOAD_IDENTITY_POOL_PROVIDER_ID=$(gcloud iam workload-identity-pools provider
 
 echo Bind role roles/iam.serviceAccountCreator
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --role="roles/iam.serviceAccountCreator" \
+    --role="roles/iam.serviceAccountAdmin" \
     --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${ORG_REPO}"
 
 echo Bind role roles/bigquery.admin
@@ -64,8 +78,8 @@ echo Now add this step to the workflow to authenticate to Google:
 cat <<EOF
 deploy_job:
     permissions:
-      contents: read
       id-token: write
+      ...
 ...
     steps:
     - uses: google-github-actions/auth@v2

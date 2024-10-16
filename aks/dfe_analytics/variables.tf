@@ -52,6 +52,7 @@ variable "gcp_table_deletion_protection" {
   type        = bool
   description = "Prevents deletion of the event table. Default: true"
   default     = true
+  nullable    = true
 }
 
 locals {
