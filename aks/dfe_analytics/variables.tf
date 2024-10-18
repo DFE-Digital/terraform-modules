@@ -26,15 +26,18 @@ variable "gcp_dataset" {
 }
 variable "gcp_keyring" {
   type        = string
-  description = "Name of an existing keyring. Required"
+  description = "Name of an existing keyring. Required when creating the dataset"
+  default     = null
 }
 variable "gcp_key" {
   type        = string
-  description = "Name of an existing customer-managed encryption key (CMEK). Required"
+  description = "Name of an existing customer-managed encryption key (CMEK). Required when creating the dataset"
+  default     = null
 }
 variable "gcp_project_id" {
   type        = string
-  description = "ID of the Google cloud project e.g. 'rugged-abacus-218110', 'apply-for-qts-in-england'... Required"
+  description = "ID of the Google cloud project e.g. 'rugged-abacus-218110', 'apply-for-qts-in-england'... Required when creating the dataset"
+  default     = null
 }
 variable "gcp_project_number" {
   type        = number
@@ -42,17 +45,19 @@ variable "gcp_project_number" {
 }
 variable "gcp_taxonomy_id" {
   type        = number
-  description = "Policy tags taxonomy ID. Required"
+  description = "Policy tags taxonomy ID. Required when creating the dataset"
+  default     = null
 }
 variable "gcp_policy_tag_id" {
   type        = number
-  description = "Policy tag ID. Required"
+  description = "Policy tag ID. Required when creating the dataset"
+  default     = null
 }
 variable "gcp_table_deletion_protection" {
   type        = bool
   description = "Prevents deletion of the event table. Default: true"
   default     = true
-  nullable    = true
+  nullable    = false
 }
 
 locals {
