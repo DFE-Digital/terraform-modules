@@ -49,7 +49,11 @@ end
 ```
 
 #### Enable in .NET
-TBD
+```cs
+builder.Services.AddDfeAnalytics()
+    .UseFederatedAksBigQueryClientProvider();
+```
+Ensure the `ProjectNumber`, `WorkloadIdentityPoolName`, `WorkloadIdentityPoolProviderName` and `ServiceAccountEmail` configuration keys are populated within the `DfeAnalytics` configuration section.
 
 #### Variables
 Each variable is available as a separate output. For convenience, the `variables_map` output provides them all:
