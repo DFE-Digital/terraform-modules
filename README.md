@@ -7,6 +7,7 @@ Shared modules used by various DfE services.
 - [aks/application](aks/application)
 - [aks/application_configuration](aks/application_configuration)
 - [aks/cluster_data](aks/cluster_data)
+- [aks/dfe_analytics](aks/dfe_analytics)
 - [aks/postgres](aks/postgres)
 - [aks/redis](aks/redis)
 - [aks/secrets](aks/secrets)
@@ -14,6 +15,7 @@ Shared modules used by various DfE services.
 - [dns/zones](dns/zones)
 - [domains/environment_domains](domains/environment_domains)
 - [domains/infrastructure](domains/infrastructure)
+- [monitoring/statuscake](monitoring/statuscake)
 
 ## Example deployment
 
