@@ -1,10 +1,14 @@
 # DfE Analytics
 Create resources in Google cloud Bigquery and provides the required variables to applications so they can send events.
 
-## Examples
+## Usage
 ### Reuse existing dataset and events table
 
 ```hcl
+provider "google" {
+  project = "apply-for-qts-in-england"
+}
+
 module "dfe_analytics" {
   source = "./vendor/modules/dfe-terraform-modules//aks/dfe_analytics"
 
@@ -14,14 +18,17 @@ module "dfe_analytics" {
   service_short         = var.service_short
   environment           = var.environment
   gcp_dataset           = "events_${var.config}"
-  gcp_project_id        = "apply-for-qts-in-england"
-  gcp_project_number    = 385922361840
 }
 ```
 
 ### Create new dataset and events table
 Use for a new environment. To get the values for `gcp_taxonomy_id` and `gcp_policy_tag_id` see [Taxonomy and policy tag](#taxonomy-and-policy-tag).
+
 ```hcl
+provider "google" {
+  project = "apply-for-qts-in-england"
+}
+
 module "dfe_analytics" {
   source = "./vendor/modules/dfe-terraform-modules//aks/dfe_analytics"
 
@@ -32,15 +39,13 @@ module "dfe_analytics" {
   environment           = var.environment
   gcp_keyring           = "afqts-key-ring"
   gcp_key               = "afqts-key"
-  gcp_project_id        = "apply-for-qts-in-england"
-  gcp_project_number    = 385922361840
   gcp_taxonomy_id       = 5456044749211275650
   gcp_policy_tag_id     = 2399328962407973209
 }
 ```
 
-### Configure application
-#### Enable in Ruby
+## Configure application
+### Enable in Ruby
 ```ruby
 DfE::Analytics.configure do |config|
 ...
@@ -48,19 +53,20 @@ DfE::Analytics.configure do |config|
 end
 ```
 
-#### Enable in .NET
+### Enable in .NET
 ```cs
 builder.Services.AddDfeAnalytics()
     .UseFederatedAksBigQueryClientProvider();
 ```
 Ensure the `ProjectNumber`, `WorkloadIdentityPoolName`, `WorkloadIdentityPoolProviderName` and `ServiceAccountEmail` configuration keys are populated within the `DfeAnalytics` configuration section.
 
-#### Variables
-Each variable is available as a separate output. For convenience, the `variables_map` output provides them all:
+### Variables
+The application requires these environment variables:
 - BIGQUERY_PROJECT_ID
 - BIGQUERY_TABLE_NAME
 - BIGQUERY_DATASET
 - GOOGLE_CLOUD_CREDENTIALS
+Each variable is available as a separate [output](tfdocs#outputs). For convenience, the `variables_map` output provides them all:
 
 ```hcl
 module "application_configuration" {
@@ -75,7 +81,7 @@ module "application_configuration" {
 }
 ```
 
-#### Enable on each app that requires it
+### Enable on each app that requires it
 ```hcl
 module "worker_application" {
   source = "./vendor/modules/dfe-terraform-modules//aks/application"
