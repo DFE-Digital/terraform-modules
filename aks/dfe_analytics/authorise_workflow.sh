@@ -20,6 +20,14 @@ ORG_REPO=${GITHUB_ORG}/${REPO}
 # The pool name must be up to 32 characters
 WORKLOAD_ID="${REPO:0:32}"
 
+bind_role() {
+  ROLE=$1
+  echo "Bind role roles/${ROLE}"
+  gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --role="roles/${ROLE}" \
+    --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${ORG_REPO}"
+}
+
 echo Login to Google cloud. The user must have the Owner role on the project.
 gcloud auth application-default login
 
@@ -53,37 +61,22 @@ WORKLOAD_IDENTITY_POOL_PROVIDER_ID=$(gcloud iam workload-identity-pools provider
   --workload-identity-pool="${WORKLOAD_ID}" \
   --format="value(name)")
 
-echo Bind role roles/iam.serviceAccountCreator
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --role="roles/iam.serviceAccountAdmin" \
-    --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${ORG_REPO}"
-
-echo Bind role roles/bigquery.admin
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --role="roles/bigquery.admin" \
-    --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${ORG_REPO}"
-
-echo Bind role roles/dataplex.taxonomyViewer
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --role="roles/dataplex.taxonomyViewer" \
-    --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${ORG_REPO}"
-
-echo Bind role roles/cloudkms.viewer
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --role="roles/cloudkms.viewer" \
-    --member="principalSet://iam.googleapis.com/${WORKLOAD_IDENTITY_POOL_ID}/attribute.repository/${ORG_REPO}"
+bind_role iam.serviceAccountAdmin
+bind_role bigquery.dataOwner
+bind_role datacatalog.viewer
+bind_role cloudkms.viewer
 
 echo
 echo Now add this step to the workflow to authenticate to Google:
 cat <<EOF
 deploy_job:
-    permissions:
-      id-token: write
-      ...
+  permissions:
+    id-token: write
+    ...
 ...
-    steps:
-    - uses: google-github-actions/auth@v2
-        with:
-            project_id: ${PROJECT_ID}
-            workload_identity_provider: ${WORKLOAD_IDENTITY_POOL_PROVIDER_ID}
+  steps:
+  - uses: google-github-actions/auth@v2
+    with:
+      project_id: ${PROJECT_ID}
+      workload_identity_provider: ${WORKLOAD_IDENTITY_POOL_PROVIDER_ID}
 EOF

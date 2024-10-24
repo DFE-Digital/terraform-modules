@@ -165,4 +165,5 @@ variable "enable_gcp_wif" {
   type        = string
   default     = false
   description = "Let the deployment use the GCP workload identity federation service account to get a token"
+  nullable    = false
 }

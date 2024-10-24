@@ -34,14 +34,6 @@ variable "gcp_key" {
   description = "Name of an existing customer-managed encryption key (CMEK). Required when creating the dataset"
   default     = null
 }
-variable "gcp_project_id" {
-  type        = string
-  description = "ID of the Google cloud project e.g. 'rugged-abacus-218110', 'apply-for-qts-in-england'... Required"
-}
-variable "gcp_project_number" {
-  type        = number
-  description = "Google cloud project number. Required"
-}
 variable "gcp_taxonomy_id" {
   type        = number
   description = "Policy tags taxonomy ID. Required when creating the dataset"
@@ -65,14 +57,14 @@ locals {
   gcp_table_name       = "events"
   gcp_workload_id_pool = "azure-cip-identity-pool"
 
-  gcp_dataset_name           = var.gcp_dataset == null ? replace("${var.service_short}_events_${var.environment}_spike", "-", "_") : var.gcp_dataset
-  gcp_principal              = "principal://iam.googleapis.com/projects/${var.gcp_project_number}/locations/global/workloadIdentityPools/${local.gcp_workload_id_pool}"
+  gcp_dataset_name           = var.gcp_dataset == null ? replace("${var.service_short}_events_${var.environment}", "-", "_") : var.gcp_dataset
+  gcp_principal              = "principal://iam.googleapis.com/projects/${data.google_project.main.number}/locations/global/workloadIdentityPools/${local.gcp_workload_id_pool}"
   gcp_principal_with_subject = "${local.gcp_principal}/subject/${data.azurerm_user_assigned_identity.gcp_wif.principal_id}"
 
   gcp_credentials_map = {
     universe_domain    = "googleapis.com"
     type               = "external_account"
-    audience           = "//iam.googleapis.com/projects/${var.gcp_project_number}/locations/global/workloadIdentityPools/azure-cip-identity-pool/providers/azure-cip-oidc-provider"
+    audience           = "//iam.googleapis.com/projects/${data.google_project.main.number}/locations/global/workloadIdentityPools/azure-cip-identity-pool/providers/azure-cip-oidc-provider"
     subject_token_type = "urn:ietf:params:oauth:token-type:jwt"
     token_url          = "https://sts.googleapis.com/v1/token"
     credential_source = {
@@ -84,5 +76,5 @@ locals {
     }
   }
   gcp_credentials     = jsonencode(local.gcp_credentials_map)
-  gcp_policy_tag_name = var.gcp_dataset == null ? "projects/${var.gcp_project_id}/locations/${local.gcp_region}/taxonomies/${var.gcp_taxonomy_id}/policyTags/${var.gcp_policy_tag_id}" : ""
+  gcp_policy_tag_name = var.gcp_dataset == null ? "projects/${data.google_project.main.project_id}/locations/${local.gcp_region}/taxonomies/${var.gcp_taxonomy_id}/policyTags/${var.gcp_policy_tag_id}" : ""
 }

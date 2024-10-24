@@ -40,7 +40,7 @@ resource "google_bigquery_dataset" "main" {
 # Add service account permission to dataset, wether we create it or it already exists
 resource "google_bigquery_dataset_iam_member" "appender" {
   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
-  role       = "projects/${var.gcp_project_id}/roles/bigquery_appender_custom"
+  role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_custom"
   member     = "serviceAccount:${google_service_account.appender.email}"
 }
 
