@@ -32,6 +32,7 @@
 | [azurerm_user_assigned_identity.gcp_wif](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/user_assigned_identity) | data source |
 | [google_kms_crypto_key.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/kms_crypto_key) | data source |
 | [google_kms_key_ring.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/kms_key_ring) | data source |
+| [google_project.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/project) | data source |
 
 ## Inputs
 
@@ -44,8 +45,6 @@
 | <a name="input_gcp_key"></a> [gcp\_key](#input\_gcp\_key) | Name of an existing customer-managed encryption key (CMEK). Required when creating the dataset | `string` | `null` | no |
 | <a name="input_gcp_keyring"></a> [gcp\_keyring](#input\_gcp\_keyring) | Name of an existing keyring. Required when creating the dataset | `string` | `null` | no |
 | <a name="input_gcp_policy_tag_id"></a> [gcp\_policy\_tag\_id](#input\_gcp\_policy\_tag\_id) | Policy tag ID. Required when creating the dataset | `number` | `null` | no |
-| <a name="input_gcp_project_id"></a> [gcp\_project\_id](#input\_gcp\_project\_id) | ID of the Google cloud project e.g. 'rugged-abacus-218110', 'apply-for-qts-in-england'... Required | `string` | n/a | yes |
-| <a name="input_gcp_project_number"></a> [gcp\_project\_number](#input\_gcp\_project\_number) | Google cloud project number. Required | `number` | n/a | yes |
 | <a name="input_gcp_table_deletion_protection"></a> [gcp\_table\_deletion\_protection](#input\_gcp\_table\_deletion\_protection) | Prevents deletion of the event table. Default: true | `bool` | `true` | no |
 | <a name="input_gcp_taxonomy_id"></a> [gcp\_taxonomy\_id](#input\_gcp\_taxonomy\_id) | Policy tags taxonomy ID. Required when creating the dataset | `number` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | AKS Namespace where the service is deployed to. Required | `string` | n/a | yes |
