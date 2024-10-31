@@ -52,7 +52,8 @@ resource "azurerm_cdn_frontdoor_route" "main" {
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
   cdn_frontdoor_rule_set_ids = concat(
     var.rule_set_ids,
-    azurerm_cdn_frontdoor_rule_set.redirects[*].id
+    azurerm_cdn_frontdoor_rule_set.redirects[*].id,
+    [azurerm_cdn_frontdoor_rule_set.security_redirects.id]
   )
   link_to_default_domain          = false
   cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.main[each.key].id]
@@ -70,7 +71,8 @@ resource "azurerm_cdn_frontdoor_route" "cached" {
   cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.main.id]
   cdn_frontdoor_rule_set_ids = concat(
     var.rule_set_ids,
-    azurerm_cdn_frontdoor_rule_set.redirects[*].id
+    azurerm_cdn_frontdoor_rule_set.redirects[*].id,
+    [azurerm_cdn_frontdoor_rule_set.security_redirects.id]
   )
   link_to_default_domain          = false
   cdn_frontdoor_custom_domain_ids = [azurerm_cdn_frontdoor_custom_domain.main[each.key].id]
