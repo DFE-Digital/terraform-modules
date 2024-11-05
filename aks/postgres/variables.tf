@@ -151,3 +151,9 @@ variable "azure_enable_backup_storage" {
   nullable = false
   default  = true
 }
+
+variable "create_database" {
+  default     = true
+  nullable    = false
+  description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
+}
