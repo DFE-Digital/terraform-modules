@@ -120,7 +120,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "connection_throttli
 }
 
 resource "azurerm_postgresql_flexible_server_database" "main" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.create_database ? 1 : 0
 
   name      = local.database_name
   server_id = azurerm_postgresql_flexible_server.main[0].id
@@ -316,9 +316,12 @@ resource "kubernetes_deployment" "main" {
             name  = "POSTGRES_PASSWORD"
             value = local.database_password
           }
-          env {
-            name  = "POSTGRES_DB"
-            value = local.database_name
+          dynamic "env" {
+            for_each = var.create_database ? [1] : []
+            content {
+              name  = "POSTGRES_DB"
+              value = local.database_name
+            }
           }
         }
       }
