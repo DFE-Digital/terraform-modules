@@ -26,7 +26,6 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_azure_credentials"></a> [azure\_credentials](#input\_azure\_credentials) | n/a | `any` | `null` | no |
 | <a name="input_hosted_zone"></a> [hosted\_zone](#input\_hosted\_zone) | n/a | `map(any)` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `any` | `null` | no |
 
