@@ -82,11 +82,11 @@ resource "azurerm_dns_caa_record" "caa_record_list" {
 }
 
 # TXT record
-
 locals {
+  # Create a list of maps. Each map contains the zone, the TXT record name and value, and other required fields
   txt_records = flatten([
     for zone_name, zone_cfg in var.hosted_zone : [
-      for record_name, record_cfg in zone_cfg["txt_records"] : {
+      for record_name, record_cfg in try(zone_cfg["txt_records"], []) : {
         record_name         = record_name
         zone_name           = zone_name
         resource_group_name = zone_cfg["resource_group_name"]
@@ -94,8 +94,21 @@ locals {
       }
     ]
   ])
+
+  # Create a list of maps. Each map contains the zone, the TXT record name and list of values, and other required fields
+  txt_record_lists = flatten([
+    for zone_name, zone_cfg in var.hosted_zone : [
+      for record_name, record_cfg in try(zone_cfg["txt_record_lists"], []) : {
+        record_name         = record_name
+        zone_name           = zone_name
+        resource_group_name = zone_cfg["resource_group_name"]
+        txt_record_list     = record_cfg
+      }
+    ]
+  ])
 }
 
+# Create TXT records, each one with a record name a single value
 resource "azurerm_dns_txt_record" "txt_records" {
   for_each = {
     for zone in local.txt_records : "${zone.zone_name}.${zone.record_name}" => zone
@@ -108,6 +121,30 @@ resource "azurerm_dns_txt_record" "txt_records" {
 
   record {
     value = each.value.value
+  }
+
+  depends_on = [
+    azurerm_dns_zone.dns_zone
+  ]
+
+}
+
+# Create TXT records, each one with a record name and a list of values
+resource "azurerm_dns_txt_record" "txt_record_list" {
+  for_each = {
+    for zone in local.txt_record_lists : "${zone.zone_name}.${zone.record_name}" => zone
+  }
+
+  name                = each.value.record_name
+  zone_name           = each.value.zone_name
+  resource_group_name = each.value.resource_group_name
+  ttl                 = 300
+
+  dynamic "record" {
+    for_each = toset(each.value.txt_record_list)
+    content {
+      value = record.value
+    }
   }
 
   depends_on = [
