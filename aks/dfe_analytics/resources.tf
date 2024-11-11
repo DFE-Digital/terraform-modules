@@ -1,5 +1,5 @@
 resource "google_service_account" "appender" {
-  account_id   = "appender-${var.service_short}-${var.environment}"
+  account_id   = "appender-wif-${var.service_short}-${var.environment}"
   display_name = "Service Account appender to ${var.service_short} in ${var.environment} environment"
   description  = "Configured with workflow identity federation from Azure"
 }
