@@ -21,6 +21,8 @@ module "dfe_analytics" {
 }
 ```
 
+Note: this will create a new appender service account. The old service account AND the permission on the dataset must both be deleted manually afterwards.
+
 ### Create new dataset and events table
 Use for a new environment. To get the values for `gcp_taxonomy_id` and `gcp_policy_tag_id` see [Taxonomy and policy tag](#taxonomy-and-policy-tag).
 
