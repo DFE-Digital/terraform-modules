@@ -2,6 +2,9 @@
 
 Terraform code for extracting secrets from Azure Key Vaults.
 
+## Terraform documentation
+For the list of requirement, inputs, outputs, resources... check the [terraform module documentation](tfdocs).
+
 ## Usage
 
 ```terraform
