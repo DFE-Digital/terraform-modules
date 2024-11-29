@@ -16,7 +16,7 @@ resource "azurerm_cdn_frontdoor_rule" "security_txt" {
   conditions {
     url_path_condition {
       operator     = "BeginsWith"
-      match_values = ["/.well-known/security.txt", "/security.txt"]
+      match_values = [".well-known/security.txt", "security.txt"]
       transforms   = ["Lowercase"]
     }
   }
@@ -43,7 +43,7 @@ resource "azurerm_cdn_frontdoor_rule" "thanks_txt" {
   conditions {
     url_path_condition {
       operator     = "BeginsWith"
-      match_values = ["/.well-known/thanks.txt", "/thanks.txt"]
+      match_values = [".well-known/thanks.txt", "thanks.txt"]
       transforms   = ["Lowercase"]
     }
   }
