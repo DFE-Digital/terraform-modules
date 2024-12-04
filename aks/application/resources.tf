@@ -180,6 +180,9 @@ resource "kubernetes_deployment" "main" {
             capabilities {
               drop = ["ALL"]
             }
+
+            run_as_user  = var.run_as_user
+            run_as_group = var.run_as_group
           }
         }
       }

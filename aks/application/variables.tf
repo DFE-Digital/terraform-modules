@@ -167,3 +167,17 @@ variable "enable_gcp_wif" {
   description = "Let the deployment use the GCP workload identity federation service account to get a token"
   nullable    = false
 }
+
+variable "run_as_user" {
+  type        = string
+  default     = null
+  description = "UID of user running the process in the container"
+  nullable    = true
+}
+
+variable "run_as_group" {
+  type        = string
+  default     = null
+  description = "GID of user running the process in the container"
+  nullable    = true
+}
