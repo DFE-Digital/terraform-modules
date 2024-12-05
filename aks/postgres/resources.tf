@@ -294,7 +294,7 @@ resource "kubernetes_deployment" "main" {
         }
         container {
           name  = local.kubernetes_name
-          image = var.server_docker_image
+          image = local.server_docker_image
           resources {
             requests = {
               cpu    = var.cluster_configuration_map.cpu_min

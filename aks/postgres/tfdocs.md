@@ -67,7 +67,7 @@ No modules.
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the instance | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
-| <a name="input_server_docker_image"></a> [server\_docker\_image](#input\_server\_docker\_image) | Database image to use with kubernetes deployment, eg. postgis/postgis:16-3.4 | `string` | `"postgres:16-alpine"` | no |
+| <a name="input_server_docker_image"></a> [server\_docker\_image](#input\_server\_docker\_image) | Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server\_version>-alpine | `string` | `null` | no |
 | <a name="input_server_version"></a> [server\_version](#input\_server\_version) | Version of PostgreSQL server | `string` | `"16"` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
