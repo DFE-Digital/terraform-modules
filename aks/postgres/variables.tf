@@ -52,9 +52,8 @@ variable "cluster_configuration_map" {
 
 variable "server_docker_image" {
   type        = string
-  nullable    = false
-  default     = "postgres:16-alpine"
-  description = "Database image to use with kubernetes deployment, eg. postgis/postgis:16-3.4"
+  default     = null
+  description = "Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server_version>-alpine"
 }
 
 variable "server_version" {
@@ -156,4 +155,8 @@ variable "create_database" {
   default     = true
   nullable    = false
   description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
+}
+
+locals {
+  server_docker_image = var.server_docker_image == null ? "postgres:${var.server_version}-alpine" : var.server_docker_image
 }
