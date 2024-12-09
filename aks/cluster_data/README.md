@@ -2,6 +2,9 @@
 
 Terraform module for managing information about the cluster.
 
+## Terraform documentation
+For the list of requirement, inputs, outputs, resources... check the [terraform module documentation](tfdocs).
+
 ## Usage
 
 ```terraform
