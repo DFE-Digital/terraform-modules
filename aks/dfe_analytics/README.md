@@ -2,7 +2,7 @@
 Create resources in Google cloud Bigquery and provides the required variables to applications so they can send events.
 
 ## Terraform documentation
-For the list of requirement, inputs, outputs, resources... check the [terraform module documentation](tfdocs).
+For the list of requirement, inputs, outputs, resources... check the [terraform module documentation](tfdocs.md).
 
 ## Usage
 ### Reuse existing dataset and events table
