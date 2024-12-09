@@ -26,8 +26,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_hosted_zone"></a> [hosted\_zone](#input\_hosted\_zone) | n/a | `map(any)` | `{}` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | n/a | `any` | `null` | no |
+| <a name="input_hosted_zone"></a> [hosted\_zone](#input\_hosted\_zone) | List of zones and their properties. See [README](readme.md) for details. | `map(any)` | `{}` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | Azure resource tags. Deprecated: set tags at resource group level | `any` | `null` | no |
 
 ## Outputs
 
