@@ -10,7 +10,7 @@ locals {
     var.config_variables,
   )
 
-  config_map_hash = sha1(join("-", [for k, v in local.config_map_data : "${k}:${v}"]))
+  config_map_hash = sha1(join("-", [for k, v in local.config_map_data : "${k}:${v}" if v != null]))
 }
 
 resource "kubernetes_config_map" "main" {
