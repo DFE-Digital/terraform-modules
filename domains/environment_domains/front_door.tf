@@ -33,7 +33,7 @@ resource "azurerm_cdn_frontdoor_origin" "main" {
 
 resource "azurerm_cdn_frontdoor_custom_domain" "main" {
   for_each                 = toset(var.domains)
-  name                     = replace(each.key, ".", "-")
+  name                     = length(each.key) > 1 ? replace(each.key, ".", "-") : "${replace(each.key, ".", "-")}-domain"
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
   dns_zone_id              = data.azurerm_dns_zone.main.id
   host_name                = startswith(each.key, "apex") ? var.zone : "${each.key}.${var.zone}"
