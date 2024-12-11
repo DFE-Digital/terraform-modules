@@ -3,7 +3,8 @@ variable "front_door_name" {}
 variable "resource_group_name" {}
 variable "domains" {
   description = <<EOF
-    List of subdomains of the zone e.g. "staging". For apex domain use "apex" or "apex<something>" if apex is already in use
+    List of subdomains of the zone e.g. "staging". For apex domain use "apex" or "apex<something>" if apex is already in use.
+    The length of "<domain>.<zone>" cannot exceed 64 characters.
   EOF
 }
 variable "environment" {}
