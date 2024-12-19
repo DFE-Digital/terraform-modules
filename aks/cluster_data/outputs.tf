@@ -31,7 +31,15 @@ output "ingress_domain" {
 }
 
 output "kubelogin_args" {
-  value = local.spn_authentication ? local.kubelogin_args_map["spn"] : local.kubelogin_args_map["azurecli"]
+  description = "Kubelogin arguments to use configure the kubernetes provider. Allows workload identity, service principal secret and azure cli"
+  # If running in github actions, use either spn secret authentication or workload identity. If not, use azure cli.
+  value = (local.running_in_github_actions ? (
+    local.using_spn_secret ?
+    local.kubelogin_args_map["spn"] :
+    local.kubelogin_args_map["workloadidentity"]
+    ) :
+    local.kubelogin_args_map["azurecli"]
+  )
 }
 output "azure_RBAC_enabled" {
   value = local.azure_RBAC_enabled
