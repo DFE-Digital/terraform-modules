@@ -13,11 +13,8 @@ module "cluster_data" {
   name   = var.cluster
 }
 
-provider "kubernetes" {
-  host                   = module.cluster_data.kubernetes_host
-  client_certificate     = module.cluster_data.kubernetes_client_certificate
-  client_key             = module.cluster_data.kubernetes_client_key
-  cluster_ca_certificate = module.cluster_data.kubernetes_cluster_ca_certificate
+locals {
+  web_app_aks_domain = "teaching-vacancies-${var.environment}.${module.cluster_data.ingress_domain}"
 }
 ```
 
@@ -52,7 +49,7 @@ The client certificate to use to connect to the Kubernetes cluster. `null` when 
 
 The client key to use to connect to the Kubernetes cluster. `null` when the cluster uses Azure RBAC.
 
-### `kubenetes_cluster_ca_certificate`
+### `kubernetes_cluster_ca_certificate`
 
 The client cluster CA certificate to use to connect to the Kubernetes cluster.
 
@@ -64,23 +61,25 @@ The client cluster CA certificate to use to connect to the Kubernetes cluster.
 
 Arguments for [kubelogin](https://azure.github.io/kubelogin/) to authenticate to a cluster using Azure RBAC. Used in the kubernetes provider configuration:
 
-```hcl
+```terraform
 provider "kubernetes" {
   host                   = module.cluster_data.kubernetes_host
-  client_certificate     = module.cluster_data.kubernetes_client_certificate
-  client_key             = module.cluster_data.kubernetes_client_key
   cluster_ca_certificate = module.cluster_data.kubernetes_cluster_ca_certificate
 
-  dynamic "exec" {
-    for_each = module.cluster_data.azure_RBAC_enabled ? [1] : []
-    content {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "kubelogin"
-      args        = module.cluster_data.kubelogin_args
-    }
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "kubelogin"
+    args        = module.cluster_data.kubelogin_args
   }
 }
 ```
+
+Supports 3 kubelogin authentication modes:
+- `azurecli` when running locally
+- `spn` when running in Github actions using an Azure service principal secret (deprecated)
+- `workloadidentity` when running in Github actions using OIDC (preferred)
+
+The mode is automatically selected based on standard environment variables.
 
 ### `ingress_domain`
 
@@ -89,4 +88,4 @@ Generic domain for all web applications on the cluster.
 For example the test cluster ingress domain is "test.teacherservices.cloud". The web application apply-review-1234 full domain is:
 
 `<app name>.<ingress domain>` or
-"apply-review-1234.test.teacherservices.cloud"
+`apply-review-1234.test.teacherservices.cloud`

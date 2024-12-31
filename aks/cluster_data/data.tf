@@ -17,3 +17,8 @@ terraform {
 data "environment_variables" "github_actions" {
   filter = "GITHUB_ACTIONS"
 }
+
+data "environment_variables" "spn_secret" {
+  filter    = "AAD_SERVICE_PRINCIPAL_CLIENT_SECRET"
+  sensitive = true
+}

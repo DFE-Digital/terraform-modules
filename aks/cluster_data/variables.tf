@@ -90,10 +90,20 @@ locals {
       "azurecli",
       "--server-id",
       "6dae42f8-4368-4678-94ff-3960e28e3630"
+    ],
+    workloadidentity = [
+      "get-token",
+      "--login",
+      "workloadidentity",
+      "--tenant-id",
+      data.azurerm_client_config.current.tenant_id,
+      "--server-id",
+      "6dae42f8-4368-4678-94ff-3960e28e3630"
     ]
   }
 
   azure_RBAC_enabled = length(data.azurerm_kubernetes_cluster.main.azure_active_directory_role_based_access_control) > 0
 
-  spn_authentication = contains(keys(data.environment_variables.github_actions.items), "GITHUB_ACTIONS")
+  running_in_github_actions = contains(keys(data.environment_variables.github_actions.items), "GITHUB_ACTIONS")
+  using_spn_secret          = contains(keys(data.environment_variables.spn_secret.items), "AAD_SERVICE_PRINCIPAL_CLIENT_SECRET")
 }
