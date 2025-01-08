@@ -72,38 +72,19 @@ locals {
   configuration_map                 = local.configuration_maps[var.name]
   dns_zone_prefix_with_optional_dot = local.configuration_map.dns_zone_prefix == null ? "" : "${local.configuration_map.dns_zone_prefix}."
 
-  kubelogin_args_map = {
-    spn = [
-      "get-token",
-      "--login",
-      "spn",
-      "--environment",
-      "AzurePublicCloud",
-      "--tenant-id",
-      data.azurerm_client_config.current.tenant_id,
-      "--server-id",
-      "6dae42f8-4368-4678-94ff-3960e28e3630" # See https://azure.github.io/kubelogin/concepts/aks.html
-    ],
-    azurecli = [
-      "get-token",
-      "--login",
-      "azurecli",
-      "--server-id",
-      "6dae42f8-4368-4678-94ff-3960e28e3630"
-    ],
-    workloadidentity = [
-      "get-token",
-      "--login",
-      "workloadidentity",
-      "--tenant-id",
-      data.azurerm_client_config.current.tenant_id,
-      "--server-id",
-      "6dae42f8-4368-4678-94ff-3960e28e3630"
-    ]
-  }
+  kubelogin_github_actions_args = [
+    "get-token",
+    "--server-id",
+    "6dae42f8-4368-4678-94ff-3960e28e3630" # See https://azure.github.io/kubelogin/concepts/aks.html
+  ]
+  kubelogin_azurecli_args = [
+    "get-token",
+    "--login",
+    "azurecli",
+    "--server-id",
+    "6dae42f8-4368-4678-94ff-3960e28e3630"
+  ]
+  running_in_github_actions = contains(keys(data.environment_variables.github_actions.items), "GITHUB_ACTIONS")
 
   azure_RBAC_enabled = length(data.azurerm_kubernetes_cluster.main.azure_active_directory_role_based_access_control) > 0
-
-  running_in_github_actions = contains(keys(data.environment_variables.github_actions.items), "GITHUB_ACTIONS")
-  using_spn_secret          = contains(keys(data.environment_variables.spn_secret.items), "AAD_SERVICE_PRINCIPAL_CLIENT_SECRET")
 }

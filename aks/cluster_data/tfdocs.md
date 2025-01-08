@@ -22,7 +22,6 @@ No modules.
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_kubernetes_cluster.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
 | [environment_variables.github_actions](https://registry.terraform.io/providers/EppO/environment/1.3.5/docs/data-sources/variables) | data source |
-| [environment_variables.spn_secret](https://registry.terraform.io/providers/EppO/environment/1.3.5/docs/data-sources/variables) | data source |
 
 ## Inputs
 
