@@ -290,7 +290,8 @@ resource "kubernetes_deployment" "main" {
       }
       spec {
         node_selector = {
-          "kubernetes.io/os" : "linux"
+          "teacherservices.cloud/node_pool" = "applications"
+          "kubernetes.io/os"                = "linux"
         }
         container {
           name  = local.kubernetes_name
