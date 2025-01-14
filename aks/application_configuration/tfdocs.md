@@ -41,5 +41,8 @@ No requirements.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_kubernetes_config_map_name"></a> [kubernetes\_config\_map\_name](#output\_kubernetes\_config\_map\_name) | n/a |
-| <a name="output_kubernetes_secret_name"></a> [kubernetes\_secret\_name](#output\_kubernetes\_secret\_name) | n/a |
+| <a name="output_kubernetes_config_map_name"></a> [kubernetes\_config\_map\_name](#output\_kubernetes\_config\_map\_name) | Name of the kubernetes configmap containing the non-secret environment variables |
+| <a name="output_kubernetes_secret_name"></a> [kubernetes\_secret\_name](#output\_kubernetes\_secret\_name) | Name of the kubernetes secret containing the secret environment variables |
+| <a name="output_map"></a> [map](#output\_map) | Map of all environment variables, including secret and non-secret. |
+| <a name="output_secrets_map"></a> [secrets\_map](#output\_secrets\_map) | Map of all secret environment variables |
+| <a name="output_variables_map"></a> [variables\_map](#output\_variables\_map) | Map of all non-secret environment variables |
