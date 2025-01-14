@@ -20,6 +20,7 @@ output "kubernetes_client_key" {
   value = (local.azure_RBAC_enabled ? null :
     base64decode(data.azurerm_kubernetes_cluster.main.kube_config.0.client_key)
   )
+  sensitive = true
 }
 
 output "kubernetes_cluster_ca_certificate" {
