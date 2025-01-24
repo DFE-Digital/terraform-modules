@@ -25,6 +25,7 @@ module "postgres" {
   use_azure = var.deploy_azure_backing_services
 
   azure_extensions = ["UNACCENT"]
+  azure_storage_tier = "P4"  # Optional: Override default Premium storage tier (P4-P80)
 }
 ```
 

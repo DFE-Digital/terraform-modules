@@ -61,6 +61,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
   administrator_password        = local.database_password
   create_mode                   = "Default"
   storage_mb                    = var.azure_storage_mb
+  storage_tier                  = var.azure_storage_tier
   sku_name                      = var.azure_sku_name
   delegated_subnet_id           = data.azurerm_subnet.main[0].id
   private_dns_zone_id           = data.azurerm_private_dns_zone.main[0].id
