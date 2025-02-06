@@ -62,3 +62,9 @@ variable "redirect_rules" {
     ]
   EOF
 }
+
+variable "rate_limit" {
+  type        = number
+  default     = null
+  description = "Number of requests per 5 minutes"
+}
