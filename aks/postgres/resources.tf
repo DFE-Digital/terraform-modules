@@ -120,6 +120,30 @@ resource "azurerm_postgresql_flexible_server_configuration" "connection_throttli
   value     = "on"
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
+  count = var.use_azure && var.use_airbyte ? 1 : 0
+  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  name      = "wal_level"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = "logical"
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "max_wal_senders" {
+  count = var.use_azure && var.use_airbyte ? 1 : 0
+  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  name      = "max_wal_senders"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = 5
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "max_replication_slots" {
+  count = var.use_azure && var.use_airbyte ? 1 : 0
+  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  name      = "max_replication_slots"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = 5
+}
+
 resource "azurerm_postgresql_flexible_server_database" "main" {
   count = var.use_azure && var.create_database ? 1 : 0
 

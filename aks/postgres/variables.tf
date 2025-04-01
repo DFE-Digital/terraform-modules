@@ -80,6 +80,12 @@ variable "use_azure" {
   description = "Whether to deploy using Azure Redis Cache service"
 }
 
+variable "use_airbyte" {
+  type        = bool
+  default     = false
+  description = "Whether to add configuration changes required by Airbyte"
+}
+
 variable "azure_storage_mb" {
   type    = number
   default = 32768
