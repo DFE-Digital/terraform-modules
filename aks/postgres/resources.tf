@@ -59,7 +59,7 @@ resource "azurerm_postgresql_flexible_server" "main" {
   version                       = var.server_version
   administrator_login           = local.database_username
   administrator_password        = local.database_password
-  create_mode                   = "Default"
+  create_mode                   = "Update"
   storage_mb                    = var.azure_storage_mb
   storage_tier                  = var.azure_storage_tier
   sku_name                      = var.azure_sku_name
