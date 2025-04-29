@@ -173,6 +173,13 @@ variable "server_docker_repo" {
   default  = "ghcr.io/dfe-digital/teacher-services-cloud"
 }
 
+variable "use_airbyte" {
+  type        = bool
+  default     = false
+  description = "Whether to add configuration changes required by Airbyte"
+}
+
 locals {
   server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
+  command             = var.use_airbyte ? ["postgres", "-c", "wal_level=logical", "-c", "max_wal_senders=2", "-c", "max_replication_slots=1", "-c", "max_slot_wal_keep_size=2048"] : null
 }
