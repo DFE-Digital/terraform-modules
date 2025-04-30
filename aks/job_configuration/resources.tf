@@ -14,7 +14,7 @@ resource "kubernetes_job" "migrations" {
   spec {
     template {
       metadata {
-        labels = { app = "${var.service_name}-${var.environment}-${var.job_name}" }
+        labels      = { app = "${var.service_name}-${var.environment}-${var.job_name}" }
         annotations = local.logit_annotations
       }
 
