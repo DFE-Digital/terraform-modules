@@ -18,6 +18,7 @@ module "job_configuration" {
   commands               = var.commands
   arguments              = var.arguments
   job_name               = var.job_name
+  enable_logit           = var.enable_logit
 
     config_map_ref = module.application_configuration.kubernetes_config_map_name
     secret_ref     = module.application_configuration.kubernetes_secret_name

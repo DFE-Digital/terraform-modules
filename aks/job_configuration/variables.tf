@@ -45,3 +45,10 @@ variable "job_name" {
   default     = "migration"
 }
 
+variable "enable_logit" {
+  description = "boolean for enabling Logit"
+  type        = string
+  default     = "false"
+}
+
+

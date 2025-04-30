@@ -1,3 +1,10 @@
+locals {
+  logit_annotations = var.enable_logit ? {
+    "logit.io/send"        = "true"
+    "fluentbit.io/exclude" = "true"
+  } : {}
+}
+
 resource "kubernetes_job" "migrations" {
   metadata {
     name      = "${var.service_name}-${var.environment}-${var.job_name}"
@@ -8,11 +15,10 @@ resource "kubernetes_job" "migrations" {
     template {
       metadata {
         labels = { app = "${var.service_name}-${var.environment}-${var.job_name}" }
-        annotations = {
-          "logit.io/send"        = "true"
-          "fluentbit.io/exclude" = "true"
-        }
+        annotations = local.logit_annotations
       }
+
+
 
       spec {
         container {
