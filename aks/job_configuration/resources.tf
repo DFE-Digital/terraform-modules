@@ -5,7 +5,7 @@ locals {
   } : {}
 }
 
-resource "kubernetes_job" "migrations" {
+resource "kubernetes_job" "main" {
   metadata {
     name      = "${var.service_name}-${var.environment}-${var.job_name}"
     namespace = var.namespace
@@ -41,11 +41,11 @@ resource "kubernetes_job" "migrations" {
           resources {
             requests = {
               cpu    = var.cpu
-              memory = "1Gi"
+              memory = var.max_memory
             }
             limits = {
               cpu    = 1
-              memory = "1Gi"
+              memory = var.max_memory
             }
           }
 
