@@ -64,7 +64,8 @@ variable "redirect_rules" {
 }
 
 variable "rate_limit" {
-  type        = number
-  default     = null
-  description = "Number of requests per 5 minutes"
+  type        = list(any)
+  nullable    = false
+  default     = []
+  description = "list of rate limit rules to apply"
 }
