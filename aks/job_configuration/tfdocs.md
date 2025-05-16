@@ -16,7 +16,7 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [kubernetes_job.migrations](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
+| [kubernetes_job.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 
 ## Inputs
 
@@ -30,6 +30,7 @@ No modules.
 | <a name="input_enable_logit"></a> [enable\_logit](#input\_enable\_logit) | boolean for enabling Logit | `string` | `"false"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment where this app is deployed. Usually test or production | `any` | n/a | yes |
 | <a name="input_job_name"></a> [job\_name](#input\_job\_name) | name handle for k8s job | `string` | `"migration"` | no |
+| <a name="input_max_memory"></a> [max\_memory](#input\_max\_memory) | Maximum memory of the instance | `string` | `"1Gi"` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | AKS namespace where this app is deployed | `any` | n/a | yes |
 | <a name="input_secret_ref"></a> [secret\_ref](#input\_secret\_ref) | formerly: module.application\_configuration.kubernetes\_secret\_name | `string` | n/a | yes |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service. Usually the same as the repo name | `any` | n/a | yes |

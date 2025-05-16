@@ -51,4 +51,9 @@ variable "enable_logit" {
   default     = "false"
 }
 
-
+variable "max_memory" {
+  type        = string
+  nullable    = false
+  default     = "1Gi"
+  description = "Maximum memory of the instance"
+}
