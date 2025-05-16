@@ -27,6 +27,9 @@ No modules.
 | [azurerm_postgresql_flexible_server_configuration.azure_extensions](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.connection_throttling](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.max_connections](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
+| [azurerm_postgresql_flexible_server_configuration.max_replication_slots](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
+| [azurerm_postgresql_flexible_server_configuration.max_wal_senders](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
+| [azurerm_postgresql_flexible_server_configuration.wal_level](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_database.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_database) | resource |
 | [azurerm_storage_account.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_container.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
@@ -54,7 +57,7 @@ No modules.
 | <a name="input_azure_enable_high_availability"></a> [azure\_enable\_high\_availability](#input\_azure\_enable\_high\_availability) | n/a | `bool` | `false` | no |
 | <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | n/a | `bool` | `true` | no |
 | <a name="input_azure_extensions"></a> [azure\_extensions](#input\_azure\_extensions) | n/a | `list(string)` | `[]` | no |
-| <a name="input_azure_maintenance_window"></a> [azure\_maintenance\_window](#input\_azure\_maintenance\_window) | n/a | <pre>object({<br/>    day_of_week  = optional(number)<br/>    start_hour   = optional(number)<br/>    start_minute = optional(number)<br/>  })</pre> | `null` | no |
+| <a name="input_azure_maintenance_window"></a> [azure\_maintenance\_window](#input\_azure\_maintenance\_window) | n/a | <pre>object({<br>    day_of_week  = optional(number)<br>    start_hour   = optional(number)<br>    start_minute = optional(number)<br>  })</pre> | `null` | no |
 | <a name="input_azure_memory_threshold"></a> [azure\_memory\_threshold](#input\_azure\_memory\_threshold) | n/a | `number` | `80` | no |
 | <a name="input_azure_name_override"></a> [azure\_name\_override](#input\_azure\_name\_override) | Replace the generated name with hardcoded name | `string` | `null` | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | n/a | yes |
@@ -62,7 +65,7 @@ No modules.
 | <a name="input_azure_storage_mb"></a> [azure\_storage\_mb](#input\_azure\_storage\_mb) | n/a | `number` | `32768` | no |
 | <a name="input_azure_storage_threshold"></a> [azure\_storage\_threshold](#input\_azure\_storage\_threshold) | n/a | `number` | `80` | no |
 | <a name="input_azure_storage_tier"></a> [azure\_storage\_tier](#input\_azure\_storage\_tier) | Tier of storage used by the PostgreSQL Flexible Server. Possible values are P4, P6, P10, P15, P20, P30, P40, P50, P60, P70, P80. Defaults to Premium if not specified. The storage tier available depends on the azure\_storage\_mb value, see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server#storage_tier-defaults-based-on-storage_mb for details. | `string` | `null` | no |
-| <a name="input_cluster_configuration_map"></a> [cluster\_configuration\_map](#input\_cluster\_configuration\_map) | Configuration map for the cluster | <pre>object({<br/>    resource_group_name = string,<br/>    resource_prefix     = string,<br/>    dns_zone_prefix     = optional(string),<br/>    cpu_min             = number<br/>  })</pre> | n/a | yes |
+| <a name="input_cluster_configuration_map"></a> [cluster\_configuration\_map](#input\_cluster\_configuration\_map) | Configuration map for the cluster | <pre>object({<br>    resource_group_name = string,<br>    resource_prefix     = string,<br>    dns_zone_prefix     = optional(string),<br>    cpu_min             = number<br>  })</pre> | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
 | <a name="input_create_database"></a> [create\_database](#input\_create\_database) | Create default database. If the app creates the database instead of this module, set to false. Default: true | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
@@ -72,6 +75,7 @@ No modules.
 | <a name="input_server_version"></a> [server\_version](#input\_server\_version) | Version of PostgreSQL server | `string` | `"16"` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
+| <a name="input_use_airbyte"></a> [use\_airbyte](#input\_use\_airbyte) | Whether to add configuration changes required by Airbyte | `bool` | `false` | no |
 | <a name="input_use_azure"></a> [use\_azure](#input\_use\_azure) | Whether to deploy using Azure Redis Cache service | `bool` | n/a | yes |
 
 ## Outputs
