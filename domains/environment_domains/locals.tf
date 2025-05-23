@@ -5,7 +5,10 @@ locals {
   # If false, removes anything after the first full stop/period e.g. 'domain.education.gov.uk' becomes just 'domain'.
   short_zone_name    = substr(replace(var.zone, "/^[^.]+\\./", ""), 0, 3)
   endpoint_zone_name = var.multiple_hosted_zones ? replace(var.zone, "/\\..+$/", "-${local.short_zone_name}") : replace(var.zone, "/\\..+$/", "")
-  short_policy_name  = substr(local.endpoint_zone_name, 0, 3)
+
+  # firewall policy names must be unique within the resource group, and consist of letters and numbers only
+  short_policy_name_prefix = substr(replace(local.endpoint_zone_name, "-", ""), 0, 10)
+  short_policy_name        = "${local.short_policy_name_prefix}${local.short_zone_name}"
 
   cached_domain_list = length(var.cached_paths) > 0 ? var.domains : []
 
