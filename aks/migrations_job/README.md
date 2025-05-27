@@ -8,8 +8,8 @@ For the list of requirement, inputs, outputs, resources... check the [terraform 
 ## Usage
 
 ```terraform
-module "job_configuration" {
-  source = "./vendor/modules/aks//aks/job_configuration"
+module "migrations_job" {
+  source = "./vendor/modules/aks//aks/migrations_job"
 
   namespace              = var.namespace
   environment            = var.environment

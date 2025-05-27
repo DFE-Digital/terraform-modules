@@ -8,7 +8,7 @@ Shared modules used by various DfE services.
 - [aks/application_configuration](aks/application_configuration)
 - [aks/cluster_data](aks/cluster_data)
 - [aks/dfe_analytics](aks/dfe_analytics)
-- [aks/job_configuration](aks/job_configuration)
+- [aks/migrations_job](aks/migrations_job)
 - [aks/postgres](aks/postgres)
 - [aks/redis](aks/redis)
 - [aks/secrets](aks/secrets)
