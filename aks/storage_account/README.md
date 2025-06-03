@@ -109,6 +109,25 @@ module "temp_storage" {
 }
 ```
 
+### Enabling Retention Policies
+
+Retention policies are disabled by default for immediate deletion. For production environments where you want to retain deleted items, you can enable them:
+
+```terraform
+module "production_storage" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = var.environment
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  # Enable retention policies for production safety
+  blob_delete_retention_days      = 7
+  container_delete_retention_days = 7
+}
+```
+
 ## Security features
 
 This module implements the following security features by default:
@@ -120,8 +139,8 @@ This module implements the following security features by default:
 - Nested items are not allowed to be public
 - Infrastructure encryption is enabled by default
 - All containers are created with private access (no anonymous access)
-- Blob delete retention policy is enabled (7 days by default)
-- Container delete retention policy is enabled (7 days by default)
+- Blob delete retention policy is disabled by default (can be enabled by setting a number of days)
+- Container delete retention policy is disabled by default (can be enabled by setting a number of days)
 - Last access time tracking for blobs is enabled by default
 - Microsoft-managed encryption scope can be created (enabled by default)
 

@@ -60,21 +60,21 @@ variable "last_access_time_enabled" {
 
 variable "blob_delete_retention_days" {
   type        = number
-  description = "Number of days to retain deleted blobs"
-  default     = 7
+  description = "Number of days to retain deleted blobs. Set to null to disable retention policy."
+  default     = null
   validation {
-    condition     = var.blob_delete_retention_days >= 1 && var.blob_delete_retention_days <= 365
-    error_message = "The blob_delete_retention_days must be between 1 and 365"
+    condition     = var.blob_delete_retention_days == null || (var.blob_delete_retention_days >= 1 && var.blob_delete_retention_days <= 365)
+    error_message = "The blob_delete_retention_days must be between 1 and 365, or null to disable retention policy"
   }
 }
 
 variable "container_delete_retention_days" {
   type        = number
-  description = "Number of days to retain deleted containers"
-  default     = 7
+  description = "Number of days to retain deleted containers. Set to null to disable retention policy."
+  default     = null
   validation {
-    condition     = var.container_delete_retention_days >= 1 && var.container_delete_retention_days <= 365
-    error_message = "The container_delete_retention_days must be between 1 and 365"
+    condition     = var.container_delete_retention_days == null || (var.container_delete_retention_days >= 1 && var.container_delete_retention_days <= 365)
+    error_message = "The container_delete_retention_days must be between 1 and 365, or null to disable retention policy"
   }
 }
 

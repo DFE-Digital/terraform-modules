@@ -24,12 +24,18 @@ resource "azurerm_storage_account" "main" {
   resource_group_name               = data.azurerm_resource_group.main.name
 
   blob_properties {
-    delete_retention_policy {
-      days = var.blob_delete_retention_days
+    dynamic "delete_retention_policy" {
+      for_each = var.blob_delete_retention_days != null ? [1] : []
+      content {
+        days = var.blob_delete_retention_days
+      }
     }
 
-    container_delete_retention_policy {
-      days = var.container_delete_retention_days
+    dynamic "container_delete_retention_policy" {
+      for_each = var.container_delete_retention_days != null ? [1] : []
+      content {
+        days = var.container_delete_retention_days
+      }
     }
 
     last_access_time_enabled = var.last_access_time_enabled
