@@ -28,9 +28,10 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | n/a | yes |
 | <a name="input_blob_delete_after_days"></a> [blob\_delete\_after\_days](#input\_blob\_delete\_after\_days) | Number of days after which blobs will be deleted. Set to 0 to disable automatic deletion. | `number` | `7` | no |
-| <a name="input_blob_delete_retention_days"></a> [blob\_delete\_retention\_days](#input\_blob\_delete\_retention\_days) | Number of days to retain deleted blobs | `number` | `7` | no |
+| <a name="input_blob_delete_retention_days"></a> [blob\_delete\_retention\_days](#input\_blob\_delete\_retention\_days) | Number of days to retain deleted blobs. Set to null to disable retention policy. | `number` | `null` | no |
+| <a name="input_blob_versioning_enabled"></a> [blob\_versioning\_enabled](#input\_blob\_versioning\_enabled) | Enable blob versioning | `bool` | `false` | no |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
-| <a name="input_container_delete_retention_days"></a> [container\_delete\_retention\_days](#input\_container\_delete\_retention\_days) | Number of days to retain deleted containers | `number` | `7` | no |
+| <a name="input_container_delete_retention_days"></a> [container\_delete\_retention\_days](#input\_container\_delete\_retention\_days) | Number of days to retain deleted containers. Set to null to disable retention policy. | `number` | `null` | no |
 | <a name="input_containers"></a> [containers](#input\_containers) | List of containers to create on the storage account (all containers will be private) | `list(object({ name = string }))` | `[]` | no |
 | <a name="input_create_encryption_scope"></a> [create\_encryption\_scope](#input\_create\_encryption\_scope) | Whether to create a Microsoft-managed encryption scope | `bool` | `true` | no |
 | <a name="input_encryption_scope_name"></a> [encryption\_scope\_name](#input\_encryption\_scope\_name) | Name of the encryption scope to create | `string` | `"microsoftmanaged"` | no |

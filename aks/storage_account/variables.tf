@@ -58,6 +58,12 @@ variable "last_access_time_enabled" {
   default     = true
 }
 
+variable "blob_versioning_enabled" {
+  type        = bool
+  description = "Enable blob versioning"
+  default     = false
+}
+
 variable "blob_delete_retention_days" {
   type        = number
   description = "Number of days to retain deleted blobs. Set to null to disable retention policy."

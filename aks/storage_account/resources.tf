@@ -24,6 +24,8 @@ resource "azurerm_storage_account" "main" {
   resource_group_name               = data.azurerm_resource_group.main.name
 
   blob_properties {
+    versioning_enabled = var.blob_versioning_enabled
+
     dynamic "delete_retention_policy" {
       for_each = var.blob_delete_retention_days != null ? [1] : []
       content {
