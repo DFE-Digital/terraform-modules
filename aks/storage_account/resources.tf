@@ -1,7 +1,6 @@
 locals {
-  storage_account_name = var.storage_account_name_override != null ? var.storage_account_name_override : lower(
-    replace("${var.azure_resource_prefix}${var.service_short}${var.config_short}${var.environment}sa", "/[^a-z0-9]/", "")
-  )
+  storage_account_env = var.config_short != "rv" ? var.config_short : (var.environment == "review" ? "rv" : "rv${replace(var.environment, "/^.*-/", "")}")
+  storage_account_name = "${var.azure_resource_prefix}${var.service_short}${local.storage_account_env}sa"
 }
 
 data "azurerm_resource_group" "main" {
