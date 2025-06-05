@@ -16,11 +16,10 @@ module "storage" {
 
   name = "files"
 
-  environment           = var.environment
+  environment           = var.environment  # e.g., "review-123" for PR 123
   azure_resource_prefix = var.azure_resource_prefix
   service_short         = "msvc"
   config_short          = "dv"
-  pr_number            = var.pr_number  # Required for review environments
 
   # Create containers for the application (all containers are private)
   containers = [
@@ -42,24 +41,21 @@ module "storage" {
 
 ### Storage Account Naming
 
-The module automatically generates storage account names based on the environment:
+The module generates storage account names using the pattern: `{prefix}{service}{config}{environment}sa`
 
-**For review environments (`environment = "review"`):**
+Special characters (hyphens, underscores, etc.) are automatically stripped to comply with Azure Storage Account naming requirements.
 
-- Uses the PR number instead of environment name: `{prefix}{service}{config}{pr_number}sa`
-- Example: `s189t01captrv1234sa` (for PR #1234)
+**Examples:**
 
-**For non-review environments:**
-
-- Excludes environment from name: `{prefix}{service}{config}sa`
-- Example: `s189t01captrvsa`
+- `environment = "production"` → `s189t01captrvproductionsa`
+- `environment = "review-123"` → `s189t01captrvreview123sa`
+- `environment = "dev"` → `s189t01captrvdevsa`
 
 ```terraform
 module "review_storage" {
   source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
 
-  environment           = "review"
-  pr_number            = var.pr_number  # Required for review environments
+  environment           = "review-${var.pr_number}"  # e.g., "review-123"
   azure_resource_prefix = var.azure_resource_prefix
   service_short         = var.service_short
   config_short          = var.config_short
@@ -72,14 +68,60 @@ module "review_storage" {
 ```
 
 **GitHub Actions Integration:**
-To use with GitHub Actions, pass the PR number via environment variable:
+The calling service is responsible for formatting the environment variable:
 
 ```yaml
+- name: Set Environment
+  run: echo "TF_VAR_environment=review-${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+
 - name: Terraform Apply
-  env:
-    TF_VAR_pr_number: ${{ github.event.pull_request.number }}
   run: terraform apply
 ```
+
+## Migration Guide
+
+This module follows the common pattern used across DfE Terraform modules where the calling service is responsible for formatting the environment variable to include PR numbers.
+
+### Integration Examples
+
+**For Makefile-based deployments:**
+
+```makefile
+.PHONY: review
+review: test-cluster
+	$(if ${PR_NUMBER},,$(error Missing PR_NUMBER))
+	$(eval ENVIRONMENT=review-${PR_NUMBER})
+	$(eval export TF_VAR_environment=${ENVIRONMENT})
+	$(eval include global_config/review.sh)
+```
+
+**For GitHub Actions:**
+
+```yaml
+steps:
+  - name: Deploy Review Environment
+    env:
+      TF_VAR_environment: review-${{ github.event.pull_request.number }}
+    run: |
+      make terraform-apply
+```
+
+**In your Terraform configuration:**
+
+```terraform
+module "storage_account" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = var.environment  # e.g., "review-123"
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  # ... rest of your configuration
+}
+```
+
+This approach is consistent with other DfE Terraform modules like the [application module](https://github.com/DFE-Digital/terraform-modules/blob/main/aks/application/resources.tf#L3).
 
 ### Custom name
 
