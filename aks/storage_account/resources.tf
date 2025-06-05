@@ -1,6 +1,8 @@
 locals {
+  # Use PR number for review environments, nothing for non-review environments
+  environment_suffix = var.environment == "review" ? var.pr_number : ""
   storage_account_name = var.storage_account_name_override != null ? var.storage_account_name_override : lower(
-    replace("${var.azure_resource_prefix}${var.service_short}${var.config_short}${var.environment}sa", "/[^a-z0-9]/", "")
+    "${var.azure_resource_prefix}${var.service_short}${var.config_short}${local.environment_suffix}sa"
   )
 }
 
