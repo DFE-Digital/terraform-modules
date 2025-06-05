@@ -20,6 +20,7 @@ module "storage" {
   azure_resource_prefix = var.azure_resource_prefix
   service_short         = "msvc"
   config_short          = "dv"
+  pr_number            = var.pr_number  # Required for review environments
 
   # Create containers for the application (all containers are private)
   containers = [
@@ -37,6 +38,47 @@ module "storage" {
   create_encryption_scope = true
   encryption_scope_name   = "microsoftmanaged"
 }
+```
+
+### Storage Account Naming
+
+The module automatically generates storage account names based on the environment:
+
+**For review environments (`environment = "review"`):**
+
+- Uses the PR number instead of environment name: `{prefix}{service}{config}{pr_number}sa`
+- Example: `s189t01captrv1234sa` (for PR #1234)
+
+**For non-review environments:**
+
+- Excludes environment from name: `{prefix}{service}{config}sa`
+- Example: `s189t01captrvsa`
+
+```terraform
+module "review_storage" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = "review"
+  pr_number            = var.pr_number  # Required for review environments
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  containers = [
+    { name = "uploads" },
+    { name = "reports" }
+  ]
+}
+```
+
+**GitHub Actions Integration:**
+To use with GitHub Actions, pass the PR number via environment variable:
+
+```yaml
+- name: Terraform Apply
+  env:
+    TF_VAR_pr_number: ${{ github.event.pull_request.number }}
+  run: terraform apply
 ```
 
 ### Custom name

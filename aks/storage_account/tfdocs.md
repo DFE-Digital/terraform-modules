@@ -39,6 +39,7 @@ No modules.
 | <a name="input_infrastructure_encryption_enabled"></a> [infrastructure\_encryption\_enabled](#input\_infrastructure\_encryption\_enabled) | Enable infrastructure encryption for the storage account | `bool` | `true` | no |
 | <a name="input_last_access_time_enabled"></a> [last\_access\_time\_enabled](#input\_last\_access\_time\_enabled) | Enable last access time tracking for blobs | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the storage account (without prefix and suffix) | `string` | `null` | no |
+| <a name="input_pr_number"></a> [pr\_number](#input\_pr\_number) | Pull request number for review environments. Used in storage account naming when environment is 'review'. | `string` | `null` | no |
 | <a name="input_production_replication_type"></a> [production\_replication\_type](#input\_production\_replication\_type) | Replication type for production environments. Non-production environments always use LRS for cost efficiency. | `string` | `"GRS"` | no |
 | <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled) | Whether public network access is allowed for the storage account | `bool` | `false` | no |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
