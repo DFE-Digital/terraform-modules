@@ -1,7 +1,6 @@
 locals {
-  name = var.name != null ? var.name : "default"
   storage_account_name = var.storage_account_name_override != null ? var.storage_account_name_override : lower(
-    "${var.azure_resource_prefix}${var.service_short}${local.name}${var.config_short}${var.environment}sa"
+    replace("${var.azure_resource_prefix}${var.service_short}${var.config_short}${var.environment}sa", "/[^a-z0-9]/", "")
   )
 }
 
