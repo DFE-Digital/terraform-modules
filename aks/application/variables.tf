@@ -161,6 +161,18 @@ variable "send_traffic_to_maintenance_page" {
   nullable    = false
 }
 
+variable "rate_limit_rps" {
+  description = "Rate limit requests per second for the ingress"
+  type        = string
+  default     = "50"
+}
+
+variable "rate_limit_connections" {
+  description = "Rate limit concurrent connections for the ingress"
+  type        = string
+  default     = "20"
+}
+
 variable "enable_gcp_wif" {
   type        = string
   default     = false

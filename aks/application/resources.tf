@@ -223,6 +223,10 @@ resource "kubernetes_ingress_v1" "main" {
   metadata {
     name      = each.value
     namespace = var.namespace
+    annotations = {
+      "nginx.ingress.kubernetes.io/rate-limit-rps"        = var.rate_limit_rps
+      "nginx.ingress.kubernetes.io/rate-limit-connections" = var.rate_limit_connections
+    }
   }
 
   spec {
