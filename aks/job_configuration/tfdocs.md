@@ -34,6 +34,7 @@ No modules.
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | AKS namespace where this app is deployed | `any` | n/a | yes |
 | <a name="input_secret_ref"></a> [secret\_ref](#input\_secret\_ref) | formerly: module.application\_configuration.kubernetes\_secret\_name | `string` | n/a | yes |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service. Usually the same as the repo name | `any` | n/a | yes |
+| <a name="input_timeout"></a> [timeout](#input\_timeout) | Create and update timeout for job | `string` | `"15m"` | no |
 
 ## Outputs
 
