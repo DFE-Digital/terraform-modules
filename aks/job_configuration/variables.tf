@@ -57,3 +57,9 @@ variable "max_memory" {
   default     = "1Gi"
   description = "Maximum memory of the instance"
 }
+
+variable "timeout" {
+  type        = string
+  default     = "15m"
+  description = "Create and update timeout for job"
+}
