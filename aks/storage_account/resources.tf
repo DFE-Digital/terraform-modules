@@ -1,6 +1,6 @@
 locals {
-  storage_account_env = var.config_short != "rv" ? var.config_short : (var.environment == "review" ? "rv" : "rv${replace(var.environment, "/^.*-/", "")}")
-  storage_account_name = "${var.azure_resource_prefix}${var.service_short}${local.storage_account_env}sa"
+  storage_account_env  = var.config_short != "rv" ? var.config_short : (var.environment == "review" ? "rv" : "rv${replace(var.environment, "/^.*-/", "")}")
+  storage_account_name = "${var.azure_resource_prefix}${var.service_short}${var.name}${local.storage_account_env}sa"
 }
 
 data "azurerm_resource_group" "main" {
