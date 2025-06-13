@@ -180,6 +180,17 @@ resource "azurerm_storage_container" "backup" {
   container_access_type = "private"
 }
 
+resource "azurerm_storage_container_immutability_policy" "backup" {
+  count = local.azure_enable_backup_storage && var.environment == "production" ? 1 : 0
+
+  storage_container_resource_manager_id = azurerm_storage_container.backup[0].resource_manager_id
+  immutability_period_in_days           = 6
+  protected_append_writes_all_enabled   = false
+  protected_append_writes_enabled       = false
+
+  locked = true
+}
+
 resource "azurerm_monitor_metric_alert" "memory" {
   count = local.azure_enable_monitoring ? 1 : 0
 
