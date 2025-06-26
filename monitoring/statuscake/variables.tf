@@ -46,3 +46,11 @@ variable "trigger_rate" {
   default     = 0
 
 }
+
+variable "content_matchers" {
+  type = list(object({
+    matcher = string
+    content = string
+  }))
+  default = []
+}
