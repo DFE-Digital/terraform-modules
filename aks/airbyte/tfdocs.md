@@ -38,7 +38,7 @@ No modules.
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | GCP project id | `string` | `null` | no |
 | <a name="input_repl_password"></a> [repl\_password](#input\_repl\_password) | Password of the replication user | `string` | `null` | no |
 | <a name="input_repl_user"></a> [repl\_user](#input\_repl\_user) | Name of the replication user | `string` | `null` | no |
-| <a name="input_schedule_type"></a> [schedule\_type](#input\_schedule\_type) | Connection schedule type, either manual or cron. Cron will run on hourly schedule | `string` | `"manual"` | no |
+| <a name="input_schedule_type"></a> [schedule\_type](#input\_schedule\_type) | Connection schedule type, either manual or cron. Cron will run on hourly schedule | `string` | `"cron"` | no |
 | <a name="input_server_url"></a> [server\_url](#input\_server\_url) | Server url | `string` | `null` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
