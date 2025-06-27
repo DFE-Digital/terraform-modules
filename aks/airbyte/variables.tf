@@ -99,7 +99,7 @@ variable "connection_status" {
 
 variable "schedule_type" {
   type        = string
-  default     = "manual"
+  default     = "cron"
   description = "Connection schedule type, either manual or cron. Cron will run on hourly schedule"
 }
 

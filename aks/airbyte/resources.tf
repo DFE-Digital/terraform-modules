@@ -5,7 +5,7 @@ locals {
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
   connection_name  = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-airbyte-conn"
 
-  cron_expression = var.schedule_type == "cron" ? "0 * * * *" : null # Cron schedule for syncs every hour on the hour
+  cron_expression = var.schedule_type == "cron" ? "0 */15 * * * ?" : null # Cron schedule for syncs every hour on the hour
 
   original_repl_password = var.repl_password != null ? var.repl_password : random_password.password[0].result
   # Remove sequences of multiple dollar signs. Fix setting up the database password
@@ -77,7 +77,7 @@ resource "airbyte_connection" "connection" {
   source_id      = airbyte_source_postgres.source_postgres[0].source_id
   destination_id = airbyte_destination_bigquery.destination_bigquery[0].destination_id
 
-  non_breaking_schema_updates_behavior = "ignore"
+  non_breaking_schema_updates_behavior = "propagate_fully"
 
   status = var.connection_status
 
