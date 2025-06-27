@@ -167,6 +167,12 @@ variable "create_database" {
   description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
 }
 
+variable "use_airbyte" {
+  type        = bool
+  default     = false
+  description = "Whether to add configuration changes required by Airbyte"
+}
+
 locals {
   server_docker_image = var.server_docker_image == null ? "postgres:${var.server_version}-alpine" : var.server_docker_image
 }
