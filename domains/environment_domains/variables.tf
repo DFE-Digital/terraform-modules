@@ -69,3 +69,15 @@ variable "rate_limit" {
   default     = []
   description = "list of rate limit rules to apply"
 }
+
+variable "allow_aks" {
+  type     = bool
+  nullable = false
+  default  = false
+}
+
+variable "block_ip" {
+  type     = bool
+  nullable = false
+  default  = false
+}

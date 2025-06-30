@@ -12,17 +12,54 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
     content {
       name                           = custom_rule.value["agent"]
       priority                       = custom_rule.value["priority"]
+      enabled                        = try(custom_rule.value["enabled"], "true")
       rate_limit_duration_in_minutes = custom_rule.value["duration"]
       rate_limit_threshold           = custom_rule.value["limit"]
-      type                           = "RateLimitRule"
-      action                         = "Block"
+      type                           = try(custom_rule.value["type"], "RateLimitRule")
+      action                         = try(custom_rule.value["action"], "Block")
 
       # To match all requests use Host header size is not zero
       match_condition {
-        match_variable = "RequestHeader"
-        selector       = custom_rule.value["selector"]
+        match_variable = try(custom_rule.value["match_variable"], "RequestHeader")
+        selector       = try(custom_rule.value["selector"], "")
         operator       = custom_rule.value["operator"]
         match_values   = ["${custom_rule.value["match_values"]}"]
+      }
+    }
+  }
+
+  dynamic "custom_rule" {
+    for_each = var.allow_aks ? ["this"] : []
+    content {
+      name                           = "AKS"
+      priority                       = 10
+      enabled                        = "true"
+      type                           = "MatchRule"
+      action                         = "Allow"
+
+      match_condition {
+        match_variable = "RemoteAddr"
+        selector       = ""
+        operator       = "IPMatch"
+        match_values   = ["20.117.102.231","20.90.254.33"]
+      }
+    }
+  }
+
+  dynamic "custom_rule" {
+    for_each = var.block_ip ? ["this"] : []
+    content {
+      name                           = "blockIP"
+      priority                       = 5
+      enabled                        = "false"
+      type                           = "MatchRule"
+      action                         = "Block"
+
+      match_condition {
+        match_variable = "RemoteAddr"
+        selector       = ""
+        operator       = "IPMatch"
+        match_values   = ["10.1.1.1"]
       }
     }
   }
