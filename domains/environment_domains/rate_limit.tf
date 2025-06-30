@@ -28,6 +28,42 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
     }
   }
 
+  dynamic "custom_rule" {
+    for_each = var.allow_aks ? ["this"] : []
+    content {
+      name                           = "AKS"
+      priority                       = 10
+      enabled                        = "true"
+      type                           = "MatchRule"
+      action                         = "Allow"
+
+      match_condition {
+        match_variable = "RemoteAddr"
+        selector       = ""
+        operator       = "IPMatch"
+        match_values   = ["20.117.102.231","20.90.254.33"]
+      }
+    }
+  }
+
+  dynamic "custom_rule" {
+    for_each = var.block_ip ? ["this"] : []
+    content {
+      name                           = "blockIP"
+      priority                       = 5
+      enabled                        = "false"
+      type                           = "MatchRule"
+      action                         = "Block"
+
+      match_condition {
+        match_variable = "RemoteAddr"
+        selector       = ""
+        operator       = "IPMatch"
+        match_values   = ["10.1.1.1"]
+      }
+    }
+  }
+
   lifecycle { ignore_changes = [tags] }
 }
 
