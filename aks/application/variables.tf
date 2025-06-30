@@ -181,3 +181,10 @@ variable "run_as_group" {
   description = "GID of user running the process in the container"
   nullable    = true
 }
+
+variable "run_as_non_root" {
+  type        = bool
+  default     = false
+  description = "Whether to enforce that containers must run as non-root user"
+  nullable    = false
+}
