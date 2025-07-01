@@ -26,6 +26,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_confirmation"></a> [confirmation](#input\_confirmation) | Retry the check when an error is detected to avoid false positives and micro downtimes | `number` | `2` | no |
 | <a name="input_contact_groups"></a> [contact\_groups](#input\_contact\_groups) | Contact groups for the alerts | `list(string)` | `[]` | no |
+| <a name="input_content_matchers"></a> [content\_matchers](#input\_content\_matchers) | n/a | <pre>list(object({<br/>    matcher = string<br/>    content = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_heartbeat_names"></a> [heartbeat\_names](#input\_heartbeat\_names) | List of names for the heartbeat checks | `list(string)` | `[]` | no |
 | <a name="input_heartbeat_period"></a> [heartbeat\_period](#input\_heartbeat\_period) | The period in seconds within which a heartbeat must be received | `number` | `600` | no |
 | <a name="input_ssl_urls"></a> [ssl\_urls](#input\_ssl\_urls) | Set of URLs to perform SSL checks on | `list(string)` | `[]` | no |
