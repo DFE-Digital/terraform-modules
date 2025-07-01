@@ -52,6 +52,7 @@ No modules.
 | <a name="input_probe_path"></a> [probe\_path](#input\_probe\_path) | Path for the liveness and startup probe. The probe can be disabled by setting this to null. | `string` | `"/healthcheck"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | Number of application instances | `number` | `1` | no |
 | <a name="input_run_as_group"></a> [run\_as\_group](#input\_run\_as\_group) | GID of user running the process in the container | `string` | `null` | no |
+| <a name="input_run_as_non_root"></a> [run\_as\_non\_root](#input\_run\_as\_non\_root) | Whether to enforce that containers must run as non-root user | `bool` | `false` | no |
 | <a name="input_run_as_user"></a> [run\_as\_user](#input\_run\_as\_user) | UID of user running the process in the container | `string` | `null` | no |
 | <a name="input_send_traffic_to_maintenance_page"></a> [send\_traffic\_to\_maintenance\_page](#input\_send\_traffic\_to\_maintenance\_page) | During a maintenance operation, keep sending traffic to the maintenance page instead of resetting the ingress | `bool` | `false` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
