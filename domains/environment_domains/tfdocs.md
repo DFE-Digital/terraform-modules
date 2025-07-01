@@ -41,6 +41,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_allow_aks"></a> [allow\_aks](#input\_allow\_aks) | allow all ingress from the aks cluster when a rate limit rule is active | `bool` | `false` | no |
+| <a name="input_block_ip"></a> [block\_ip](#input\_block\_ip) | create a specific IP block rule that is disabled. Makes it easier to add an IP and then enable the rule if required. | `bool` | `false` | no |
 | <a name="input_cached_paths"></a> [cached\_paths](#input\_cached\_paths) | List of path patterns such as /packs/* that front door will cache | `list(string)` | `[]` | no |
 | <a name="input_domains"></a> [domains](#input\_domains) | List of subdomains of the zone e.g. "staging". For apex domain use "apex" or "apex<something>" if apex is already in use.<br/>    The length of "<domain>.<zone>" cannot exceed 64 characters. | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `any` | n/a | yes |
@@ -49,7 +51,8 @@ No modules.
 | <a name="input_host_name"></a> [host\_name](#input\_host\_name) | Origin host name ie domain to where front door sends the requests. It may not be used if all requests are redirected. | `string` | `"not-in-use.education.gov.uk"` | no |
 | <a name="input_multiple_hosted_zones"></a> [multiple\_hosted\_zones](#input\_multiple\_hosted\_zones) | n/a | `bool` | `false` | no |
 | <a name="input_null_host_header"></a> [null\_host\_header](#input\_null\_host\_header) | The origin\_host\_header for the azurerm\_cdn\_frontdoor\_origin resource will be var.host\_name (if false) or null (if true). If null then the host name from the incoming request will be used. | `bool` | `false` | no |
-| <a name="input_rate_limit"></a> [rate\_limit](#input\_rate\_limit) | list of rate limit rules to apply | `list(any)` | `[]` | no |
+| <a name="input_rate_limit"></a> [rate\_limit](#input\_rate\_limit) | list of custom rate limit rules to apply | `list(any)` | `[]` | no |
+| <a name="input_rate_limit_max"></a> [rate\_limit\_max](#input\_rate\_limit\_max) | create a block rule that will limit any IP that goes above var.rate\_limit\_max over a 5 minute period | `number` | `null` | no |
 | <a name="input_redirect_rules"></a> [redirect\_rules](#input\_redirect\_rules) | List of ordered redirect rules with format:<br/>    [<br/>      {<br/>        "from-domain": "One of the domains from var.domains to redirect from",<br/>        "to-domain": "Redirect destination domain",<br/>        "to-path": "Optional path appended to the destination URL. If not provided, the path will be the same as in the incoming request",<br/>        "to-query-string": "Optional path appended to the destination URL. If not provided, defaults to empty string"<br/>      },<br/>      {<br/>        ...<br/>      }<br/>    ] | `list(any)` | `[]` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | n/a | `any` | n/a | yes |
 | <a name="input_rule_set_ids"></a> [rule\_set\_ids](#input\_rule\_set\_ids) | n/a | `list(any)` | `[]` | no |
