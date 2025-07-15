@@ -168,5 +168,5 @@ variable "create_database" {
 }
 
 locals {
-  server_docker_image = var.server_docker_image == null ? "postgres:${var.server_version}-alpine" : var.server_docker_image
+  server_docker_image = var.server_docker_image == null ? "postgres-${var.server_version}-alpine" : var.server_docker_image
 }
