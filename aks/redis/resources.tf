@@ -146,7 +146,7 @@ resource "kubernetes_deployment" "main" {
         }
         container {
           name  = local.kubernetes_name
-          image = "ghcr.io/dfe-digital/teacher-services-cloud${redis-${var.server_version}-alpine}"
+          image = "ghcr.io/dfe-digital/teacher-services-cloud:${redis-${var.server_version}-alpine}"
 
           resources {
             requests = {
