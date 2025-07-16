@@ -307,7 +307,7 @@ resource "kubernetes_deployment" "main" {
         }
         container {
           name  = local.kubernetes_name
-          image = "ghcr.io/dfe-digital/teacher-services-cloud"${local.server_docker_image}"
+          image = "ghcr.io/dfe-digital/teacher-services-cloud${local.server_docker_image}"
 
           resources {
             requests = {
