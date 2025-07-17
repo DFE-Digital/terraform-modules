@@ -181,8 +181,9 @@ resource "kubernetes_deployment" "main" {
               drop = ["ALL"]
             }
 
-            run_as_user  = var.run_as_user
-            run_as_group = var.run_as_group
+            run_as_user     = var.run_as_user
+            run_as_group    = var.run_as_group
+            run_as_non_root = var.run_as_non_root
           }
         }
       }
