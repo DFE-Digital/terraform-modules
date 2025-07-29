@@ -120,3 +120,9 @@ variable "alert_window_size" {
   }
   description = "The period of time that is used to monitor alert activity e,g, PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H. The interval between checks is adjusted accordingly."
 }
+
+variable "server_docker_repo" {
+  type     = string
+  nullable = false
+  default  = "ghcr.io/dfe-digital/teacher-services-cloud"
+}

@@ -167,6 +167,12 @@ variable "create_database" {
   description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
 }
 
+variable "server_docker_repo" {
+  type     = string
+  nullable = false
+  default  = "ghcr.io/dfe-digital/teacher-services-cloud"
+}
+
 locals {
-  server_docker_image = var.server_docker_image == null ? "postgres:${var.server_version}-alpine" : var.server_docker_image
+  server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
 }
