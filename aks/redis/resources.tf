@@ -146,7 +146,8 @@ resource "kubernetes_deployment" "main" {
         }
         container {
           name  = local.kubernetes_name
-          image = "redis:${var.server_version}-alpine"
+          image = "${var.server_docker_repo}:redis-${var.server_version}-alpine"
+
           resources {
             requests = {
               cpu    = "100m"
