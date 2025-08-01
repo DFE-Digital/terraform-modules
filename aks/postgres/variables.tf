@@ -173,6 +173,12 @@ variable "server_docker_repo" {
   default  = "ghcr.io/dfe-digital/teacher-services-cloud"
 }
 
+variable "create_mode" {
+  type     = string
+  nullable = false
+  default  = "Default"
+}
+
 locals {
   server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
 }
