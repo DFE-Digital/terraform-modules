@@ -8,6 +8,7 @@ locals {
 
   azure_enable_backup_storage = var.use_azure && var.azure_enable_backup_storage
   azure_enable_monitoring     = var.use_azure && var.azure_enable_monitoring
+  enable_logical_replication  = var.use_azure && var.azure_enable_monitoring && var.enable_logical_replication
 
   kubernetes_name = "${var.service_name}-${var.environment}-postgres${local.name_suffix}"
 
@@ -122,7 +123,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "connection_throttli
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
-  count = var.enable_logical_replication ? 1 : 0
+  count = var.use_azure && var.enable_logical_replication ? 1 : 0
   name      = "wal_level"
   server_id = azurerm_postgresql_flexible_server.main[0].id
   value     = "logical"
@@ -274,6 +275,35 @@ resource "azurerm_monitor_metric_alert" "storage" {
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = var.azure_storage_threshold
+  }
+
+  action {
+    action_group_id = data.azurerm_monitor_action_group.main[0].id
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_monitor_metric_alert" "txlog_storage_used" {
+  count = (local.azure_enable_monitoring && local.enable_logical_replication) ? 1 : 0
+
+  name                = "${azurerm_postgresql_flexible_server.main[0].name}-txlog-storage-used"
+  resource_group_name = data.azurerm_resource_group.main[0].name
+  scopes              = [azurerm_postgresql_flexible_server.main[0].id]
+  description         = "Action will be triggered when txlog storage use is greater than ${var.txlogs_storage_used_threshold}"
+  window_size         = var.alert_window_size
+  frequency           = local.alert_frequency
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "txlogs_storage_used"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = var.txlogs_storage_used_threshold
   }
 
   action {

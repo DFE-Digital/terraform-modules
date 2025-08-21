@@ -127,6 +127,11 @@ variable "azure_storage_threshold" {
   default = 80
 }
 
+variable "txlogs_storage_used_threshold" {
+  type    = number
+  default = 4000
+}
+
 variable "azure_enable_monitoring" {
   type     = bool
   nullable = false
