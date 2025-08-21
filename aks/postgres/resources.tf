@@ -121,6 +121,14 @@ resource "azurerm_postgresql_flexible_server_configuration" "connection_throttli
   value     = "on"
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
+  count = var.enable_logical_replication ? 1 : 0
+  name      = "wal_level"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = "logical"
+}
+
+
 resource "azurerm_postgresql_flexible_server_database" "main" {
   count = var.use_azure && var.create_database ? 1 : 0
 

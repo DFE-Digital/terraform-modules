@@ -167,6 +167,11 @@ variable "create_database" {
   description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
 }
 
+variable "enable_logical_replication" {
+   type = bool
+   default = false
+}
+
 locals {
   server_docker_image = var.server_docker_image == null ? "postgres:${var.server_version}-alpine" : var.server_docker_image
 }
