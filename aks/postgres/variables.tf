@@ -132,6 +132,12 @@ variable "txlogs_storage_used_threshold" {
   default = 4000
 }
 
+variable "logical_replication_delay_in_bytes_threshold" {
+  type    = number
+  default = 100000000
+}
+
+
 variable "azure_enable_monitoring" {
   type     = bool
   nullable = false
