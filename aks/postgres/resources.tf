@@ -289,7 +289,7 @@ resource "azurerm_monitor_metric_alert" "storage" {
 }
 
 resource "azurerm_monitor_metric_alert" "txlog_storage_used" {
-  count = (local.azure_enable_monitoring && local.enable_logical_replication) ? 1 : 0
+  count = var.use_azure && var.enable_logical_replication ? 1 : 0
 
   name                = "${azurerm_postgresql_flexible_server.main[0].name}-txlog-storage-used"
   resource_group_name = data.azurerm_resource_group.main[0].name
