@@ -133,6 +133,15 @@ variable "azure_enable_monitoring" {
   default  = true
 }
 
+variable "txlogs_storage_used_threshold" {
+  type    = number
+  default = 4000
+}
+
+variable "logical_replication_delay_in_bytes_threshold" {
+  type    = number
+  default = 100000000
+}
 
 
 variable "alert_window_size" {
@@ -171,6 +180,11 @@ variable "server_docker_repo" {
   type     = string
   nullable = false
   default  = "ghcr.io/dfe-digital/teacher-services-cloud"
+}
+
+variable "enable_logical_replication" {
+  type    = bool
+  default = false
 }
 
 locals {

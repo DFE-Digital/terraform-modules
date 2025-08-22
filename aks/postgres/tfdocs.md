@@ -21,12 +21,15 @@ No modules.
 | [azurerm_log_analytics_workspace.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) | resource |
 | [azurerm_monitor_diagnostic_setting.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_metric_alert.cpu](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
+| [azurerm_monitor_metric_alert.logical_replication_lag](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.memory](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
+| [azurerm_monitor_metric_alert.txlog_storage_used](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_postgresql_flexible_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server) | resource |
 | [azurerm_postgresql_flexible_server_configuration.azure_extensions](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.connection_throttling](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.max_connections](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
+| [azurerm_postgresql_flexible_server_configuration.wal_level](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_database.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_database) | resource |
 | [azurerm_storage_account.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_container.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
@@ -66,7 +69,9 @@ No modules.
 | <a name="input_cluster_configuration_map"></a> [cluster\_configuration\_map](#input\_cluster\_configuration\_map) | Configuration map for the cluster | <pre>object({<br/>    resource_group_name = string,<br/>    resource_prefix     = string,<br/>    dns_zone_prefix     = optional(string),<br/>    cpu_min             = number<br/>  })</pre> | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
 | <a name="input_create_database"></a> [create\_database](#input\_create\_database) | Create default database. If the app creates the database instead of this module, set to false. Default: true | `bool` | `true` | no |
+| <a name="input_enable_logical_replication"></a> [enable\_logical\_replication](#input\_enable\_logical\_replication) | n/a | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
+| <a name="input_logical_replication_delay_in_bytes_threshold"></a> [logical\_replication\_delay\_in\_bytes\_threshold](#input\_logical\_replication\_delay\_in\_bytes\_threshold) | n/a | `number` | `100000000` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the instance | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
 | <a name="input_server_docker_image"></a> [server\_docker\_image](#input\_server\_docker\_image) | Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server\_version>-alpine | `string` | `null` | no |
@@ -74,6 +79,7 @@ No modules.
 | <a name="input_server_version"></a> [server\_version](#input\_server\_version) | Version of PostgreSQL server | `string` | `"16"` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
+| <a name="input_txlogs_storage_used_threshold"></a> [txlogs\_storage\_used\_threshold](#input\_txlogs\_storage\_used\_threshold) | n/a | `number` | `4000` | no |
 | <a name="input_use_azure"></a> [use\_azure](#input\_use\_azure) | Whether to deploy using Azure Redis Cache service | `bool` | n/a | yes |
 
 ## Outputs

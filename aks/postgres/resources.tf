@@ -120,6 +120,13 @@ resource "azurerm_postgresql_flexible_server_configuration" "connection_throttli
   value     = "on"
 }
 
+resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
+  count     = var.use_azure && var.enable_logical_replication ? 1 : 0
+  name      = "wal_level"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = "logical"
+}
+
 resource "azurerm_postgresql_flexible_server_database" "main" {
   count = var.use_azure && var.create_database ? 1 : 0
 
@@ -265,6 +272,64 @@ resource "azurerm_monitor_metric_alert" "storage" {
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = var.azure_storage_threshold
+  }
+
+  action {
+    action_group_id = data.azurerm_monitor_action_group.main[0].id
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_monitor_metric_alert" "txlog_storage_used" {
+  count = var.use_azure && var.enable_logical_replication ? 1 : 0
+
+  name                = "${azurerm_postgresql_flexible_server.main[0].name}-txlog-storage-used"
+  resource_group_name = data.azurerm_resource_group.main[0].name
+  scopes              = [azurerm_postgresql_flexible_server.main[0].id]
+  description         = "Action will be triggered when txlog storage use is greater than ${var.txlogs_storage_used_threshold}"
+  window_size         = var.alert_window_size
+  frequency           = local.alert_frequency
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "txlogs_storage_used"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = var.txlogs_storage_used_threshold
+  }
+
+  action {
+    action_group_id = data.azurerm_monitor_action_group.main[0].id
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_monitor_metric_alert" "logical_replication_lag" {
+  count = var.use_azure && var.enable_logical_replication ? 1 : 0
+
+  name                = "${azurerm_postgresql_flexible_server.main[0].name}-logical-replication-lag"
+  resource_group_name = data.azurerm_resource_group.main[0].name
+  scopes              = [azurerm_postgresql_flexible_server.main[0].id]
+  description         = "Action will be triggered when logical replication lag is greater than ${var.logical_replication_delay_in_bytes_threshold}"
+  window_size         = var.alert_window_size
+  frequency           = local.alert_frequency
+
+  criteria {
+    metric_namespace = "Microsoft.DBforPostgreSQL/flexibleServers"
+    metric_name      = "logical_replication_delay_in_bytes"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = var.logical_replication_delay_in_bytes_threshold
   }
 
   action {
