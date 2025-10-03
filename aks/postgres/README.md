@@ -29,6 +29,16 @@ module "postgres" {
 }
 ```
 
+### Enabling logical replication for airbyte
+
+If configuring airbyte for a service, then add
+```
+use_airbyte = true
+azure_enable_monitoring = true # recommended if not enabled
+```
+which will enable logical replication for the database server.
+This will cause the database server to restart several times.
+
 ### Monitoring
 
 If `azure_enable_monitoring` is `true`, it’s expected that the following resources already exist:
