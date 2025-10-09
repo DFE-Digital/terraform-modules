@@ -27,6 +27,7 @@ output "name" {
 
 output "url" {
   value     = "${local.server_database_type}://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${local.database_name}?sslmode=${var.use_azure ? "require" : "prefer"}"
+  sensitive = true
 }
 
 output "dotnet_connection_string" {
@@ -58,4 +59,8 @@ output "server_database_type" {
 
 output "azure_extensions" {
   value = var.azure_extensions
+}
+
+output "server_postgis_version" {
+  value = var.server_postgis_version
 }
