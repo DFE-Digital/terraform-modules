@@ -57,5 +57,5 @@ output "server_database_type" {
 }
 
 output "azure_extensions" {
-  value = var.use_azure ? azurerm_postgresql_flexible_server.main[0].extensions : null
+  value = var.azure_extensions
 }
