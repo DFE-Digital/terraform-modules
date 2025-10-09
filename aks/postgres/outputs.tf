@@ -64,3 +64,7 @@ output "azure_extensions" {
 output "server_postgis_version" {
   value = var.server_postgis_version
 }
+
+output "needs_postgis" {
+  value = var.server_postgis_version
+}
