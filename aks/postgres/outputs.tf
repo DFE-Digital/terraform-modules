@@ -55,3 +55,7 @@ output "server_docker_image" {
 output "server_database_type" {
   value = local.server_database_type
 }
+
+output "azure_extensions" {
+  value = var.use_azure ? azurerm_postgresql_flexible_server.main[0].extensions : null
+}
