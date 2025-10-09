@@ -179,7 +179,48 @@ variable "use_airbyte" {
   description = "Whether to add configuration changes required by Airbyte"
 }
 
+variable "server_postgis_version" {
+  type        = string
+  default     = "null"
+  description = "Version of Postgis server"
+}
+
+variable "server_database_type" {
+  type        = string
+  default     = null
+  description = "postgres or postgis"
+}
+
 locals {
-  server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
+
+  server_docker_image = coalesce(
+    var.server_postgis_version != null
+      ? "${var.server_docker_repo}:postgis-${var.server_postgis_version}"
+      : null,
+    var.server_docker_image,
+    "${var.server_docker_repo}:postgres-${var.server_version}-alpine"
+  )
+
+  server_database_type = var.server_postgis_version == null ? "postgres" : "postges"
+
+
   command             = var.use_airbyte ? ["postgres", "-c", "wal_level=logical", "-c", "max_wal_senders=2", "-c", "max_replication_slots=1", "-c", "max_slot_wal_keep_size=2048"] : null
+
+  # Normalize extensions to lower case for comparison
+  normalize_extensions = [
+    for ext in var.azure_extensions : lower(ext)
+  ]
+  # Determine if PostGIS needs to be added to the extensions list
+  needs_postgis = var.server_postgis_version != null && var.server_postgis_version != "" 
+
+  # Final list of extensions, adding PostGIS if needed
+  azure_extensions_final = (
+   local.needs_postgis
+      ? (
+         contains(local.normalize_extensions, "postgis")
+           ? var.azure_extensions                  # already present (maybe in different case), so leave original list
+           : concat(var.azure_extensions, ["postgis"])
+       )
+      : var.azure_extensions
+  )
 }
