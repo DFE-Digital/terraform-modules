@@ -201,7 +201,7 @@ locals {
     "${var.server_docker_repo}:postgres-${var.server_version}-alpine"
   )
 
-  server_database_type = var.server_postgis_version == null ? "postgres" : "postges"
+  server_database_type = var.server_postgis_version == null ? "postgres" : "postgis"
 
 
   command             = var.use_airbyte ? ["postgres", "-c", "wal_level=logical", "-c", "max_wal_senders=2", "-c", "max_replication_slots=1", "-c", "max_slot_wal_keep_size=2048"] : null
