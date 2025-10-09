@@ -66,5 +66,5 @@ output "server_postgis_version" {
 }
 
 output "azure_extensions_final" {
-  value = var.azure_extensions_final
+  value = local.azure_extensions_final
 }
