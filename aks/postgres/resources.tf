@@ -97,11 +97,11 @@ resource "azurerm_postgresql_flexible_server" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "azure_extensions" {
-  count = var.use_azure && length(var.azure_extensions) > 0 ? 1 : 0
+  count = var.use_azure && length(var.azure_extensions_final) > 0 ? 1 : 0
 
   name      = "azure.extensions"
   server_id = azurerm_postgresql_flexible_server.main[0].id
-  value     = join(",", var.azure_extensions)
+  value     = join(",", var.azure_extensions_final)
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_connections" {
