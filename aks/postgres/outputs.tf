@@ -49,10 +49,10 @@ output "azure_server_id" {
 }
 
 
-output "postgres_server_docker_image" {
+output "server_docker_image" {
   value = local.server_docker_image
 }
 
-output "postgres_server_database_type" {
+output "server_database_type" {
   value = local.server_database_type
 }
