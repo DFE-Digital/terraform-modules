@@ -60,7 +60,7 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
       match_condition {
         match_variable = "RemoteAddr"
         operator       = "IPMatch"
-        match_values   = ["20.117.102.231", "20.90.254.33"]
+        match_values   = ["20.117.102.231", "20.90.254.33", "172.167.85.211"]
       }
     }
   }
