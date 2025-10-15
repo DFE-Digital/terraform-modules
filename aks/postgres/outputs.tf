@@ -47,3 +47,15 @@ output "azure_backup_storage_container_name" {
 output "azure_server_id" {
   value = var.use_azure ? azurerm_postgresql_flexible_server.main[0].id : null
 }
+
+output "server_docker_image" {
+  value = local.server_docker_image
+}
+
+output "azure_extensions" {
+  value = local.azure_extensions
+}
+
+output "server_postgis_version" {
+  value = var.server_postgis_version
+}

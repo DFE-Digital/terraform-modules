@@ -74,6 +74,7 @@ No modules.
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
 | <a name="input_server_docker_image"></a> [server\_docker\_image](#input\_server\_docker\_image) | Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server\_version>-alpine | `string` | `null` | no |
 | <a name="input_server_docker_repo"></a> [server\_docker\_repo](#input\_server\_docker\_repo) | n/a | `string` | `"ghcr.io/dfe-digital/teacher-services-cloud"` | no |
+| <a name="input_server_postgis_version"></a> [server\_postgis\_version](#input\_server\_postgis\_version) | Version of Postgis server | `string` | `null` | no |
 | <a name="input_server_version"></a> [server\_version](#input\_server\_version) | Version of PostgreSQL server | `string` | `"16"` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
@@ -86,11 +87,14 @@ No modules.
 |------|-------------|
 | <a name="output_azure_backup_storage_account_name"></a> [azure\_backup\_storage\_account\_name](#output\_azure\_backup\_storage\_account\_name) | n/a |
 | <a name="output_azure_backup_storage_container_name"></a> [azure\_backup\_storage\_container\_name](#output\_azure\_backup\_storage\_container\_name) | n/a |
+| <a name="output_azure_extensions"></a> [azure\_extensions](#output\_azure\_extensions) | n/a |
 | <a name="output_azure_server_id"></a> [azure\_server\_id](#output\_azure\_server\_id) | n/a |
 | <a name="output_dotnet_connection_string"></a> [dotnet\_connection\_string](#output\_dotnet\_connection\_string) | n/a |
 | <a name="output_host"></a> [host](#output\_host) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_password"></a> [password](#output\_password) | n/a |
 | <a name="output_port"></a> [port](#output\_port) | n/a |
+| <a name="output_server_docker_image"></a> [server\_docker\_image](#output\_server\_docker\_image) | n/a |
+| <a name="output_server_postgis_version"></a> [server\_postgis\_version](#output\_server\_postgis\_version) | n/a |
 | <a name="output_url"></a> [url](#output\_url) | n/a |
 | <a name="output_username"></a> [username](#output\_username) | n/a |

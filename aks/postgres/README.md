@@ -39,6 +39,15 @@ azure_enable_monitoring = true # recommended if not enabled
 which will enable logical replication for the database server.
 This will cause the database server to restart several times.
 
+### Enabling postgis for a service
+
+If enabling postgis for a service, then add
+```
+server_postgis_version = "14-3.2"
+```
+postgis will automatically be added to azure_extensions if needed.
+The server_docker_image will automatically be updated with the postgis version stated, and the image will be pulled from the cached tsc ghcr.io package repo.
+
 ### Monitoring
 
 If `azure_enable_monitoring` is `true`, it’s expected that the following resources already exist:
