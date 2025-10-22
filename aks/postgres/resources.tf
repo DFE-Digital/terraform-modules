@@ -396,7 +396,7 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
 
 resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
   count = var.use_azure && var.use_airbyte ? 1 : 0
-  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  # Parameter wal_level = logical enables logical decoding and writes extra information to the Write-Ahead log (WAL)
   name      = "wal_level"
   server_id = azurerm_postgresql_flexible_server.main[0].id
   value     = "logical"
@@ -404,7 +404,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_wal_senders" {
   count = var.use_azure && var.use_airbyte ? 1 : 0
-  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  # Parameter max_wal_senders = 5 enables a maximum of five simultaneous replication streams
   name      = "max_wal_senders"
   server_id = azurerm_postgresql_flexible_server.main[0].id
   value     = 5
@@ -412,8 +412,24 @@ resource "azurerm_postgresql_flexible_server_configuration" "max_wal_senders" {
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_replication_slots" {
   count = var.use_azure && var.use_airbyte ? 1 : 0
-  # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
+  # Parameter max_replication_slots = 5 sets the max number of concurrent connections that can use replication slots to five
   name      = "max_replication_slots"
   server_id = azurerm_postgresql_flexible_server.main[0].id
   value     = 5
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "max_wal_size" {
+  count = var.use_azure && var.use_airbyte ? 1 : 0
+  # Parameter max_wal_size = 4096 MB the soft upper limit for how large the Write-Ahead Log (WAL) can grow before a checkpoint is triggered to clear space
+  name      = "max_wal_size"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = 4096
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "min_wal_size" {
+  count = var.use_azure && var.use_airbyte ? 1 : 0
+  # Parameter min_wal_size = 2048 MB the lower limit that ensures enough WAL files are retained or reused to prevent the disk space from shrinking too much between checkpoints
+  name      = "min_wal_size"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = 2048
 }
