@@ -91,6 +91,7 @@ resource "kubernetes_deployment" "main" {
           image   = var.docker_image
           command = try(slice(var.command, 0, 1), null)
           args    = try(slice(var.command, 1, length(var.command)), null)
+          working_dir = var.working_dir
 
           env_from {
             config_map_ref {
