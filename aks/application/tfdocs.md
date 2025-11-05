@@ -60,6 +60,7 @@ No modules.
 | <a name="input_web_external_hostnames"></a> [web\_external\_hostnames](#input\_web\_external\_hostnames) | List of external hostnames for the web application | `list(string)` | `[]` | no |
 | <a name="input_web_port"></a> [web\_port](#input\_web\_port) | Port of the web application | `number` | `3000` | no |
 | <a name="input_worker_port"></a> [worker\_port](#input\_worker\_port) | Port of the worker application | `number` | `9394` | no |
+| <a name="input_working_dir"></a> [working\_dir](#input\_working\_dir) | Container working directory (mapped to container.working\_dir) | `string` | `null` | no |
 
 ## Outputs
 

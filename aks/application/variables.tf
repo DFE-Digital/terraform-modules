@@ -188,3 +188,10 @@ variable "run_as_non_root" {
   description = "Whether to enforce that containers must run as non-root user"
   nullable    = false
 }
+
+variable "working_dir" {
+  type        = string
+  default     = null
+  description = "Container working directory (mapped to container.working_dir)"
+  nullable    = true
+}

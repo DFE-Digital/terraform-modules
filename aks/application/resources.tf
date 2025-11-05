@@ -87,10 +87,11 @@ resource "kubernetes_deployment" "main" {
         }
 
         container {
-          name    = local.app_name
-          image   = var.docker_image
-          command = try(slice(var.command, 0, 1), null)
-          args    = try(slice(var.command, 1, length(var.command)), null)
+          name        = local.app_name
+          image       = var.docker_image
+          command     = try(slice(var.command, 0, 1), null)
+          args        = try(slice(var.command, 1, length(var.command)), null)
+          working_dir = var.working_dir
 
           env_from {
             config_map_ref {
