@@ -30,6 +30,7 @@
 | [airbyte_destination_bigquery.destination_bigquery](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/destination_bigquery) | resource |
 | [airbyte_source_postgres.source_postgres](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/source_postgres) | resource |
 | [airbyte_source_postgres.source_postgres_container](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/source_postgres) | resource |
+| [google_bigquery_dataset.internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset) | resource |
 | [google_bigquery_dataset.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset) | resource |
 | [google_bigquery_dataset_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.appender_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
@@ -64,6 +65,7 @@
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Current application environment | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_gcp_dataset"></a> [gcp\_dataset](#input\_gcp\_dataset) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
+| <a name="input_gcp_dataset_internal"></a> [gcp\_dataset\_internal](#input\_gcp\_dataset\_internal) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
 | <a name="input_gcp_key"></a> [gcp\_key](#input\_gcp\_key) | Name of an existing customer-managed encryption key (CMEK). Required when creating the dataset | `string` | `null` | no |
 | <a name="input_gcp_keyring"></a> [gcp\_keyring](#input\_gcp\_keyring) | Name of an existing keyring. Required when creating the dataset | `string` | `null` | no |
 | <a name="input_gcp_policy_tag_id"></a> [gcp\_policy\_tag\_id](#input\_gcp\_policy\_tag\_id) | Policy tag ID. Required when creating the dataset | `number` | `null` | no |
