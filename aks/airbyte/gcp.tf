@@ -72,6 +72,18 @@ resource "google_bigquery_dataset" "main" {
   delete_contents_on_destroy = true
 }
 
+# Create dataset if it doesn't exist
+resource "google_bigquery_dataset" "internal" {
+  count = var.gcp_dataset_internal == null ? 1 : 0
+
+  dataset_id = "${local.gcp_dataset_name}_internal"
+  location   = local.gcp_region
+  default_encryption_configuration {
+    kms_key_name = data.google_kms_crypto_key.main[0].id
+  }
+  delete_contents_on_destroy = true
+}
+
 # Create a custom role
 # at the moment create this manually once per project
 # which means 1 role, if we use terraform will have to have multiple roles
@@ -97,7 +109,7 @@ resource "google_bigquery_dataset_iam_member" "appender" {
 }
 
 resource "google_bigquery_dataset_iam_member" "appender_internal" {
-  dataset_id = "airbyte_internal"
+  dataset_id = var.gcp_dataset_internal == null ? google_bigquery_dataset.internal[0].dataset_id : var.gcp_dataset_internal
   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
   member     = "serviceAccount:${google_service_account.appender.email}"
 }
@@ -109,7 +121,7 @@ resource "google_bigquery_dataset_iam_member" "owner" {
 }
 
 resource "google_bigquery_dataset_iam_member" "owner_internal" {
-  dataset_id = "airbyte_internal"
+  dataset_id = var.gcp_dataset_internal == null ? google_bigquery_dataset.internal[0].dataset_id : var.gcp_dataset_internal
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${google_service_account.appender.email}"
 }
