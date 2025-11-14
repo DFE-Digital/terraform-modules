@@ -85,7 +85,7 @@ variable "azure_db_storage_threshold" {
 variable "azure_enable_redis_monitoring" {
   type     = bool
   nullable = false
-  default  = true
+  default  = false
 }
 
 variable "redis_cache_name" {
