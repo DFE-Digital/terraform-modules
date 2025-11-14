@@ -4,7 +4,7 @@ resource "azurerm_monitor_metric_alert" "container_restarts" {
   count = var.azure_enable_app_monitoring ? 1 : 0
 
   name                = "${local.app_name}-container-restarts"
-  resource_group_name = data.azurerm_resource_group.monitoring[0].name
+  resource_group_name = local.monitoring_resource_group_name
   scopes              = [var.kubernetes_cluster_id]
   description         = "Action will be triggered when container restarts is greater than 0"
   window_size         = "PT30M"
@@ -19,7 +19,7 @@ resource "azurerm_monitor_metric_alert" "container_restarts" {
     dimension {
       name     = "controllerName"
       operator = "StartsWith"
-      values   = ["${local.app_name}"]
+      values   = [local.app_name]
     }
   }
 
@@ -39,7 +39,7 @@ resource "azurerm_monitor_metric_alert" "db_memory" {
   count = var.azure_enable_db_monitoring ? 1 : 0
 
   name                = "${var.db_name}-memory"
-  resource_group_name = data.azurerm_resource_group.rg[0].name
+  resource_group_name = local.deployment_resource_group_name
   scopes              = [data.azurerm_postgresql_flexible_server.db[0].id]
   description         = "Action will be triggered when memory use is greater than 75%"
   window_size         = var.alert_window_size
@@ -67,9 +67,9 @@ resource "azurerm_monitor_metric_alert" "db_memory" {
 resource "azurerm_monitor_metric_alert" "db_cpu" {
   count = var.azure_enable_db_monitoring ? 1 : 0
 
-  name                = "${var.db_name}-cpu"
-  resource_group_name = data.azurerm_resource_group.rg[0].name
-  scopes              = [data.azurerm_postgresql_flexible_server.db[0].id]
+  name                = "${local.db_name}-cpu"
+  resource_group_name = local.deployment_resource_group_name
+  scopes              = local.db_scopes
   description         = "Action will be triggered when cpu use is greater than ${var.azure_db_cpu_threshold}%"
   window_size         = var.alert_window_size
   frequency           = local.alert_frequency
@@ -83,7 +83,7 @@ resource "azurerm_monitor_metric_alert" "db_cpu" {
   }
 
   action {
-    action_group_id = data.azurerm_monitor_action_group.main[0].id
+    action_group_id = local.action_group_id
   }
 
   lifecycle {
@@ -96,9 +96,9 @@ resource "azurerm_monitor_metric_alert" "db_cpu" {
 resource "azurerm_monitor_metric_alert" "db_storage" {
   count = var.azure_enable_db_monitoring ? 1 : 0
 
-  name                = "${var.db_name}-storage"
-  resource_group_name = data.azurerm_resource_group.rg[0].name
-  scopes              = [data.azurerm_postgresql_flexible_server.db[0].id]
+  name                = "${local.db_name}-storage"
+  resource_group_name = local.deployment_resource_group_name
+  scopes              = local.db_scopes
   description         = "Action will be triggered when storage use is greater than ${var.azure_db_storage_threshold}%"
   window_size         = var.alert_window_size
   frequency           = local.alert_frequency
@@ -112,7 +112,7 @@ resource "azurerm_monitor_metric_alert" "db_storage" {
   }
 
   action {
-    action_group_id = data.azurerm_monitor_action_group.main[0].id
+    action_group_id = local.action_group_id
   }
 
   lifecycle {
@@ -126,9 +126,9 @@ resource "azurerm_monitor_metric_alert" "db_storage" {
 resource "azurerm_monitor_metric_alert" "redis_memory" {
   count = var.azure_enable_redis_monitoring ? 1 : 0
 
-  name                = "${var.redis_cache_name}-memory"
-  resource_group_name = data.azurerm_resource_group.rg[0].name
-  scopes              = [data.azurerm_redis_cache.redis_cache[0].id]
+  name                = "${local.redis_cache_name}-memory"
+  resource_group_name = local.deployment_resource_group_name
+  scopes              = local.redis_cache_scopes
   description         = "Action will be triggered when memory use is greater than ${var.azure_redis_memory_threshold}%"
   window_size         = var.alert_window_size
   frequency           = local.alert_frequency
@@ -142,7 +142,7 @@ resource "azurerm_monitor_metric_alert" "redis_memory" {
   }
 
   action {
-    action_group_id = data.azurerm_monitor_action_group.main[0].id
+    action_group_id = local.action_group_id
   }
 
   lifecycle {
