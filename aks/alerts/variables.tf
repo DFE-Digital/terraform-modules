@@ -89,7 +89,9 @@ variable "azure_enable_redis_monitoring" {
 }
 
 variable "redis_cache_name" {
-  type = string
+  type        = string
+  description = "Name of redis cache"
+  default     = null
 }
 
 variable "azure_redis_memory_threshold" {
