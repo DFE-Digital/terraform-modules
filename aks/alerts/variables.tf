@@ -50,12 +50,6 @@ variable "config_short" {
   description = "Short name of the configuration"
 }
 
-variable "db_name" {
-  type        = string
-  description = "Name of postgres db"
-  default     = null
-}
-
 variable "alert_window_size" {
   type     = string
   nullable = false
@@ -86,12 +80,6 @@ variable "azure_enable_redis_monitoring" {
   type     = bool
   nullable = false
   default  = false
-}
-
-variable "redis_cache_name" {
-  type        = string
-  description = "Name of redis cache"
-  default     = null
 }
 
 variable "azure_redis_memory_threshold" {
