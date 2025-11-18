@@ -3,7 +3,7 @@
 resource "azurerm_monitor_metric_alert" "container_restarts" {
   count = var.azure_enable_app_monitoring ? 1 : 0
 
-  name                = "${local.app_name}-container-restarts"
+  name                = "${var.app_name}-container-restarts"
   resource_group_name = local.monitoring_resource_group_name
   scopes              = [var.kubernetes_cluster_id]
   description         = "Action will be triggered when container restarts is greater than 0"
@@ -19,7 +19,7 @@ resource "azurerm_monitor_metric_alert" "container_restarts" {
     dimension {
       name     = "controllerName"
       operator = "StartsWith"
-      values   = ["${local.app_name}"]
+      values   = ["${var.app_name}"]
     }
   }
 
