@@ -47,3 +47,7 @@ output "azure_backup_storage_container_name" {
 output "azure_server_id" {
   value = var.use_azure ? azurerm_postgresql_flexible_server.main[0].id : null
 }
+
+output "azure_server_name" {
+  value = var.use_azure ? local.azure_name : null
+}
