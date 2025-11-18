@@ -80,6 +80,7 @@ resource "airbyte_destination_bigquery" "destination_bigquery" {
     dataset_id       = local.gcp_dataset_name
     dataset_location = "europe-west2"
     credentials_json = local.gcp_credentials
+    raw_data_dataset = "${local.gcp_dataset_name}_internal"
 
     loading_method = {
       batched_standard_inserts = {}

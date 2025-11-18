@@ -12,6 +12,11 @@ variable "gcp_dataset" {
   description = "Name of an existing dataset. Optional: if not provided, create a new dataset"
   default     = null
 }
+variable "gcp_dataset_internal" {
+  type        = string
+  description = "Name of an existing dataset. Optional: if not provided, create a new dataset"
+  default     = null
+}
 variable "gcp_keyring" {
   type        = string
   description = "Name of an existing keyring. Required when creating the dataset"
