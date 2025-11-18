@@ -19,7 +19,7 @@ resource "azurerm_monitor_metric_alert" "container_restarts" {
     dimension {
       name     = "controllerName"
       operator = "StartsWith"
-      values   = [local.app_name]
+      values   = ["${local.app_name}"]
     }
   }
 
