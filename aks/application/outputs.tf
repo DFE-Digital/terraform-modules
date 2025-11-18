@@ -9,3 +9,7 @@ output "url" {
 output "probe_url" {
   value = var.probe_path != null ? "https://${local.hostname}${var.probe_path}" : null
 }
+
+output "application_name" {
+  value = local.app_name
+}

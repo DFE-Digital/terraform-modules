@@ -13,10 +13,6 @@ locals {
   }
   alert_frequency = local.alert_frequency_map[var.alert_window_size]
 
-  # app variables
-  name_suffix = var.app_name != null ? "-${var.app_name}" : ""
-  app_name    = "${var.service_name}-${var.environment}${local.name_suffix}"
-
   # db variables
   db_name   = var.azure_enable_db_monitoring ? data.azurerm_postgresql_flexible_server.db[0].name: null
   db_scopes = var.azure_enable_db_monitoring ? [data.azurerm_postgresql_flexible_server.db[0].id]: []
