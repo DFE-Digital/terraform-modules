@@ -12,6 +12,11 @@ data "azurerm_user_assigned_identity" "gcp_wif" {
   resource_group_name = module.cluster_data.configuration_map.resource_group_name
 }
 
+# # replace with variable and count
+# data "google_service_account" "bqappender" {
+#   account_id   = var.gcp_bq_sa
+# }
+
 resource "google_service_account" "appender" {
   account_id   = "airbyte-wif-${var.service_short}-${var.environment}"
   display_name = "Service Account appender to ${var.service_short} in ${var.environment} environment"
@@ -40,10 +45,16 @@ resource "google_project_iam_member" "appender" {
   member  = "serviceAccount:${google_service_account.appender.email}"
 }
 
-resource "google_project_iam_member" "viewer" {
+# resource "google_project_iam_member" "viewer" {
+#   project = data.google_project.main.project_id
+#   role    = "roles/datacatalog.viewer"
+#   member  = "serviceAccount:${google_service_account.appender.email}"
+# }
+
+resource "google_project_iam_member" "bqappender" {
   project = data.google_project.main.project_id
-  role    = "roles/datacatalog.viewer"
-  member  = "serviceAccount:${google_service_account.appender.email}"
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${var.gcp_bq_sa}"
 }
 
 data "google_kms_key_ring" "main" {
@@ -102,7 +113,7 @@ resource "google_bigquery_dataset" "main" {
 
 # Add service account permission to dataset, whether we create it or it already exists
 
-# removed 4/12 but not sure it should be
+# put back as seeing Permission bigquery.tables.get denied on table rtt_airbyte_pr_5837.trainees on the worker
 # resource "google_bigquery_dataset_iam_member" "appender" {
 #   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
 #   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
@@ -119,6 +130,12 @@ resource "google_bigquery_dataset_iam_member" "owner" {
   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${google_service_account.appender.email}"
+}
+
+resource "google_bigquery_dataset_iam_member" "bqowner" {
+  dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
+  role       = "roles/bigquery.dataOwner"
+  member     = "serviceAccount:${var.gcp_bq_sa}"
 }
 
 # resource "google_bigquery_dataset_iam_member" "owner_internal" {

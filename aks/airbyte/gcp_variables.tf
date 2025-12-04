@@ -43,6 +43,11 @@ variable "gcp_table_deletion_protection" {
   default     = true
   nullable    = false
 }
+variable "gcp_bq_sa" {
+  type        = string
+  description = "Name of BQ service account"
+  default     = null
+}
 
 locals {
   # Global constants
