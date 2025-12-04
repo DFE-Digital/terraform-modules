@@ -45,11 +45,12 @@ resource "google_project_iam_member" "appender" {
   member  = "serviceAccount:${google_service_account.appender.email}"
 }
 
-# resource "google_project_iam_member" "viewer" {
-#   project = data.google_project.main.project_id
-#   role    = "roles/datacatalog.viewer"
-#   member  = "serviceAccount:${google_service_account.appender.email}"
-# }
+# added back due to try and fix User does not have permission to get taxonomy
+resource "google_project_iam_member" "viewer" {
+  project = data.google_project.main.project_id
+  role    = "roles/datacatalog.viewer"
+  member  = "serviceAccount:${google_service_account.appender.email}"
+}
 
 resource "google_project_iam_member" "bqappender" {
   project = data.google_project.main.project_id
@@ -120,11 +121,11 @@ resource "google_bigquery_dataset" "main" {
 #   member     = "serviceAccount:${google_service_account.appender.email}"
 # }
 
-# resource "google_bigquery_dataset_iam_member" "appender_internal" {
-#   dataset_id = var.gcp_dataset_internal == null ? google_bigquery_dataset.internal[0].dataset_id : var.gcp_dataset_internal
-#   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
-#   member     = "serviceAccount:${google_service_account.appender.email}"
-# }
+resource "google_bigquery_dataset_iam_member" "appender_internal" {
+  dataset_id = "airbyte_internal"
+  role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
+  member     = "serviceAccount:${google_service_account.appender.email}"
+}
 
 resource "google_bigquery_dataset_iam_member" "owner" {
   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
