@@ -91,7 +91,8 @@ resource "azurerm_postgresql_flexible_server" "main" {
       # Allow Azure to manage primary and standby server on fail-over. Ignore changes.
       high_availability[0].standby_availability_zone,
       # Required for import because of https://github.com/hashicorp/terraform-provider-azurerm/issues/15586
-      create_mode
+      create_mode,
+      version
     ]
   }
 }

@@ -46,6 +46,12 @@ resource "google_project_iam_member" "viewer" {
   member  = "serviceAccount:${google_service_account.appender.email}"
 }
 
+resource "google_project_iam_member" "bqappender" {
+  project = data.google_project.main.project_id
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${var.gcp_bq_sa}"
+}
+
 data "google_kms_key_ring" "main" {
   count = var.gcp_keyring != null ? 1 : 0
 
@@ -73,16 +79,16 @@ resource "google_bigquery_dataset" "main" {
 }
 
 # Create dataset if it doesn't exist
-resource "google_bigquery_dataset" "internal" {
-  count = var.gcp_dataset_internal == null ? 1 : 0
+# resource "google_bigquery_dataset" "internal" {
+#   count = var.gcp_dataset_internal == null ? 1 : 0
 
-  dataset_id = "${local.gcp_dataset_name}_internal"
-  location   = local.gcp_region
-  default_encryption_configuration {
-    kms_key_name = data.google_kms_crypto_key.main[0].id
-  }
-  delete_contents_on_destroy = true
-}
+#   dataset_id = "${local.gcp_dataset_name}_internal"
+#   location   = local.gcp_region
+#   default_encryption_configuration {
+#     kms_key_name = data.google_kms_crypto_key.main[0].id
+#   }
+#   delete_contents_on_destroy = true
+# }
 
 # Create a custom role
 # at the moment create this manually once per project
@@ -109,7 +115,7 @@ resource "google_bigquery_dataset_iam_member" "appender" {
 }
 
 resource "google_bigquery_dataset_iam_member" "appender_internal" {
-  dataset_id = var.gcp_dataset_internal == null ? google_bigquery_dataset.internal[0].dataset_id : var.gcp_dataset_internal
+  dataset_id = "airbyte_internal"
   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
   member     = "serviceAccount:${google_service_account.appender.email}"
 }
@@ -120,8 +126,8 @@ resource "google_bigquery_dataset_iam_member" "owner" {
   member     = "serviceAccount:${google_service_account.appender.email}"
 }
 
-resource "google_bigquery_dataset_iam_member" "owner_internal" {
-  dataset_id = var.gcp_dataset_internal == null ? google_bigquery_dataset.internal[0].dataset_id : var.gcp_dataset_internal
+resource "google_bigquery_dataset_iam_member" "bqowner" {
+  dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
   role       = "roles/bigquery.dataOwner"
-  member     = "serviceAccount:${google_service_account.appender.email}"
+  member     = "serviceAccount:${var.gcp_bq_sa}"
 }
