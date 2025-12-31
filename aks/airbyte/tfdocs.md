@@ -88,5 +88,6 @@
 
 | Name | Description |
 |------|-------------|
+| <a name="output_airbyte_connection_id"></a> [airbyte\_connection\_id](#output\_airbyte\_connection\_id) | n/a |
 | <a name="output_google_cloud_credentials"></a> [google\_cloud\_credentials](#output\_google\_cloud\_credentials) | Credentials for Google workload identity federation |
 | <a name="output_password"></a> [password](#output\_password) | n/a |

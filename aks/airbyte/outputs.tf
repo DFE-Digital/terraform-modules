@@ -8,3 +8,7 @@ output "google_cloud_credentials" {
   value       = local.gcp_credentials
   sensitive   = true
 }
+
+output "airbyte_connection_id" {
+  value = airbyte_connection.connection.connection_id
+}
