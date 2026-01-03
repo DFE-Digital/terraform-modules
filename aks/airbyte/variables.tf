@@ -140,6 +140,8 @@ locals {
     database_name = var.database_name
   }
 
+  source_id = var.use_azure == true ? airbyte_source_postgres.source_postgres[0].source_id : airbyte_source_postgres.source_postgres_container[0].source_id
+
   sqlCommand      = templatefile("${path.module}/files/airbyte.sql.tmpl", local.template_variable_map)
   curlCommand     = templatefile("${path.module}/files/airbyte.curl.tmpl", local.template_variable_map_curl)
   sql_secret_hash = substr(sha1("${local.sqlCommand}"), 0, 12)
