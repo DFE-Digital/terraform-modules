@@ -140,6 +140,45 @@ module "streams_init_job" {
 #   secret_ref     = var.secret_ref
 #   cpu            = var.cpu
 # }
+#
+
+module "dotnet_streams_update_job" {
+  source = "../job_configuration"
+  depends_on = [module.streams_init_job]
+  namespace    = var.namespace
+  environment  = var.environment
+  service_name = var.service_name
+  docker_image = var.docker_image
+  commands     = ["/bin/sh"]
+  arguments    = [
+    "-f",
+    "dfe-analytics/apply-config.sh",
+    "--google-credentials",
+    local.gcp_credentials,
+    "--project-id",
+    data.google_project.main.project_id,
+    "--dataset-id",
+    local.gcp_dataset_name,
+    "--hidden-policy-tag-name",
+    local.gcp_policy_tag_name,
+    "--airbyte-api-base-address",
+    var.server_url,
+    "--airbyte-client-id",
+    var.client_id,
+    "--airbyte-client-secret",
+    var.client_secret,
+    "--airbyte-connection-id",
+    airbyte_connection.connection.connection_id
+  ]
+  working_dir = "/Apps/TrsCli"
+
+  job_name     = "dotnet-airbyte-stream-update"
+  enable_logit = true
+
+  config_map_ref = var.config_map_ref
+  secret_ref     = var.secret_ref
+  cpu            = var.cpu
+}
 
 resource "kubernetes_secret" "airbyte-sql" {
   metadata {

@@ -14,18 +14,21 @@ resource "kubernetes_job" "main" {
   spec {
     template {
       metadata {
-        labels      = { app = "${var.service_name}-${var.environment}-${var.job_name}" }
+        labels      = { app = "${var.service_name}-${var.environment}-${var.job_name}", "azure.workload.identity/use" = "true" }
         annotations = local.logit_annotations
       }
 
 
 
       spec {
+        service_account_name            = "gcp-wif"
+
         container {
           name    = var.job_name
           image   = var.docker_image
           command = var.commands
           args    = var.arguments
+          working_dir = var.working_dir
           env_from {
             config_map_ref {
               name = var.config_map_ref

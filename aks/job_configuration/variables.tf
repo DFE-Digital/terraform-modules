@@ -63,3 +63,10 @@ variable "timeout" {
   default     = "15m"
   description = "Create and update timeout for job"
 }
+
+variable "working_dir" {
+  type        = string
+  default     = null
+  description = "Container working directory (mapped to container.working_dir)"
+  nullable    = true
+}
