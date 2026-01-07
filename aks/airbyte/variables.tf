@@ -92,12 +92,6 @@ variable "postgres_url" {
   description = "Postgres connection url"
 }
 
-variable "connection_streams" {
-  type        = string
-  sensitive   = true
-  description = "connection stream configuration"
-}
-
 variable "client_id" {
   type        = string
   sensitive   = true
@@ -127,14 +121,6 @@ locals {
   # on the container as we use a shell environment variable for that
   replication_password = replace(local.original_repl_password, "/\\$+/", "$")
 
-  template_variable_map_curl = {
-    server_url         = var.server_url
-    client_id          = var.client_id
-    client_secret      = var.client_secret
-    connection_id      = airbyte_connection.connection.connection_id
-    connection_streams = var.connection_streams
-  }
-
   template_variable_map = {
     repl_password = local.replication_password
     database_name = var.database_name
@@ -143,6 +129,5 @@ locals {
   source_id = var.use_azure == true ? airbyte_source_postgres.source_postgres[0].source_id : airbyte_source_postgres.source_postgres_container[0].source_id
 
   sqlCommand      = templatefile("${path.module}/files/airbyte.sql.tmpl", local.template_variable_map)
-  curlCommand     = templatefile("${path.module}/files/airbyte.curl.tmpl", local.template_variable_map_curl)
   sql_secret_hash = substr(sha1("${local.sqlCommand}"), 0, 12)
 }

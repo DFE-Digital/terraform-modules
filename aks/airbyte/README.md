@@ -87,11 +87,7 @@ variable "pg_airbyte_enabled" { default = false }
 
 Then add "pg_airbyte_enabled": true to the env.tfvars.json to enable for an environment
 
-### 4. Create an airbyte_stream_config.json
-- this can be generated from analytics.yml. A rails rake task is available for this:
-SUPPRESS_DFE_ANALYTICS_INIT=1 rake dfe:analytics:regenerate_airbyte_stream_config
-
-### 5. Add the below to the service terraform to create the airbyte source, destination and connection and gcp resources
+### 4. Add the below to the service terraform to create the airbyte source, destination and connection and gcp resources
 
 ```hcl
 provider "google" {
@@ -153,7 +149,6 @@ module "airbyte" {
   repl_password      = data.azurerm_key_vault_secret.airbyte_replication_password[0].value
   server_url         = "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
   connection_status  = var.connection_status
-  connection_streams = local.connection_streams
 
   cluster           = var.cluster
   namespace         = var.namespace
@@ -182,10 +177,6 @@ variable "connection_status" {
   description = "Connectin status, either active or inactive"
 }
 
-locals {
-  connection_streams = var.airbyte_enabled ? file("workspace-variables/airbyte_stream_config.json") : null
-}
-
 terraform {
   required_version = "~> 1.9.8"
   required_providers {
@@ -210,7 +201,6 @@ Once you add "airbyte_enabled": true to the env.tfvars.json this will then creat
 - airbyte destination
 - airbyte connection (by default inactive)
 - initialise the database replication slot
-- initialise the airbyte stream config
 - create gcp resources, including
   - service account
   - bigquery dataset
@@ -218,10 +208,10 @@ Once you add "airbyte_enabled": true to the env.tfvars.json this will then creat
 By default the Airbyte connection will be inactive
 Add "connection_status": "active" to the env.tfvars.json to enable
 
-### 6. Log into the ui to check all looks ok
+### 5. Log into the ui to check all looks ok
 - https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}/workspaces/${var.workspace_id}
 
-### 7. Enable monitoring for the database server if using Azure Postgresql
+### 6. Enable monitoring for the database server if using Azure Postgresql
 - set azure_enable_monitoring = true in the terraform for the postgres module
 - this may require a new resource group and azure monitor to be created
 

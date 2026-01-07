@@ -103,25 +103,6 @@ source_id        = local.source_id
   }
 }
 
-module "streams_init_job" {
-  source = "../job_configuration"
-
-  depends_on = [airbyte_connection.connection]
-
-  namespace    = var.namespace
-  environment  = var.environment
-  service_name = var.service_name
-  docker_image = "ghcr.io/dfe-digital/teacher-services-cloud:curl-3.21.3"
-  commands     = ["/bin/sh"]
-  arguments    = ["-c", "${local.curlCommand}"]
-  job_name     = "airbyte-stream-init"
-  enable_logit = true
-
-  config_map_ref = var.config_map_ref
-  secret_ref     = var.secret_ref
-  cpu            = var.cpu
-}
-
 # module "streams_update_job" {
 #   source = "../job_configuration"
 
