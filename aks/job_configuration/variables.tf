@@ -64,9 +64,9 @@ variable "timeout" {
   description = "Create and update timeout for job"
 }
 
-variable "working_dir" {
+variable "enable_gcp_wif" {
   type        = string
-  default     = null
-  description = "Container working directory (mapped to container.working_dir)"
-  nullable    = true
+  default     = false
+  description = "Let the job use the GCP workload identity federation service account to get a token"
+  nullable    = false
 }

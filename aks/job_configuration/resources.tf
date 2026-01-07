@@ -3,6 +3,10 @@ locals {
     "logit.io/send"        = "true"
     "fluentbit.io/exclude" = "true"
   } : {}
+
+  gcp_wif_label = var.enable_gcp_wif ? {
+    "azure.workload.identity/use" = "true"
+  } : {}
 }
 
 resource "kubernetes_job" "main" {
@@ -14,21 +18,18 @@ resource "kubernetes_job" "main" {
   spec {
     template {
       metadata {
-        labels      = { app = "${var.service_name}-${var.environment}-${var.job_name}", "azure.workload.identity/use" = "true" }
+        labels      = merge({ app = "${var.service_name}-${var.environment}-${var.job_name}" }, local.gcp_wif_label)
         annotations = local.logit_annotations
       }
 
-
-
       spec {
-        service_account_name            = "gcp-wif"
+        service_account_name = var.enable_gcp_wif ? "gcp-wif" : null
 
         container {
           name    = var.job_name
           image   = var.docker_image
           command = var.commands
           args    = var.arguments
-          working_dir = var.working_dir
           env_from {
             config_map_ref {
               name = var.config_map_ref
