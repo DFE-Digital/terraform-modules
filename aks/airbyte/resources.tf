@@ -71,31 +71,10 @@ resource "airbyte_connection" "connection" {
   }
 }
 
-module "streams_init_job" {
-  source = "../job_configuration"
-
-  depends_on = [airbyte_connection.connection, time_sleep.wait_60_seconds]
-
-  namespace    = var.namespace
-  environment  = var.environment
-  service_name = var.service_name
-  docker_image = "ghcr.io/dfe-digital/teacher-services-cloud:curl-3.21.3"
-  commands     = ["/bin/sh"]
-  arguments    = ["-c", "${local.curlCommand}"]
-  job_name     = "airbyte-stream-init"
-  enable_logit = true
-
-  config_map_ref = var.config_map_ref
-  secret_ref     = var.secret_ref
-  cpu            = var.cpu
-}
-
 module "rails_streams_update_job" {
   count = var.is_rails_application ? 1 : 0
 
   source = "../job_configuration"
-
-  depends_on = [module.streams_init_job]
 
   namespace    = var.namespace
   environment  = var.environment
