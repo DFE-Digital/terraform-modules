@@ -63,3 +63,10 @@ variable "timeout" {
   default     = "15m"
   description = "Create and update timeout for job"
 }
+
+variable "enable_gcp_wif" {
+  type        = string
+  default     = false
+  description = "Let the job use the GCP workload identity federation service account to get a token"
+  nullable    = false
+}

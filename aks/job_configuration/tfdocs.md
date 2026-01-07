@@ -27,6 +27,7 @@ No modules.
 | <a name="input_config_map_ref"></a> [config\_map\_ref](#input\_config\_map\_ref) | formerly: module.application\_configuration.kubernetes\_config\_map\_name | `string` | n/a | yes |
 | <a name="input_cpu"></a> [cpu](#input\_cpu) | formerly: module.cluster\_data.configuration\_map.cpu\_min | `string` | n/a | yes |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Docker image to be used for this job | `any` | n/a | yes |
+| <a name="input_enable_gcp_wif"></a> [enable\_gcp\_wif](#input\_enable\_gcp\_wif) | Let the job use the GCP workload identity federation service account to get a token | `string` | `false` | no |
 | <a name="input_enable_logit"></a> [enable\_logit](#input\_enable\_logit) | boolean for enabling Logit | `string` | `"false"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment where this app is deployed. Usually test or production | `any` | n/a | yes |
 | <a name="input_job_name"></a> [job\_name](#input\_job\_name) | name handle for k8s job | `string` | `"migration"` | no |
