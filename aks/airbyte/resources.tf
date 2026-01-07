@@ -122,7 +122,9 @@ module "streams_init_job" {
   cpu            = var.cpu
 }
 
-module "streams_update_job" {
+module "rails_streams_update_job" {
+  count = var.is_rails_application ? 1 : 0
+
   source = "../job_configuration"
 
   depends_on = [module.streams_init_job]
@@ -133,6 +135,44 @@ module "streams_update_job" {
   docker_image = var.docker_image
   commands     = ["/bin/sh"]
   arguments    = ["-c", "rake dfe:analytics:airbyte_connection_refresh"]
+  job_name     = "airbyte-stream-update"
+  enable_logit = true
+
+  config_map_ref = var.config_map_ref
+  secret_ref     = var.secret_ref
+  cpu            = var.cpu
+}
+
+module "dotnet_streams_update_job" {
+  count = var.is_dotnet_application ? 1 : 0
+
+  source = "../job_configuration"
+
+  namespace    = var.namespace
+  environment  = var.environment
+  service_name = var.service_name
+  docker_image = var.docker_image
+  commands     = ["/bin/sh"]
+  arguments = [
+    "-f",
+    "${coalesce(trimsuffix(var.dotnet_application_directory, "/"), ".")}/dfe-analytics/apply-config.sh",
+    "--google-credentials",
+    local.gcp_credentials,
+    "--project-id",
+    data.google_project.main.project_id,
+    "--dataset-id",
+    local.gcp_dataset_name,
+    "--hidden-policy-tag-name",
+    local.gcp_policy_tag_name,
+    "--airbyte-api-base-address",
+    var.server_url,
+    "--airbyte-client-id",
+    var.client_id,
+    "--airbyte-client-secret",
+    var.client_secret,
+    "--airbyte-connection-id",
+    airbyte_connection.connection.connection_id
+  ]
   job_name     = "airbyte-stream-update"
   enable_logit = true
 
