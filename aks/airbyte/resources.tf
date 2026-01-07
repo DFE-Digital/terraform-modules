@@ -90,7 +90,7 @@ resource "airbyte_destination_bigquery" "destination_bigquery" {
 
 resource "airbyte_connection" "connection" {
   name           = local.connection_name
-source_id        = local.source_id
+  source_id      = local.source_id
   destination_id = airbyte_destination_bigquery.destination_bigquery.destination_id
 
   non_breaking_schema_updates_behavior = "propagate_fully"
@@ -124,16 +124,18 @@ source_id        = local.source_id
 #
 
 module "dotnet_streams_update_job" {
+  count = var.is_dotnet_application ? 1 : 0
+
   source = "../job_configuration"
-  depends_on = [module.streams_init_job]
+
   namespace    = var.namespace
   environment  = var.environment
   service_name = var.service_name
   docker_image = var.docker_image
   commands     = ["/bin/sh"]
-  arguments    = [
+  arguments = [
     "-f",
-    "dfe-analytics/apply-config.sh",
+    "${coalesce(trimsuffix(var.dotnet_application_directory, "/"), ".")}/dfe-analytics/apply-config.sh",
     "--google-credentials",
     local.gcp_credentials,
     "--project-id",
@@ -151,10 +153,9 @@ module "dotnet_streams_update_job" {
     "--airbyte-connection-id",
     airbyte_connection.connection.connection_id
   ]
-  working_dir = "/Apps/TrsCli"
-
-  job_name     = "dotnet-airbyte-stream-update"
-  enable_logit = true
+  job_name       = "airbyte-stream-update"
+  enable_logit   = true
+  enable_gcp_wif = true
 
   config_map_ref = var.config_map_ref
   secret_ref     = var.secret_ref
