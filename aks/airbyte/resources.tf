@@ -70,7 +70,7 @@ resource "airbyte_source_postgres" "source_postgres_container" {
 }
 
 resource "airbyte_destination_bigquery" "destination_bigquery" {
-  depends_on = [google_bigquery_dataset.main, google_bigquery_dataset_iam_member.appender, google_bigquery_dataset_iam_member.appender_internal]
+  depends_on = [google_bigquery_dataset.main]
 
   name         = local.destination_name
   workspace_id = var.workspace_id
@@ -80,7 +80,7 @@ resource "airbyte_destination_bigquery" "destination_bigquery" {
     dataset_id       = local.gcp_dataset_name
     dataset_location = "europe-west2"
     credentials_json = local.gcp_credentials
-    raw_data_dataset = "${local.gcp_dataset_name}_internal"
+    raw_data_dataset = ""
 
     loading_method = {
       batched_standard_inserts = {}
@@ -90,7 +90,7 @@ resource "airbyte_destination_bigquery" "destination_bigquery" {
 
 resource "airbyte_connection" "connection" {
   name           = local.connection_name
-  source_id      = var.use_azure == true ? airbyte_source_postgres.source_postgres[0].source_id : airbyte_source_postgres.source_postgres_container[0].source_id
+  source_id      = local.source_id
   destination_id = airbyte_destination_bigquery.destination_bigquery.destination_id
 
   non_breaking_schema_updates_behavior = "propagate_fully"
@@ -122,24 +122,24 @@ module "streams_init_job" {
   cpu            = var.cpu
 }
 
-module "streams_update_job" {
-  source = "../job_configuration"
+# module "streams_update_job" {
+#   source = "../job_configuration"
 
-  depends_on = [module.streams_init_job]
+#   depends_on = [module.streams_init_job]
 
-  namespace    = var.namespace
-  environment  = var.environment
-  service_name = var.service_name
-  docker_image = var.docker_image
-  commands     = ["/bin/sh"]
-  arguments    = ["-c", "rake dfe:analytics:airbyte_connection_refresh"]
-  job_name     = "airbyte-stream-update"
-  enable_logit = true
+#   namespace    = var.namespace
+#   environment  = var.environment
+#   service_name = var.service_name
+#   docker_image = var.docker_image
+#   commands     = ["/bin/sh"]
+#   arguments    = ["-c", "rake dfe:analytics:airbyte_deploy_task"]
+#   job_name     = "airbyte-stream-update"
+#   enable_logit = true
 
-  config_map_ref = var.config_map_ref
-  secret_ref     = var.secret_ref
-  cpu            = var.cpu
-}
+#   config_map_ref = var.config_map_ref
+#   secret_ref     = var.secret_ref
+#   cpu            = var.cpu
+# }
 
 resource "kubernetes_secret" "airbyte-sql" {
   metadata {
