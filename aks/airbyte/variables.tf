@@ -115,6 +115,24 @@ variable "use_azure" {
   description = "Whether to deploy using Azure Postgres"
 }
 
+variable "is_rails_application" {
+  type        = bool
+  default     = false
+  description = "Whether to run the Airbyte deployment rake task in the application container"
+}
+
+variable "is_dotnet_application" {
+  type        = bool
+  default     = false
+  description = "Whether to run the Airbyte deployment script in the application container"
+}
+
+variable "dotnet_application_directory" {
+  type        = string
+  default     = ""
+  description = "The path to application containing the dfe-analytics directory"
+}
+
 locals {
   source_name      = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-pg-source"
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
