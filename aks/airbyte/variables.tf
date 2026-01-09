@@ -92,12 +92,6 @@ variable "postgres_url" {
   description = "Postgres connection url"
 }
 
-variable "connection_streams" {
-  type        = string
-  sensitive   = true
-  description = "connection stream configuration"
-}
-
 variable "client_id" {
   type        = string
   sensitive   = true
@@ -115,6 +109,24 @@ variable "use_azure" {
   description = "Whether to deploy using Azure Postgres"
 }
 
+variable "is_rails_application" {
+  type        = bool
+  default     = false
+  description = "Whether to run the Airbyte deployment rake task in the application container"
+}
+
+variable "is_dotnet_application" {
+  type        = bool
+  default     = false
+  description = "Whether to run the Airbyte deployment script in the application container"
+}
+
+variable "dotnet_application_directory" {
+  type        = string
+  default     = ""
+  description = "The path to application containing the dfe-analytics directory"
+}
+
 locals {
   source_name      = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-pg-source"
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
@@ -127,20 +139,13 @@ locals {
   # on the container as we use a shell environment variable for that
   replication_password = replace(local.original_repl_password, "/\\$+/", "$")
 
-  template_variable_map_curl = {
-    server_url         = var.server_url
-    client_id          = var.client_id
-    client_secret      = var.client_secret
-    connection_id      = airbyte_connection.connection.connection_id
-    connection_streams = var.connection_streams
-  }
-
   template_variable_map = {
     repl_password = local.replication_password
     database_name = var.database_name
   }
 
+  source_id = var.use_azure == true ? airbyte_source_postgres.source_postgres[0].source_id : airbyte_source_postgres.source_postgres_container[0].source_id
+
   sqlCommand      = templatefile("${path.module}/files/airbyte.sql.tmpl", local.template_variable_map)
-  curlCommand     = templatefile("${path.module}/files/airbyte.curl.tmpl", local.template_variable_map_curl)
   sql_secret_hash = substr(sha1("${local.sqlCommand}"), 0, 12)
 }
