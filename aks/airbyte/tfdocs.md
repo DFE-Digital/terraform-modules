@@ -19,7 +19,6 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_data"></a> [cluster\_data](#module\_cluster\_data) | ../cluster_data | n/a |
-| <a name="module_streams_init_job"></a> [streams\_init\_job](#module\_streams\_init\_job) | ../job_configuration | n/a |
 | <a name="module_streams_update_job"></a> [streams\_update\_job](#module\_streams\_update\_job) | ../job_configuration | n/a |
 
 ## Resources
@@ -59,7 +58,6 @@
 | <a name="input_cluster"></a> [cluster](#input\_cluster) | AKS cluster name e.g. test, production... Required | `string` | n/a | yes |
 | <a name="input_config_map_ref"></a> [config\_map\_ref](#input\_config\_map\_ref) | formerly: module.application\_configuration.kubernetes\_config\_map\_name | `string` | n/a | yes |
 | <a name="input_connection_status"></a> [connection\_status](#input\_connection\_status) | Connectin status, either active or inactive | `string` | `null` | no |
-| <a name="input_connection_streams"></a> [connection\_streams](#input\_connection\_streams) | connection stream configuration | `string` | n/a | yes |
 | <a name="input_cpu"></a> [cpu](#input\_cpu) | formerly: module.cluster\_data.configuration\_map.cpu\_min | `string` | n/a | yes |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | database name | `string` | n/a | yes |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Current application environment | `string` | n/a | yes |
