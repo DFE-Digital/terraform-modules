@@ -5,6 +5,10 @@ SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname = 'airbyte_replication') AS r
 \else
  CREATE USER airbyte_replication WITH REPLICATION PASSWORD '${repl_password}';
  GRANT CONNECT ON DATABASE "${database_name}" TO airbyte_replication;
+ CREATE TABLE IF NOT EXISTS airbyte_heartbeat( id integer, last_heartbeat timestamp with time zone );
+ GRANT SELECT,INSERT,UPDATE ON TABLE airbyte_heartbeat TO airbyte_replication;
+ ALTER TABLE airbyte_heartbeat REPLICA IDENTITY FULL;
+ INSERT INTO airbyte_heartbeat VALUES ('1');
  GRANT USAGE ON SCHEMA public TO airbyte_replication;
  GRANT SELECT ON ALL TABLES IN SCHEMA public TO airbyte_replication;
  ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO airbyte_replication;

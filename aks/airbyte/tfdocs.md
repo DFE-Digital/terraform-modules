@@ -13,6 +13,7 @@
 | <a name="provider_google"></a> [google](#provider\_google) | 6.6.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
+| <a name="provider_time"></a> [time](#provider\_time) | n/a |
 
 ## Modules
 
@@ -29,13 +30,10 @@
 | [airbyte_connection.connection](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/connection) | resource |
 | [airbyte_destination_bigquery.destination_bigquery](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/destination_bigquery) | resource |
 | [airbyte_source_postgres.source_postgres](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/source_postgres) | resource |
-| [airbyte_source_postgres.source_postgres_container](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/source_postgres) | resource |
-| [google_bigquery_dataset.internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset) | resource |
 | [google_bigquery_dataset.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset) | resource |
 | [google_bigquery_dataset_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.appender_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.owner](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
-| [google_bigquery_dataset_iam_member.owner_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_project_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.viewer](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_service_account.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/service_account) | resource |
@@ -43,6 +41,8 @@
 | [kubernetes_job.airbyte-database-setup](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/job) | resource |
 | [kubernetes_secret.airbyte-sql](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [time_sleep.wait_15_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
+| [time_sleep.wait_60_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_user_assigned_identity.gcp_wif](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/user_assigned_identity) | data source |
 | [google_kms_crypto_key.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/kms_crypto_key) | data source |
@@ -88,5 +88,8 @@
 
 | Name | Description |
 |------|-------------|
+| <a name="output_airbyte_connection_id"></a> [airbyte\_connection\_id](#output\_airbyte\_connection\_id) | id of the airbyte connection |
+| <a name="output_airbyte_destination_id"></a> [airbyte\_destination\_id](#output\_airbyte\_destination\_id) | id of the airbyte gcp source |
+| <a name="output_airbyte_source_id"></a> [airbyte\_source\_id](#output\_airbyte\_source\_id) | id of the airbyte postgres source |
 | <a name="output_google_cloud_credentials"></a> [google\_cloud\_credentials](#output\_google\_cloud\_credentials) | Credentials for Google workload identity federation |
 | <a name="output_password"></a> [password](#output\_password) | n/a |
