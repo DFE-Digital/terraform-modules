@@ -131,7 +131,7 @@ module "streams_update_job" {
   service_name = var.service_name
   docker_image = var.docker_image
   commands     = ["/bin/sh"]
-  arguments    = ["-c", "rake dfe:analytics:airbyte_connection_refresh"]
+  arguments    = ["-c", "rake dfe:analytics:airbyte_deploy_tasks"]
   job_name     = "airbyte-stream-update"
   enable_logit = true
 
