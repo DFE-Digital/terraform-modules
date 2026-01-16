@@ -6,8 +6,6 @@ resource "random_password" "password" {
 }
 
 resource "airbyte_source_postgres" "source_postgres" {
-  count = var.use_azure == true ? 1 : 0
-
   depends_on = [kubernetes_job.airbyte-database-setup]
 
   name         = local.source_name
@@ -20,57 +18,25 @@ resource "airbyte_source_postgres" "source_postgres" {
     username = "airbyte_replication"
     password = local.replication_password
 
-    ssl_mode = {
-      require = {}
-    }
+    ssl_mode = var.use_azure ? { require = {} } : { disable = {} }
+
     tunnel_method = {
       no_tunnel = {}
     }
     replication_method = {
       read_changes_using_write_ahead_log_cdc = {
-        replication_slot = "airbyte_slot"
-        publication      = "airbyte_publication"
-        plugin           = "pgoutput"
-        initial_snapshot = true
-      }
-    }
-  }
-}
-
-resource "airbyte_source_postgres" "source_postgres_container" {
-  count = var.use_azure == true ? 0 : 1
-
-  depends_on = [kubernetes_job.airbyte-database-setup]
-
-  name         = local.source_name
-  workspace_id = var.workspace_id
-
-  configuration = {
-    host     = var.host_name
-    port     = 5432
-    database = var.database_name
-    username = "airbyte_replication"
-    password = local.replication_password
-
-    ssl_mode = {
-      disable = {}
-    }
-    tunnel_method = {
-      no_tunnel = {}
-    }
-    replication_method = {
-      read_changes_using_write_ahead_log_cdc = {
-        replication_slot = "airbyte_slot"
-        publication      = "airbyte_publication"
-        plugin           = "pgoutput"
-        initial_snapshot = true
+        replication_slot       = "airbyte_slot"
+        publication            = "airbyte_publication"
+        plugin                 = "pgoutput"
+        initial_snapshot       = true
+        heartbeat_action_query = "UPDATE airbyte_heartbeat SET last_heartbeat = now() WHERE id = 1;"
       }
     }
   }
 }
 
 resource "airbyte_destination_bigquery" "destination_bigquery" {
-  depends_on = [google_bigquery_dataset.main, google_bigquery_dataset_iam_member.appender, google_bigquery_dataset_iam_member.appender_internal]
+  depends_on = [google_bigquery_dataset.main]
 
   name         = local.destination_name
   workspace_id = var.workspace_id
@@ -80,7 +46,7 @@ resource "airbyte_destination_bigquery" "destination_bigquery" {
     dataset_id       = local.gcp_dataset_name
     dataset_location = "europe-west2"
     credentials_json = local.gcp_credentials
-    raw_data_dataset = "${local.gcp_dataset_name}_internal"
+    raw_data_dataset = ""
 
     loading_method = {
       batched_standard_inserts = {}
@@ -89,8 +55,10 @@ resource "airbyte_destination_bigquery" "destination_bigquery" {
 }
 
 resource "airbyte_connection" "connection" {
+  depends_on = [kubernetes_job.airbyte-database-setup]
+
   name           = local.connection_name
-  source_id      = var.use_azure == true ? airbyte_source_postgres.source_postgres[0].source_id : airbyte_source_postgres.source_postgres_container[0].source_id
+  source_id      = airbyte_source_postgres.source_postgres.source_id
   destination_id = airbyte_destination_bigquery.destination_bigquery.destination_id
 
   non_breaking_schema_updates_behavior = "propagate_fully"
@@ -106,7 +74,7 @@ resource "airbyte_connection" "connection" {
 module "streams_init_job" {
   source = "../job_configuration"
 
-  depends_on = [airbyte_connection.connection]
+  depends_on = [airbyte_connection.connection, time_sleep.wait_60_seconds]
 
   namespace    = var.namespace
   environment  = var.environment
@@ -132,7 +100,7 @@ module "streams_update_job" {
   service_name = var.service_name
   docker_image = var.docker_image
   commands     = ["/bin/sh"]
-  arguments    = ["-c", "rake dfe:analytics:airbyte_connection_refresh"]
+  arguments    = ["-c", "rake dfe:analytics:airbyte_deploy_tasks"]
   job_name     = "airbyte-stream-update"
   enable_logit = true
 
@@ -152,7 +120,7 @@ resource "kubernetes_secret" "airbyte-sql" {
 }
 
 resource "kubernetes_job" "airbyte-database-setup" {
-  depends_on = [kubernetes_secret.airbyte-sql]
+  depends_on = [kubernetes_secret.airbyte-sql, time_sleep.wait_15_seconds]
 
   metadata {
     name      = "${var.service_name}-${var.environment}-airbyte-db-init-${kubernetes_secret.airbyte-sql.metadata[0].name}"
@@ -179,18 +147,6 @@ resource "kubernetes_job" "airbyte-database-setup" {
           volume_mount {
             name       = "airbyte-sql"
             mount_path = "/airbyte"
-          }
-
-          env_from {
-            config_map_ref {
-              name = var.config_map_ref
-            }
-          }
-
-          env_from {
-            secret_ref {
-              name = var.secret_ref
-            }
           }
 
           resources {
@@ -238,4 +194,14 @@ resource "kubernetes_job" "airbyte-database-setup" {
     create = "11m"
     update = "11m"
   }
+}
+
+resource "time_sleep" "wait_15_seconds" {
+  depends_on      = [kubernetes_secret.airbyte-sql]
+  create_duration = "15s"
+}
+
+resource "time_sleep" "wait_60_seconds" {
+  depends_on      = [airbyte_connection.connection]
+  create_duration = "60s"
 }
