@@ -20,8 +20,9 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_cluster_data"></a> [cluster\_data](#module\_cluster\_data) | ../cluster_data | n/a |
+| <a name="module_dotnet_streams_update_job"></a> [dotnet\_streams\_update\_job](#module\_dotnet\_streams\_update\_job) | ../job_configuration | n/a |
+| <a name="module_rails_streams_update_job"></a> [rails\_streams\_update\_job](#module\_rails\_streams\_update\_job) | ../job_configuration | n/a |
 | <a name="module_streams_init_job"></a> [streams\_init\_job](#module\_streams\_init\_job) | ../job_configuration | n/a |
-| <a name="module_streams_update_job"></a> [streams\_update\_job](#module\_streams\_update\_job) | ../job_configuration | n/a |
 
 ## Resources
 
@@ -63,6 +64,7 @@
 | <a name="input_cpu"></a> [cpu](#input\_cpu) | formerly: module.cluster\_data.configuration\_map.cpu\_min | `string` | n/a | yes |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | database name | `string` | n/a | yes |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Current application environment | `string` | n/a | yes |
+| <a name="input_dotnet_application_directory"></a> [dotnet\_application\_directory](#input\_dotnet\_application\_directory) | The path to application containing the dfe-analytics directory | `string` | `""` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_gcp_dataset"></a> [gcp\_dataset](#input\_gcp\_dataset) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
 | <a name="input_gcp_dataset_internal"></a> [gcp\_dataset\_internal](#input\_gcp\_dataset\_internal) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
@@ -72,6 +74,8 @@
 | <a name="input_gcp_table_deletion_protection"></a> [gcp\_table\_deletion\_protection](#input\_gcp\_table\_deletion\_protection) | Prevents deletion of the event table. Default: true | `bool` | `true` | no |
 | <a name="input_gcp_taxonomy_id"></a> [gcp\_taxonomy\_id](#input\_gcp\_taxonomy\_id) | Policy tags taxonomy ID. Required when creating the dataset | `number` | `null` | no |
 | <a name="input_host_name"></a> [host\_name](#input\_host\_name) | Host name | `string` | n/a | yes |
+| <a name="input_is_dotnet_application"></a> [is\_dotnet\_application](#input\_is\_dotnet\_application) | Whether to run the Airbyte deployment script in the application container | `bool` | `false` | no |
+| <a name="input_is_rails_application"></a> [is\_rails\_application](#input\_is\_rails\_application) | Whether to run the Airbyte deployment rake task in the application container | `bool` | `false` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | AKS Namespace where the service is deployed to. Required | `string` | n/a | yes |
 | <a name="input_postgres_url"></a> [postgres\_url](#input\_postgres\_url) | Postgres connection url | `string` | n/a | yes |
 | <a name="input_postgres_version"></a> [postgres\_version](#input\_postgres\_version) | postgres version | `string` | n/a | yes |
