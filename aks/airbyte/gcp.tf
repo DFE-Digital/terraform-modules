@@ -72,38 +72,14 @@ resource "google_bigquery_dataset" "main" {
   delete_contents_on_destroy = true
 }
 
-# Create a custom role
-# at the moment create this manually once per project
-# which means 1 role, if we use terraform will have to have multiple roles
-#
-# resource "google_project_iam_custom_role" "custom_role" {
-#   project = data.google_project.main.project_id
-#   role_id = "bigquery_appender_airbyte_${var.service_short}_${var.environment}"
-#   title = "BigQuery Appender Airbyte"
-#   description = "Assigned to service accounts used to append data to Airbyte events tables."
-#   permissions = [
-#     "roles/bigquery.datasets.get",
-#     "roles/bigquery.tables.get",
-#     "roles/bigquery.tables.updateData"
-#   ]
-# }
-
-# Add service account permission to dataset, whether we create it or it already exists
-
-# resource "google_bigquery_dataset_iam_member" "appender" {
-#   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
-#   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
-#   member     = "serviceAccount:${google_service_account.appender.email}"
-# }
-
-# resource "google_bigquery_dataset_iam_member" "appender_internal" {
-#   dataset_id = "airbyte_internal"
-#   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
-#   member     = "serviceAccount:${google_service_account.appender.email}"
-# }
-
 resource "google_bigquery_dataset_iam_member" "owner" {
   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
+  role       = "roles/bigquery.dataOwner"
+  member     = "serviceAccount:${google_service_account.appender.email}"
+}
+
+resource "google_bigquery_dataset_iam_member" "owner_internal" {
+  dataset_id = "airbyte_internal"
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${google_service_account.appender.email}"
 }
