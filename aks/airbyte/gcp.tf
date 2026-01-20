@@ -90,17 +90,17 @@ resource "google_bigquery_dataset" "main" {
 
 # Add service account permission to dataset, whether we create it or it already exists
 
-resource "google_bigquery_dataset_iam_member" "appender" {
-  dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
-  role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
-  member     = "serviceAccount:${google_service_account.appender.email}"
-}
+# resource "google_bigquery_dataset_iam_member" "appender" {
+#   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
+#   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
+#   member     = "serviceAccount:${google_service_account.appender.email}"
+# }
 
-resource "google_bigquery_dataset_iam_member" "appender_internal" {
-  dataset_id = "airbyte_internal"
-  role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
-  member     = "serviceAccount:${google_service_account.appender.email}"
-}
+# resource "google_bigquery_dataset_iam_member" "appender_internal" {
+#   dataset_id = "airbyte_internal"
+#   role       = "projects/${data.google_project.main.project_id}/roles/bigquery_appender_airbyte"
+#   member     = "serviceAccount:${google_service_account.appender.email}"
+# }
 
 resource "google_bigquery_dataset_iam_member" "owner" {
   dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
