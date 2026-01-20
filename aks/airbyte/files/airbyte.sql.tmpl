@@ -8,10 +8,16 @@ SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname = 'airbyte_replication') AS r
  CREATE TABLE IF NOT EXISTS airbyte_heartbeat( id integer, last_heartbeat timestamp with time zone );
  GRANT SELECT,INSERT,UPDATE ON TABLE airbyte_heartbeat TO airbyte_replication;
  ALTER TABLE airbyte_heartbeat REPLICA IDENTITY FULL;
- INSERT INTO airbyte_heartbeat VALUES ('1');
  GRANT USAGE ON SCHEMA public TO airbyte_replication;
  GRANT SELECT ON ALL TABLES IN SCHEMA public TO airbyte_replication;
  ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO airbyte_replication;
+\endif
+\set heartbeat_data false
+SELECT EXISTS(SELECT 1 FROM airbyte_heartbeat WHERE id = '1') AS heartbeat_data \gset
+\if :heartbeat_data
+ \echo 'Table "airbyte_heartbeat" already has data.'
+\else
+ INSERT INTO airbyte_heartbeat VALUES ('1');
 \endif
 \set slot_exists false
 SELECT EXISTS(SELECT 1 FROM pg_replication_slots WHERE slot_name = 'airbyte_slot') AS slot_exists \gset
