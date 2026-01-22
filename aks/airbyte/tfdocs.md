@@ -31,9 +31,8 @@
 | [airbyte_destination_bigquery.destination_bigquery](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/destination_bigquery) | resource |
 | [airbyte_source_postgres.source_postgres](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/source_postgres) | resource |
 | [google_bigquery_dataset.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset) | resource |
-| [google_bigquery_dataset_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
-| [google_bigquery_dataset_iam_member.appender_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.owner](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
+| [google_bigquery_dataset_iam_member.owner_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_project_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.viewer](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_service_account.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/service_account) | resource |
