@@ -12,6 +12,13 @@ data "azurerm_user_assigned_identity" "gcp_wif" {
   resource_group_name = module.cluster_data.configuration_map.resource_group_name
 }
 
+# data analytics service account
+data "google_service_account" "bqappender" {
+  count = var.gcp_bq_sa == null ? 0 : 1
+
+  account_id = var.gcp_bq_sa
+}
+
 resource "google_service_account" "appender" {
   account_id   = "airbyte-wif-${var.service_short}-${var.environment}"
   display_name = "Service Account appender to ${var.service_short} in ${var.environment} environment"
@@ -44,6 +51,14 @@ resource "google_project_iam_member" "viewer" {
   project = data.google_project.main.project_id
   role    = "roles/datacatalog.viewer"
   member  = "serviceAccount:${google_service_account.appender.email}"
+}
+
+resource "google_project_iam_member" "bqappender" {
+  count = var.gcp_bq_sa == null ? 0 : 1
+
+  project = data.google_project.main.project_id
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${data.google_service_account.bqappender[0].email}"
 }
 
 data "google_kms_key_ring" "main" {
@@ -82,4 +97,12 @@ resource "google_bigquery_dataset_iam_member" "owner_internal" {
   dataset_id = "airbyte_internal"
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${google_service_account.appender.email}"
+}
+
+resource "google_bigquery_dataset_iam_member" "bqowner" {
+  count = var.gcp_bq_sa == null ? 0 : 1
+
+  dataset_id = var.gcp_dataset == null ? google_bigquery_dataset.main[0].dataset_id : var.gcp_dataset
+  role       = "roles/bigquery.dataOwner"
+  member     = "serviceAccount:${data.google_service_account.bqappender[0].email}"
 }
