@@ -31,9 +31,11 @@
 | [airbyte_destination_bigquery.destination_bigquery](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/destination_bigquery) | resource |
 | [airbyte_source_postgres.source_postgres](https://registry.terraform.io/providers/airbytehq/airbyte/latest/docs/resources/source_postgres) | resource |
 | [google_bigquery_dataset.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset) | resource |
+| [google_bigquery_dataset_iam_member.bqowner](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.owner](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.owner_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_project_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
+| [google_project_iam_member.bqappender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.viewer](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_service_account.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/service_account) | resource |
 | [google_service_account_iam_binding.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/service_account_iam_binding) | resource |
@@ -47,6 +49,7 @@
 | [google_kms_crypto_key.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/kms_crypto_key) | data source |
 | [google_kms_key_ring.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/kms_key_ring) | data source |
 | [google_project.main](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/project) | data source |
+| [google_service_account.bqappender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/data-sources/service_account) | data source |
 
 ## Inputs
 
@@ -63,6 +66,7 @@
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | database name | `string` | n/a | yes |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Current application environment | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
+| <a name="input_gcp_bq_sa"></a> [gcp\_bq\_sa](#input\_gcp\_bq\_sa) | Name of BQ service account | `string` | `null` | no |
 | <a name="input_gcp_dataset"></a> [gcp\_dataset](#input\_gcp\_dataset) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
 | <a name="input_gcp_dataset_internal"></a> [gcp\_dataset\_internal](#input\_gcp\_dataset\_internal) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
 | <a name="input_gcp_key"></a> [gcp\_key](#input\_gcp\_key) | Name of an existing customer-managed encryption key (CMEK). Required when creating the dataset | `string` | `null` | no |

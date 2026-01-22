@@ -115,6 +115,12 @@ variable "use_azure" {
   description = "Whether to deploy using Azure Postgres"
 }
 
+variable "gcp_bq_sa" {
+  type        = string
+  description = "Name of BQ service account"
+  default     = null
+}
+
 locals {
   source_name      = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-pg-source"
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
