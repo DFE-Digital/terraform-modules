@@ -161,10 +161,51 @@ resource "kubernetes_deployment" "main" {
           port {
             container_port = 6379
           }
+
+          startup_probe {
+            exec {
+              command = ["redis-cli", "ping"]
+            }
+            initial_delay_seconds = 10
+            period_seconds        = 2
+            timeout_seconds       = 3
+            success_threshold     = 1
+            failure_threshold     = 30
+          }
+
+          liveness_probe {
+            exec {
+              command = ["redis-cli", "ping"]
+            }
+            initial_delay_seconds = 30
+            period_seconds        = 10
+            timeout_seconds       = 5
+            success_threshold     = 1
+            failure_threshold     = 3
+          }
+
+          readiness_probe {
+            exec {
+              command = ["redis-cli", "ping"]
+            }
+            initial_delay_seconds = 30
+            period_seconds        = 5
+            timeout_seconds       = 3
+            success_threshold     = 1
+            failure_threshold     = 3
+          }
         }
       }
     }
   }
+}
+
+resource "time_sleep" "wait_redis_ready" {
+  count = var.use_azure ? 0 : 1
+
+  depends_on = [kubernetes_service.main]
+
+  create_duration = "60s"
 }
 
 resource "kubernetes_service" "main" {
