@@ -91,7 +91,7 @@ variable "azure_memory_threshold" {
 variable "azure_maxmemory_policy" {
   type     = string
   nullable = false
-  default  = "allkeys-lru"
+  default  = "allkeys-lru"  #"volatile-lru"
 }
 
 variable "azure_enable_monitoring" {

@@ -217,7 +217,10 @@ locals {
   hostnames = var.is_web ? concat([local.hostname], var.web_external_hostnames) : []
 }
 
+
+#TOGGLE THIS BASED ON VALUE OF istio
 resource "kubernetes_ingress_v1" "main" {
+  istio_gateway = var.istio_enabled ? "istio-system/ingressgateway" : null
   for_each = toset(local.hostnames)
 
   wait_for_load_balancer = true
