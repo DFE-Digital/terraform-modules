@@ -1,5 +1,10 @@
 #CREATE istio VirtualService for web applications - istio.enabled="true"
 
+locals {
+  hostname  = var.cluster_configuration_map.dns_zone_prefix != null ? "${local.app_name}.istio-${var.cluster_configuration_map.dns_zone_prefix}.teacherservices.cloud" : "${local.app_name}.teacherservices.cloud"
+  hostnames = var.is_web ? concat([local.hostname], var.web_external_hostnames) : []
+}
+
 resource "kubernetes_manifest" "istio_virtual_service" {
   for_each = var.istio_enabled ? toset(local.hostnames) : toset([])
 
