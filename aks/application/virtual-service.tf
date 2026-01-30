@@ -1,7 +1,7 @@
 #CREATE istio VirtualService for web applications - istio.enabled="true"
 
 locals {
-  istio_hostname  = var.cluster_configuration_map.istio_dns_zone_prefix != null ? "${local.istio_app_name}.${var.cluster_configuration_map.istio_dns_zone_prefix}.teacherservices.cloud" : "${local.istio_app_name}.teacherservices.cloud"
+  istio_hostname  = local.istio_dns_zone_prefix != null ? "${local.istio_app_name}.${local.istio_dns_zone_prefix}.teacherservices.cloud" : "${local.istio_app_name}.teacherservices.cloud"
   istio_hostnames = var.is_web ? concat([local.hostname], var.web_external_hostnames) : []
 
   istio_name_suffix = var.name != null ? "-${var.name}" : ""
