@@ -5,7 +5,8 @@ locals {
 
   istio_hostnames = var.is_web ? concat([local.istio_hostname], var.web_external_hostnames) : []
 
-  istio_app_name    = "${var.service_name}${var.environment}-istio${local.name_suffix}"
+  istio_app_name    = "${var.service_name}${var.environment}-${local.name_suffix}"
+  istio_name_suffix = var.name != null ? "istio${var.name}" : ""
 }
 
 resource "kubernetes_manifest" "istio_virtual_service" {
