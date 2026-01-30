@@ -2,7 +2,7 @@
 
 locals {
   istio_hostname  = local.istio_dns_zone_prefix != null ? "${local.istio_app_name}.${local.istio_dns_zone_prefix}.teacherservices.cloud" : "${local.istio_app_name}.teacherservices.cloud"
-  istio_hostnames = var.is_web ? concat([local.hostname], var.web_external_hostnames) : []
+  istio_hostnames = var.is_web ? concat([local.istio_hostname], var.web_external_hostnames) : []
 
   istio_name_suffix = var.name != null ? "-${var.name}" : ""
   istio_app_name    = "${var.service_name}-${var.environment}${local.istio_name_suffix}"
