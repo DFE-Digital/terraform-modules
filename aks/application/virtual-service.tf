@@ -7,7 +7,11 @@ locals {
   istio_name_suffix = var.name != null ? "-${var.name}" : ""
   istio_app_name    = "${var.service_name}-${var.environment}${local.istio_name_suffix}"
 
-  istio_dns_zone_prefix = "istio${var.dns_zone_prefix}"
+ istio_dns_zone_prefix = (
+    try(var.cluster_configuration_map.dns_zone_prefix, null) != null
+    ? "istio${var.cluster_configuration_map.dns_zone_prefix}"
+    : null
+  )
 
 }
 
