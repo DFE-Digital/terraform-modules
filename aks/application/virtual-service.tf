@@ -5,7 +5,7 @@ locals {
 
   istio_hostnames = var.is_web ? concat([local.istio_hostname], var.web_external_hostnames) : []
 
-  istio_app_name    = "${var.service_name}${var.environment}-${local.name_suffix}"
+  istio_app_name    = "${var.service_name}${var.environment}-${local.istio_name_suffix}"
   istio_name_suffix = var.name != null ? "istio${var.name}" : ""
 }
 
