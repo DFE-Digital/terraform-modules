@@ -220,7 +220,7 @@ locals {
 
 #CREATE nginx-based ingress for web applications - istio.enabled="false"
 resource "kubernetes_ingress_v1" "main" {
-  for_each = var.istio_enabled ? toset([]) : toset(local.hostnames)
+  for_each = toset(local.hostnames)
 
   wait_for_load_balancer = true
 
@@ -250,30 +250,30 @@ resource "kubernetes_ingress_v1" "main" {
 }
 
 # create istio virtual service for web applications - istio.enabled="true"
-#resource "kubernetes_manifest" "istio_virtual_service" {
-#  for_each = var.istio_enabled ? toset(local.hostnames) : toset([])
-#
-#  manifest = {
-#    apiVersion = "networking.istio.io/v1beta1"
-#    kind       = "VirtualService"
-#    metadata = {
-#      name      = each.key
-#      namespace = var.namespace
-#    }
-#    spec = {
-#      hosts = [each.key]
-#      gateways = ["istio-ingress/istio-ingress-gateway"]
-#      http = [{
-#        route = [{
-#          destination = {
-#            host = var.send_traffic_to_maintenance_page ? "${var.service_name}-maintenance" : kubernetes_service.main[0].metadata[0].name
-#            port = var.send_traffic_to_maintenance_page ? local.maintenance_service_port : kubernetes_service.main[0].spec[0].port[0].port
-#          }
-#        }]
-#      }]
-#    }
-#  }
-#}
+resource "kubernetes_manifest" "istio_virtual_service" {
+  for_each = var.istio_enabled ? toset(local.hostnames) : toset([])
+
+  manifest = {
+    apiVersion = "networking.istio.io/v1beta1"
+    kind       = "VirtualService"
+    metadata = {
+      name      = each.key
+      namespace = var.namespace
+    }
+    spec = {
+      hosts = [each.key]
+      gateways = ["istio-ingress/istio-ingress-gateway"]
+      http = [{
+        route = [{
+          destination = {
+            host = var.send_traffic_to_maintenance_page ? "${var.service_name}-maintenance" : kubernetes_service.main[0].metadata[0].name
+            port = var.send_traffic_to_maintenance_page ? local.maintenance_service_port : kubernetes_service.main[0].spec[0].port[0].port
+          }
+        }]
+      }]
+    }
+  }
+}
 
 
 resource "kubernetes_pod_disruption_budget_v1" "main" {
