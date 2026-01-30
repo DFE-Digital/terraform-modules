@@ -257,11 +257,11 @@ resource "kubernetes_manifest" "istio_virtual_service" {
     apiVersion = "networking.istio.io/v1beta1"
     kind       = "VirtualService"
     metadata = {
-      name      = each.key
+      name      = each.value
       namespace = var.namespace
     }
     spec = {
-      hosts = [each.key]
+      hosts = [each.value]
       gateways = ["istio-ingress/istio-ingress-gateway"]
       http = [{
         route = [{
