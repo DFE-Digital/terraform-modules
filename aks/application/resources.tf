@@ -1,9 +1,9 @@
 locals {
   name_suffix = var.name != null ? "-${var.name}" : ""
-  app_name    = "${var.service_name}-istio-{var.environment}${local.name_suffix}"
+  app_name    = "${var.service_name}-${var.environment}${local.name_suffix}"
 
-  #ISTIO RELATED
-  istio_app_name    = "${var.service_name}-${var.environment}${local.name_suffix}"
+  #ISTIO 
+  istio_app_name    = "${var.service_name}-istio-${var.environment}${local.name_suffix}"
 
   http_probe_enabled = var.is_web && var.probe_path != null
   exec_probe_enabled = !var.is_web && length(var.probe_command) != 0
