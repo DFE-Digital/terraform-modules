@@ -9,20 +9,6 @@ locals {
   } : {}
 }
 
-resource "kubernetes_config_map" "cmap" {
-  for_each = var.cm_mount
-
-  metadata {
-    name      = "${each.key}${var.environment}cronjob-configmap"
-    namespace = var.namespace
-  }
-
-  data = {
-    "command.sh" = "test"
-  }
-
-}
-
 resource "kubernetes_cron_job" "main" {
   metadata {
     name      = "${var.service_name}-${var.environment}-${var.job_name}"
@@ -60,13 +46,18 @@ resource "kubernetes_cron_job" "main" {
               #   mount_path = "/airbyte"
               # }
 
-              dynamic "volume_mount" {
-                for_each = var.cm_mount
-                content {
-                  name = var.value.name
-                  mount_path = var.value.mount_path
+              # dynamic "volume_mount" {
+              #   for_each = var.config_map
+              #   content {
+              #     name = "cronjob"
+              #     mount_path = "/cronjob"
+              #   }
+              # }
+
+              volume_mount {
+                 name       = "cronjob"
+                 mount_path = "/cronjob"
                 }
-              }
 
               env_from {
                 config_map_ref {
@@ -112,15 +103,25 @@ resource "kubernetes_cron_job" "main" {
             #     }
             #   }
 
-            dynamic "volume" {
-              for_each = var.cm_mount
-              content {
-                name = var.value.name
+            # dynamic "volume" {
+            #   for_each = var.config_map
+            #   content {
+            #     name = cronjob
+            #     config_map {
+            #       name = var.config_map_data
+            #     }
+            #   }
+            # }
+
+            volume {
+                name = cronjob
                 config_map {
-                  name = kubernetes_config_map.cronjob.metadata[0].name
+                  name = var.config_map_name
                 }
               }
-            }
+
+
+
 
           }
         }

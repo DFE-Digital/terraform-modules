@@ -72,6 +72,11 @@ variable "schedule" {
   nullable    = false
 }
 
+variable "config_map_name" {
+  type        = string
+  description = "Name of the Kubernetes configuration map"
+}
+
 variable "cm_mount" {
   description = "config map to be mounted in terraform"
   type        = list(string)
