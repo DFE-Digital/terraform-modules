@@ -75,5 +75,6 @@ variable "schedule" {
 variable "cm_mount" {
   description = "config map to be mounted in terraform"
   type        = list(string)
-  default = ["name", "mountpoint", "configmap"]
+  default     = [ "" ]
+#  default = ["name", "mountpoint", "configmap"]
 }

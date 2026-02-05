@@ -9,19 +9,19 @@ locals {
   } : {}
 }
 
-# resource "kubernetes_config_map" "cmap" {
-#   for_each = var.cm_mount
+resource "kubernetes_config_map" "cmap" {
+  for_each = var.cm_mount
 
-#   metadata {
-#     name      = "${var.service_short}${var.environment}cronjob-configmap"
-#     namespace = var.namespace
-#   }
+  metadata {
+    name      = "${each.key}${var.environment}cronjob-configmap"
+    namespace = var.namespace
+  }
 
-#   data = {
-#     "command.sh" = local.alertmanager_config_content
-#   }
+  data = {
+    "command.sh" = "test"
+  }
 
-# }
+}
 
 resource "kubernetes_cron_job" "main" {
   metadata {
@@ -32,7 +32,7 @@ resource "kubernetes_cron_job" "main" {
   spec {
     concurrency_policy            = "Replace"
     #failed_jobs_history_limit     = 5 # default 1
-    schedule                      = var.schedule #"1 0 * * *"
+    schedule                      = "${var.schedule}"
     #timezone                      = "Etc/UTC" # vscode says unexpected
     starting_deadline_seconds     = 10
     #successful_jobs_history_limit = 10 # default 3
@@ -60,13 +60,13 @@ resource "kubernetes_cron_job" "main" {
               #   mount_path = "/airbyte"
               # }
 
-              # dynamic "volume_mount" {
-              #   for_each = var.cm_mount
-              #   content {
-              #     name = var.value.name
-              #     mount_path = var.value.mount_path
-              #   }
-              # }
+              dynamic "volume_mount" {
+                for_each = var.cm_mount
+                content {
+                  name = var.value.name
+                  mount_path = var.value.mount_path
+                }
+              }
 
               env_from {
                 config_map_ref {
@@ -112,15 +112,15 @@ resource "kubernetes_cron_job" "main" {
             #     }
             #   }
 
-            # dynamic "volume" {
-            #   for_each = var.cm_mount
-            #   content {
-            #     name = var.value.name
-            #     config_map {
-            #       name = kubernetes_config_map.cronjob.metadata[0].name
-            #     }
-            #   }
-            # }
+            dynamic "volume" {
+              for_each = var.cm_mount
+              content {
+                name = var.value.name
+                config_map {
+                  name = kubernetes_config_map.cronjob.metadata[0].name
+                }
+              }
+            }
 
           }
         }
