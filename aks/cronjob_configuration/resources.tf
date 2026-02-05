@@ -9,6 +9,28 @@ locals {
   } : {}
 }
 
+locals {
+  # config_map_data = merge(
+  #   try(yamldecode(file(var.config_variables_path)), {}),
+  #   try(file(var.config_file_path), {}),
+  #   var.config_variables,
+  # )
+
+  config_map_hash = sha1((file(var.config_file_path)))
+}
+
+resource "kubernetes_config_map" "main" {
+  metadata {
+    name      = "ab-${var.environment}-${local.config_map_hash}"
+    namespace = var.namespace
+  }
+
+  data = {
+    "config.yml" = file(var.config_file_path)
+  }
+
+}
+
 resource "kubernetes_cron_job" "main" {
   metadata {
     name      = "${var.service_name}-${var.environment}-${var.job_name}"
@@ -55,7 +77,7 @@ resource "kubernetes_cron_job" "main" {
               # }
 
               volume_mount {
-                 name       = "cronjob"
+                 name       = "cronjob-volume"
                  mount_path = "/cronjob"
                 }
 
@@ -114,9 +136,9 @@ resource "kubernetes_cron_job" "main" {
             # }
 
             volume {
-                name = cronjob
+                name = "cronjob-volume"
                 config_map {
-                  name = var.config_map_name
+                  name = kubernetes_config_map.main.metadata[0].name
                 }
               }
 

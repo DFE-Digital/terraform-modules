@@ -83,3 +83,9 @@ variable "cm_mount" {
   default     = [ "" ]
 #  default = ["name", "mountpoint", "configmap"]
 }
+
+variable "config_file_path" {
+  type        = string
+  default     = null
+  description = "Path to load additional configuration data from"
+}
