@@ -61,3 +61,9 @@ variable "secret_variables" {
   default     = {}
   description = "Additional secret variables"
 }
+
+variable "istio_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether the service has istio gateway enabled"
+}
