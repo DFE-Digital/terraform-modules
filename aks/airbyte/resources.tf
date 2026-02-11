@@ -123,7 +123,7 @@ resource "kubernetes_job" "airbyte-database-setup" {
   depends_on = [kubernetes_secret.airbyte-sql, time_sleep.wait_15_seconds]
 
   metadata {
-    name      = "${var.service_name}-${var.environment}-airbyte-db-init-${kubernetes_secret.airbyte-sql.metadata[0].name}"
+    name      = "${var.service_name}-${var.environment}-ab-db-init-${kubernetes_secret.airbyte-sql.metadata[0].name}"
     namespace = var.namespace
   }
 
