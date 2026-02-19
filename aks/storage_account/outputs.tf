@@ -27,8 +27,12 @@ output "primary_blob_endpoint" {
 
 output "containers" {
   description = "A map of container names to their properties"
-  value = {
+  value = var.azurerm_v4 ? {
     for name, container in azurerm_storage_container.containers : name => {
+      id = container.id
+    }
+  } : {
+    for name, container in azurerm_storage_container.containers_v4 : name => {
       id = container.id
     }
   }

@@ -57,10 +57,17 @@ resource "azurerm_storage_encryption_scope" "main" {
 }
 
 resource "azurerm_storage_container" "containers" {
-  for_each = { for container in var.containers : container.name => container }
+  for_each = var.azurerm_v4 ? {} : { for container in var.containers : container.name => container }
 
   name                 = each.value.name
   storage_account_name = azurerm_storage_account.main.name
+}
+
+resource "azurerm_storage_container" "containers_v4" {
+  for_each = var.azurerm_v4 ? { for container in var.containers : container.name => container } : {}
+
+  name                 = each.value.name
+  storage_account_id   = azurerm_storage_account.main.id
 }
 
 resource "azurerm_storage_management_policy" "main" {

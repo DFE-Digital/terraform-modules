@@ -41,7 +41,7 @@ output "azure_backup_storage_account_name" {
 }
 
 output "azure_backup_storage_container_name" {
-  value = local.azure_enable_backup_storage ? azurerm_storage_container.backup[0].name : null
+  value = local.azure_enable_backup_storage ? ( var.azurerm_v4 ? azurerm_storage_container.backup[0].name : azurerm_storage_container.backup[0].name ) : null
 }
 
 output "azure_server_id" {

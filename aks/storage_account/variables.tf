@@ -111,3 +111,9 @@ variable "blob_delete_after_days" {
     error_message = "The blob_delete_after_days must be between 0 and 9999. Set to 0 to disable."
   }
 }
+
+variable "azurerm_v4" {
+  type        = bool
+  default     = false
+  description = "whether we are using azurerm provider v4"
+}

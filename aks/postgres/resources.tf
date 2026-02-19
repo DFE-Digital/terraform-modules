@@ -173,17 +173,31 @@ resource "azurerm_storage_management_policy" "backup" {
 }
 
 resource "azurerm_storage_container" "backup" {
-  count = local.azure_enable_backup_storage ? 1 : 0
+  count = local.azure_enable_backup_storage && var.azurerm_v4 ? 0 : 1
 
   name                  = "database-backup"
   storage_account_name  = azurerm_storage_account.backup[0].name
   container_access_type = "private"
 }
 
+locals {
+  #container_list = ( var.azurerm_v4 && local.azure_enable_backup_storage ) ? "0" : null
+  container_list = {}
+}
+
+resource "azurerm_storage_container" "backup_v4" {
+  for_each = var.azurerm_v4 ? toset(["database-backup"]) : []
+
+  name                  = each.key
+  storage_account_id    = azurerm_storage_account.backup[0].id
+  container_access_type = "private"
+
+}
+
 resource "azurerm_storage_container_immutability_policy" "backup" {
   count = local.azure_enable_backup_storage && var.environment == "production" ? 1 : 0
 
-  storage_container_resource_manager_id = azurerm_storage_container.backup[0].resource_manager_id
+  storage_container_resource_manager_id = var.azurerm_v4 ? azurerm_storage_container.backup[0].id : azurerm_storage_container.backup[0].resource_manager_id
   immutability_period_in_days           = 6
   protected_append_writes_all_enabled   = false
   protected_append_writes_enabled       = false
@@ -376,7 +390,7 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "main" {
-  count = local.azure_enable_monitoring ? 1 : 0
+  count = local.azure_enable_monitoring && var.azurerm_v4 ? 0 : 1
 
   name                       = "${azurerm_postgresql_flexible_server.main[0].name}-diagnotics"
   target_resource_id         = azurerm_postgresql_flexible_server.main[0].id
@@ -391,6 +405,21 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
   metric {
     category = "AllMetrics"
     enabled  = false
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "main_v4" {
+  count = local.azure_enable_monitoring && var.azurerm_v4 ? 1 : 0
+
+  name                       = "${azurerm_postgresql_flexible_server.main[0].name}-diagnotics"
+  target_resource_id         = azurerm_postgresql_flexible_server.main[0].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main[0].id
+
+  dynamic "enabled_log" {
+    for_each = data.azurerm_monitor_diagnostic_categories.main[0].log_category_types
+    content {
+      category = enabled_log.value
+    }
   }
 }
 
