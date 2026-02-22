@@ -186,9 +186,11 @@ locals {
 }
 
 resource "azurerm_storage_container" "backup_v4" {
-  for_each = var.azurerm_v4 ? toset(["database-backup"]) : []
+  count = local.azure_enable_backup_storage && var.azurerm_v4 ? 1 : 0
 
-  name                  = each.key
+  provider = azurermv4
+
+  name                  = "database-backup"
   storage_account_id    = azurerm_storage_account.backup[0].id
   container_access_type = "private"
 
