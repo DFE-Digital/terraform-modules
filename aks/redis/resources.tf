@@ -36,7 +36,8 @@ resource "azurerm_redis_cache" "main" {
 
 
   redis_configuration {
-    maxmemory_policy = var.azure_maxmemory_policy
+    maxmemory_policy                       = var.azure_maxmemory_policy
+    data_persistence_authentication_method = "SAS"
   }
 
   timeouts {
