@@ -195,3 +195,9 @@ variable "working_dir" {
   description = "Container working directory (mapped to container.working_dir)"
   nullable    = true
 }
+
+variable "istio_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether the service has istio gateway enabled"
+}
