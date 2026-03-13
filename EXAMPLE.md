@@ -125,7 +125,17 @@ variable "service_short" {
 
 ```terraform
 terraform {
-  required_version = "1.4.5"
+  required_version = "1.14.5"
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "4.61.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.32.0"
+    }
+  }
 
   backend "azurerm" {}
 }
@@ -135,20 +145,20 @@ locals {
 }
 
 provider "azurerm" {
-  subscription_id            = try(local.azure_credentials.subscriptionId, null)
-  client_id                  = try(local.azure_credentials.clientId, null)
-  client_secret              = try(local.azure_credentials.clientSecret, null)
-  tenant_id                  = try(local.azure_credentials.tenantId, null)
-  skip_provider_registration = true
+  resource_provider_registrations = "none"
 
   features {}
 }
 
 provider "kubernetes" {
   host                   = module.cluster_data.kubernetes_host
-  client_certificate     = module.cluster_data.kubernetes_client_certificate
-  client_key             = module.cluster_data.kubernetes_client_key
   cluster_ca_certificate = module.cluster_data.kubernetes_cluster_ca_certificate
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "kubelogin"
+    args        = module.cluster_data.kubelogin_args
+  }
 }
 ```
 
@@ -300,7 +310,7 @@ Some services will require multiple Key Vaults to store application and infrastr
   ```terraform
   module "infrastructure_secrets" {
     source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/secrets?ref=stable"
-    
+
     azure_resource_prefix = var.azure_resource_prefix
     service_short         = var.service_short
     config_short          = var.config_short
