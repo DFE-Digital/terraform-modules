@@ -217,6 +217,8 @@ locals {
   hostnames = var.is_web ? concat([local.hostname], var.web_external_hostnames) : []
 }
 
+
+#CREATE nginx-based ingress for web applications - istio.enabled="false"
 resource "kubernetes_ingress_v1" "main" {
   for_each = toset(local.hostnames)
 
