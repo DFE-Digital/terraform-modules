@@ -89,3 +89,22 @@ variable "rate_limit_max" {
   default     = null
   description = "create a block rule that will limit any IP that goes above var.rate_limit_max over a 5 minute period"
 }
+
+variable "block_paths" {
+  type = list(object({
+    name       = string
+    priority   = number
+    enabled    = optional(bool, true)
+    patterns   = list(string)
+    operator   = optional(string, "EndsWith")
+    transforms = optional(list(string), ["Lowercase"])
+    negate     = optional(bool, false)
+  }))
+  nullable    = false
+  default     = []
+  description = <<EOF
+    List of path blocking rules. Each rule blocks requests matching the specified patterns.
+    Operators: EndsWith, Contains, BeginsWith, RegEx
+    Example: [{ name = "BlockPHP", priority = 20, patterns = [".php", ".asp"] }]
+  EOF
+}
