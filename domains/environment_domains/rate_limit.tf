@@ -28,6 +28,46 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
     }
   }
 
+    dynamic "custom_rule" {
+    for_each = var.rate_limit_max != null ? ["this"] : []
+    content {
+      name                           = "all2"
+      priority                       = 90
+      rate_limit_duration_in_minutes = 5
+      rate_limit_threshold           = var.rate_limit_max
+      enabled                        = "true"
+      type                           = "RateLimitRule"
+      action                         = "Block"
+
+      match_condition {
+        match_variable = "RequestUri"
+        #selector       = ""
+        operator       = "GreaterThanOrEqual"
+        match_values   = ["0"]
+      }
+    }
+  }
+
+dynamic "custom_rule" {
+    for_each = var.rate_limit_max != null ? ["this"] : []
+    content {
+      name                           = "geo"
+      priority                       = 8
+      rate_limit_duration_in_minutes = 5
+      rate_limit_threshold           = 100
+      enabled                        = "true"
+      type                           = "RateLimitRule"
+      action                         = "Block"
+
+      match_condition {
+        match_variable = "SocketAddr"
+        #selector       = ""
+        operator       = "GeoMatch"
+        match_values   = ["TR","IQ","SA","BR"]
+      }
+    }
+  }
+
   dynamic "custom_rule" {
     for_each = var.rate_limit_max != null ? ["this"] : []
     content {
