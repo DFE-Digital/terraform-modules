@@ -90,21 +90,9 @@ variable "rate_limit_max" {
   description = "create a block rule that will limit any IP that goes above var.rate_limit_max over a 5 minute period"
 }
 
-variable "block_paths" {
-  type = list(object({
-    name       = string
-    priority   = number
-    enabled    = optional(bool, true)
-    patterns   = list(string)
-    operator   = optional(string, "EndsWith")
-    transforms = optional(list(string), ["Lowercase"])
-    negate     = optional(bool, false)
-  }))
+variable "block_common_paths" {
+  type        = bool
   nullable    = false
-  default     = []
-  description = <<EOF
-    List of path blocking rules. Each rule blocks requests matching the specified patterns.
-    Operators: EndsWith, Contains, BeginsWith, RegEx
-    Example: [{ name = "BlockPHP", priority = 20, patterns = [".php", ".asp"] }]
-  EOF
+  default     = false
+  description = "Enable hardcoded WAF rules to block common scanning paths (PHP, WordPress, sensitive files, etc.)"
 }
