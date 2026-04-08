@@ -111,3 +111,24 @@ variable "blob_delete_after_days" {
     error_message = "The blob_delete_after_days must be between 0 and 9999. Set to 0 to disable."
   }
 }
+
+variable "cluster_configuration_map" {
+  type = object({
+    resource_group_name = string,
+    resource_prefix     = string,
+    dns_zone_prefix     = optional(string),
+    cpu_min             = number
+  })
+  description = "Configuration map for the cluster"
+  default = {
+    resource_group_name = ""
+    resource_prefix     = ""
+    cpu_min             = 1
+  }
+}
+
+variable "use_private_storage" {
+  type        = bool
+  description = "Whether to deploy a private Storage Account"
+  default     = false
+}
