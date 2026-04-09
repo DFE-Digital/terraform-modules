@@ -8,8 +8,12 @@ Terraform code for deploying an Azure Storage Account with the recommended best 
 
 For the list of requirement, inputs, outputs, resources... check the [terraform module documentation](tfdocs.md).
 
+
 ## Usage
 
+Both public and private storage accounts are available.
+
+A module call to create a **public** storage account is the default and would look like this:-
 ```terraform
 module "storage" {
   source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
@@ -38,6 +42,28 @@ module "storage" {
   encryption_scope_name   = "microsoftmanaged"
 }
 ```
+<br>
+
+A module call to create a **private** storage account requires 1 override:-
+
+add the following override in the above public storage account module call to convert it to private:-
+
+```
+  use_private_storage           = true
+```
+
+The private storage account would then be accessed in code by referring to its own A-name record in the private DNS zone e.g.
+```
+[storage-account-name].privatelink.blob.core.windows.net
+```
+for example:-
+```
+s189d01ittmsprivrv1900sa.privatelink.blob.core.windows.net
+```
+
+this privatelink fqdn value is available via this module output variable: **storage_private_blob_fqdn**
+
+<br>
 
 ### Storage Account Naming
 

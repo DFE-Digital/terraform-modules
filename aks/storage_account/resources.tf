@@ -3,10 +3,6 @@ locals {
   storage_account_name = "${var.azure_resource_prefix}${var.service_short}${var.name}${local.storage_account_env}sa"
 }
 
-data "azurerm_resource_group" "main" {
-  name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-rg"
-}
-
 resource "azurerm_storage_account" "main" {
   access_tier                       = "Hot"
   account_kind                      = "StorageV2"
@@ -80,4 +76,33 @@ resource "azurerm_storage_management_policy" "main" {
       }
     }
   }
+}
+
+
+resource "azurerm_private_endpoint" "storage" {
+  count = var.use_private_storage ? 1 : 0
+
+  name                = "${local.storage_account_name}-pe"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  subnet_id           = data.azurerm_subnet.priv[0].id
+
+  private_dns_zone_group {
+    name                 = data.azurerm_private_dns_zone.priv[0].name
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.priv[0].id]
+  }
+
+  private_service_connection {
+    name                           = "${local.storage_account_name}-pe"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+
 }

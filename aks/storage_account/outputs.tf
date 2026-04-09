@@ -33,3 +33,7 @@ output "containers" {
     }
   }
 }
+
+output "storage_private_blob_fqdn" {
+  value = var.use_private_storage ? "${azurerm_storage_account.main.name}.privatelink.blob.core.windows.net" : null
+}
