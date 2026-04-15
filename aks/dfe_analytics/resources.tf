@@ -36,6 +36,7 @@ resource "google_bigquery_dataset" "main" {
   default_encryption_configuration {
     kms_key_name = data.google_kms_crypto_key.main[0].id
   }
+  delete_contents_on_destroy = true
 }
 
 # Add service account permission to dataset, wether we create it or it already exists
