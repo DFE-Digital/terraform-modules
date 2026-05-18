@@ -200,6 +200,26 @@ module "redis" {
 }
 ```
 
+### Azure Managed Redis
+
+```terraform
+module "redis-managed" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/redis-managed?ref=stable"
+
+  namespace             = var.namespace
+  environment           = local.environment
+  azure_resource_prefix = var.azure_resource_prefix
+  service_name          = local.service_name
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  cluster_configuration_map = module.cluster_data.configuration_map
+
+  use_azure               = var.deploy_azure_backing_services
+  azure_enable_monitoring = var.enable_monitoring
+}
+```
+
 ### PostgreSQL database
 
 ```terraform
@@ -307,6 +327,7 @@ Some services will require multiple Key Vaults to store application and infrastr
   - `${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-inf-kv`
 - Add `secret_key_vault_short = "app"` to the application configuration.
 - Add a secrets instance to retrieve infrastructure secrets:
+
   ```terraform
   module "infrastructure_secrets" {
     source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/secrets?ref=stable"
