@@ -5,7 +5,7 @@ No requirements.
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
 
 ## Modules
@@ -15,7 +15,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [azurerm_private_endpoint.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_storage_account.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_container.containers](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
@@ -29,7 +29,7 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | n/a | yes |
 | <a name="input_blob_delete_after_days"></a> [blob\_delete\_after\_days](#input\_blob\_delete\_after\_days) | Number of days after which blobs will be deleted. Set to 0 to disable automatic deletion. | `number` | `7` | no |
 | <a name="input_blob_delete_retention_days"></a> [blob\_delete\_retention\_days](#input\_blob\_delete\_retention\_days) | Number of days to retain deleted blobs. Set to null to disable retention policy. | `number` | `null` | no |
@@ -38,6 +38,7 @@ No modules.
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
 | <a name="input_container_delete_retention_days"></a> [container\_delete\_retention\_days](#input\_container\_delete\_retention\_days) | Number of days to retain deleted containers. Set to null to disable retention policy. | `number` | `null` | no |
 | <a name="input_containers"></a> [containers](#input\_containers) | List of containers to create on the storage account (all containers will be private) | `list(object({ name = string }))` | `[]` | no |
+| <a name="input_cors_rules"></a> [cors\_rules](#input\_cors\_rules) | A list of CORS rules to apply to the stroage account | <pre>list(object({<br/>    allowed_headers    = optional(list(string))<br/>    allowed_methods    = optional(list(string))<br/>    allowed_origins    = optional(list(string))<br/>    exposed_headers    = optional(list(string))<br/>    max_age_in_seconds = optional(number)<br/>  }))</pre> | `[]` | no |
 | <a name="input_create_encryption_scope"></a> [create\_encryption\_scope](#input\_create\_encryption\_scope) | Whether to create a Microsoft-managed encryption scope | `bool` | `true` | no |
 | <a name="input_encryption_scope_name"></a> [encryption\_scope\_name](#input\_encryption\_scope\_name) | Name of the encryption scope to create | `string` | `"microsoftmanaged"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
@@ -53,7 +54,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_containers"></a> [containers](#output\_containers) | A map of container names to their properties |
 | <a name="output_id"></a> [id](#output\_id) | The ID of the Storage Account |
 | <a name="output_name"></a> [name](#output\_name) | The name of the Storage Account |

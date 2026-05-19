@@ -219,6 +219,37 @@ module "temp_storage" {
 }
 ```
 
+### Blob enable CORS
+
+The module supports blob CORS settings:
+
+```terraform
+module "temp_storage" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = var.environment
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  # Delete blobs after 30 days
+  blob_delete_after_days = 30
+
+  # Or disable automatic deletion
+  blob_delete_after_days = 0
+
+  cors_rules = [
+    {
+      allowed_headers    = ["*"]
+      allowed_methods    = ["GET", "POST"]
+      allowed_origins    = ["https://app.example.com"]
+      exposed_headers    = ["x-ms-request-id"]
+      max_age_in_seconds = 1800
+    }
+  ]
+}
+```
+
 ### Enabling Retention Policies
 
 Retention policies are disabled by default for immediate deletion. For production environments where you want to retain deleted items, you can enable them:

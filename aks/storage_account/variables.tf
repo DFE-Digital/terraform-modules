@@ -132,3 +132,15 @@ variable "use_private_storage" {
   description = "Whether to deploy a private Storage Account"
   default     = false
 }
+
+variable "cors_rules" {
+  type = list(object({
+    allowed_headers    = optional(list(string))
+    allowed_methods    = optional(list(string))
+    allowed_origins    = optional(list(string))
+    exposed_headers    = optional(list(string))
+    max_age_in_seconds = optional(number)
+  }))
+  description = "A list of CORS rules to apply to the stroage account"
+  default = []
+}
