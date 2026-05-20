@@ -48,6 +48,7 @@ module "dfe_analytics" {
   gcp_policy_tag_id     = 2399328962407973209
 }
 ```
+see [Taxonomy, policy tag and key](#taxonomy-policy-tag-and-key) below
 
 ## Configure application
 ### Enable in Ruby
@@ -134,10 +135,10 @@ Github action workflows use workload identity federation to authenticate to Goog
 - :warning: Adding the permission removes the [default token permissions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#permissions-for-the-github_token), which may be an issue for some actions that rely on them. For example, the [marocchino/sticky-pull-request-comment](https://github.com/marocchino/sticky-pull-request-comment) action requires `pull-requests: write`. It must then be added explicitly.
 - Run the workflow
 
-## Taxonomy and policy tag
+## Taxonomy, policy tag and key
 The user should have Owner role on the Google project.
 
-- Authenticate: `gcloud auth application-default login`
+- Authenticate: `gcloud auth application-default login` or if that fails `gcloud auth login "firstname.surname@education.gov.uk"`
 - Get projects list: `gcloud projects list`
 - Select project e.g.: `gcloud config set project apply-for-qts-in-england`
 - Get taxonomies list:
@@ -150,3 +151,26 @@ The user should have Owner role on the Google project.
   gcloud data-catalog taxonomies policy-tags list --taxonomy="projects/apply-for-qts-in-england/locations/europe-west2/taxonomies/5456044749211275650" --location="europe-west2" --filter="displayName:hidden" --format="value(name)"
   ```
   The path contains the policy tag id as a number e.g. 2399328962407973209
+
+- Get GCP Keyring
+
+  ```bash
+  gcloud kms keyrings list --location=europe-west2 --project=ecf-bq
+  ```
+
+  This returns a path with the last element representing the KeyRing name:
+
+  ```bash
+  projects/ecf-bq/locations/europe-west2/keyRings/ecf-key-ring
+  ```
+
+- Get GCP Key
+  ```bash
+  gcloud kms keys list --location=europe-west2 --keyring=ecf-key-ring --project=ecf-bq
+  ```
+
+  This returns a path with the last element representing the Key name:
+
+  ```bash
+  projects/ecf-bq/locations/europe-west2/keyRings/ecf-key-ring/cryptoKeys/ecf-key
+  ```
