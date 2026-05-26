@@ -259,7 +259,7 @@ This module implements the following security features by default:
 ## Environment-based Configuration
 
 | Environment                               | Replication Type  | Override Available? |
-| ----------------------------------------- | ----------------- | ------------------- |
+|-------------------------------------------|-------------------|---------------------|
 | Non-Production (dev, test, staging, etc.) | **LRS** (forced)  | ❌ No               |
 | Production                                | **GRS** (default) | ✅ Yes (GRS or ZRS) |
 
