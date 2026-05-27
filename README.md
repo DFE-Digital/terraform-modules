@@ -25,21 +25,27 @@ The [Example Rails deployment](EXAMPLE.md) document outlines the minimum steps r
 ## Release Process
 
 ### Git References
+
 We use three git references to manage and promote new features:
 
 #### `main` branch
+
 All new features are added here first. This branch is used in environments with the lowest risk, such as review apps, to quickly test new features, catch errors early, and minimise the impact of bugs.
 
 #### `testing` tag
+
 A pre-release is generated every week that includes any new features in `main` from the past week. This tag is automatically updated and used in low-risk environments like development or QA. This allows us to catch errors in production-like environments and keep the impact of bugs low.
 
 #### `stable` tag
+
 A release is created that includes the features which were in the `testing` phase the previous week. This tag is automatically updated and used in higher-risk environments like production or preproduction. This ensures that only thoroughly tested features are deployed.
 
 ### Promotion Process
+
 Let's assume the `stable` tag points to `v0.x.0` and `testing` points to `v0.y.0`. You can view the tags and their commit IDs [in the tags list](https://github.com/DFE-Digital/terraform-modules/tags).
 
-#### To promote `testing` to `stable`:
+#### To promote `testing` to `stable`
+
 1. Delete the current pre-release pointing to `v0.y.0`
 1. Create a new release:
     - Select `Draft new release`
@@ -49,8 +55,10 @@ Let's assume the `stable` tag points to `v0.x.0` and `testing` points to `v0.y.0
     - Check the `Set as the latest release` box
     - Click `Publish release`
 
-#### To promote new commits in `main` to `testing`:
+#### To promote new commits in `main` to `testing`
+
 If there are new commits in `main` that you want to promote to `testing`, increment `v0.y.0` to `v0.z.0`, then create a new pre-release:
+
 1. Select `Draft new release`
 1. Click `Choose a tag` and enter `v0.z.0`
 1. Click `Create new tag`
@@ -62,12 +70,14 @@ If there are new commits in `main` that you want to promote to `testing`, increm
 ## Updating [Terraform Docs]
 
 Terraform Docs can be used in two ways:
+
 ### Install
 
 - [Install Terraform Docs] according to the instructions for your platform.
 - Run `terraform-docs [module]` for each module, where `module` is the path, for example:
+
   ```sh
-  $ terraform-docs aks/application
+  terraform-docs aks/application
   ```
 
 [Terraform Docs]: https://terraform-docs.io/
