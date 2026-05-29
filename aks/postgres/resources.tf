@@ -184,7 +184,7 @@ resource "azurerm_storage_container_immutability_policy" "backup" {
   count = local.azure_enable_backup_storage && var.environment == "production" ? 1 : 0
 
   storage_container_resource_manager_id = "${azurerm_storage_container.backup[0].storage_account_id}/blobServices/default/containers/database-backup"
-  immutability_period_in_days           = 6
+  immutability_period_in_days           = 14
   protected_append_writes_all_enabled   = false
   protected_append_writes_enabled       = false
 
