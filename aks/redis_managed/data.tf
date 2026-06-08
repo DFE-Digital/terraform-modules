@@ -42,6 +42,6 @@ data "azurerm_managed_redis" "main" {
 data "azurerm_private_dns_zone" "redis_managed" {
   count = (var.use_azure ? 1 : 0)
 
-  name                = "redis.azure.net"
+  name                = "privatelink.redis.cache.windows.net"
   resource_group_name = "${var.cluster_configuration_map.resource_prefix}-bs-rg"
 }
