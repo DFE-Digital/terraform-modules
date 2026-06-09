@@ -138,3 +138,23 @@ variable "queues" {
   description = "List of queues to create on the storage account. Requires use_private_storage = true for private network access."
   default     = []
 }
+variable "cors_rules" {
+  type = list(object({
+    allowed_headers    = optional(list(string), ["Content-Type", "Content-MD5", "Content-Disposition", "x-ms-blob-content-disposition", "x-ms-blob-type"]),
+    allowed_methods    = optional(list(string), ["PUT"]),
+    allowed_origins    = optional(list(string)),
+    exposed_headers    = optional(list(string), ["Content-Type"]),
+    max_age_in_seconds = optional(number, 3600)
+  }))
+  description = "A list of CORS rules to apply to the stroage account"
+  validation {
+    condition = alltrue([
+      for rule in var.cors_rules :
+      !contains(rule.allowed_headers, "*") &&
+      !contains(rule.exposed_headers, "*") &&
+      !contains(rule.allowed_origins, "*")
+    ])
+    error_message = "Wildcard values are not allowed in allowed_headers or exposed_headers."
+  }
+  default = []
+}
