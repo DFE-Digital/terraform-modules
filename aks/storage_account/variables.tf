@@ -132,3 +132,9 @@ variable "use_private_storage" {
   description = "Whether to deploy a private Storage Account"
   default     = false
 }
+
+variable "queues" {
+  type        = list(object({ name = string }))
+  description = "List of queues to create on the storage account. Requires use_private_storage = true for private network access."
+  default     = []
+}

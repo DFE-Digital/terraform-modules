@@ -58,6 +58,11 @@ resource "azurerm_storage_container" "containers" {
   name               = each.value.name
   storage_account_id = azurerm_storage_account.main.id
 }
+resource "azurerm_storage_queue" "queues" {
+  for_each           = { for queue in var.queues : queue.name => queue }
+  name               = each.value.name
+  storage_account_id = azurerm_storage_account.main.id
+}
 
 resource "azurerm_storage_management_policy" "main" {
   count = var.blob_delete_after_days > 0 ? 1 : 0
@@ -105,4 +110,29 @@ resource "azurerm_private_endpoint" "storage" {
     ]
   }
 
+}
+
+resource "azurerm_private_endpoint" "storage_queue" {
+  count = var.use_private_storage && length(var.queues) > 0 ? 1 : 0
+
+  name                = "${local.storage_account_name}-queue-pe"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  subnet_id           = data.azurerm_subnet.priv[0].id
+
+  private_dns_zone_group {
+    name                 = data.azurerm_private_dns_zone.priv_queue[0].name
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.priv_queue[0].id]
+  }
+
+  private_service_connection {
+    name                           = "${local.storage_account_name}-queue-pe"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["queue"]
+    is_manual_connection           = false
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
