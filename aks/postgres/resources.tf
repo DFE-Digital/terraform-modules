@@ -211,6 +211,10 @@ resource "azurerm_monitor_metric_alert" "memory" {
 
   action {
     action_group_id = data.azurerm_monitor_action_group.main[0].id
+    webhook_properties = {
+      target_channels = var.service_short
+      environment     = var.environment
+    }
   }
 
   lifecycle {
@@ -240,6 +244,10 @@ resource "azurerm_monitor_metric_alert" "cpu" {
 
   action {
     action_group_id = data.azurerm_monitor_action_group.main[0].id
+    webhook_properties = {
+      target_channels = var.service_short
+      environment     = var.environment
+    }
   }
 
   lifecycle {
@@ -269,6 +277,10 @@ resource "azurerm_monitor_metric_alert" "storage" {
 
   action {
     action_group_id = data.azurerm_monitor_action_group.main[0].id
+    webhook_properties = {
+      target_channels = var.service_short
+      environment     = var.environment
+    }
   }
 
   lifecycle {
