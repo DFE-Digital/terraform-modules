@@ -17,11 +17,14 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_private_endpoint.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+| [azurerm_private_endpoint.storage_queue](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_storage_account.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_container.containers](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [azurerm_storage_encryption_scope.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_encryption_scope) | resource |
 | [azurerm_storage_management_policy.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy) | resource |
+| [azurerm_storage_queue.queues](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_queue) | resource |
 | [azurerm_private_dns_zone.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
+| [azurerm_private_dns_zone.priv_queue](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
 | [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_subnet.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet) | data source |
 | [azurerm_virtual_network.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network) | data source |
@@ -46,6 +49,7 @@ No modules.
 | <a name="input_name"></a> [name](#input\_name) | Name of the storage account (without prefix and suffix) | `string` | `null` | no |
 | <a name="input_production_replication_type"></a> [production\_replication\_type](#input\_production\_replication\_type) | Replication type for production environments. Non-production environments always use LRS for cost efficiency. | `string` | `"GRS"` | no |
 | <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled) | Whether public network access is allowed for the storage account | `bool` | `false` | no |
+| <a name="input_queues"></a> [queues](#input\_queues) | List of queues to create on the storage account. Requires use\_private\_storage = true for private network access. | `list(object({ name = string }))` | `[]` | no |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
 | <a name="input_storage_account_name_override"></a> [storage\_account\_name\_override](#input\_storage\_account\_name\_override) | Override the generated storage account name with a custom name | `string` | `null` | no |
 | <a name="input_use_private_storage"></a> [use\_private\_storage](#input\_use\_private\_storage) | Whether to deploy a private Storage Account | `bool` | `false` | no |
@@ -60,4 +64,7 @@ No modules.
 | <a name="output_primary_access_key"></a> [primary\_access\_key](#output\_primary\_access\_key) | The primary access key for the Storage Account |
 | <a name="output_primary_blob_endpoint"></a> [primary\_blob\_endpoint](#output\_primary\_blob\_endpoint) | The primary blob endpoint URL |
 | <a name="output_primary_connection_string"></a> [primary\_connection\_string](#output\_primary\_connection\_string) | The primary connection string for the Storage Account |
+| <a name="output_primary_queue_endpoint"></a> [primary\_queue\_endpoint](#output\_primary\_queue\_endpoint) | The primary queue endpoint URL |
+| <a name="output_queues"></a> [queues](#output\_queues) | A map of queue names to their properties |
 | <a name="output_storage_private_blob_fqdn"></a> [storage\_private\_blob\_fqdn](#output\_storage\_private\_blob\_fqdn) | n/a |
+| <a name="output_storage_private_queue_fqdn"></a> [storage\_private\_queue\_fqdn](#output\_storage\_private\_queue\_fqdn) | n/a |
