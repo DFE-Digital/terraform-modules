@@ -25,11 +25,12 @@ resource "airbyte_source_postgres" "source_postgres" {
     }
     replication_method = {
       read_changes_using_write_ahead_log_cdc = {
-        replication_slot       = "airbyte_slot"
-        publication            = "airbyte_publication"
-        plugin                 = "pgoutput"
-        initial_snapshot       = true
-        heartbeat_action_query = "UPDATE airbyte_heartbeat SET last_heartbeat = now() WHERE id = 1;"
+        replication_slot                     = "airbyte_slot"
+        publication                          = "airbyte_publication"
+        plugin                               = "pgoutput"
+        initial_snapshot                     = true
+        heartbeat_action_query               = "UPDATE airbyte_heartbeat SET last_heartbeat = now() WHERE id = 1;"
+        invalid_cdc_cursor_position_behavior = "Re-sync data"
       }
     }
   }
