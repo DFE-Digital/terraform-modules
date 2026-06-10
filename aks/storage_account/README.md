@@ -219,6 +219,97 @@ module "temp_storage" {
 }
 ```
 
+### Blob enable CORS
+
+The module supports blob CORS settings, default values are set in the module for allowed_headers:, allowed_methods:, exposed_headers: and max_age_in_seconds: it is possible to override these values if required. There is no default value for allowed_origins this will need to be set in the your terrafrom, the use of varibles in your terraform can be used to customise per env.
+
+#### Basic use
+```terraform
+module "temp_storage" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = var.environment
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  # Delete blobs after 30 days
+  blob_delete_after_days = 30
+
+  # Or disable automatic deletion
+  blob_delete_after_days = 0
+
+  cors_rules = [
+    {
+      allowed_origins    = ["https://app.example.com"]
+    }
+  ]
+}
+```
+
+#### Multiple rules
+```terraform
+module "temp_storage" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = var.environment
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  # Delete blobs after 30 days
+  blob_delete_after_days = 30
+
+  # Or disable automatic deletion
+  blob_delete_after_days = 0
+
+  cors_rules = [
+    {
+      allowed_headers    = ["*"]
+      allowed_methods    = ["GET", "POST"]
+      allowed_origins    = ["https://app.example.com"]
+      exposed_headers    = ["x-ms-request-id"]
+      max_age_in_seconds = 1800
+    },
+    {
+      allowed_headers    = ["Content-MD5"]
+      allowed_methods    = ["GET"]
+      allowed_origins    = ["https://app2.example.com"]
+      exposed_headers    = ["x-ms-request-id"]
+      max_age_in_seconds = 3600
+    }
+  ]
+}
+```
+
+#### Override defaults
+```terraform
+module "temp_storage" {
+  source = "git::https://github.com/DFE-Digital/terraform-modules.git//aks/storage_account?ref=stable"
+
+  environment           = var.environment
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+
+  # Delete blobs after 30 days
+  blob_delete_after_days = 30
+
+  # Or disable automatic deletion
+  blob_delete_after_days = 0
+
+  cors_rules = [
+    {
+      allowed_headers    = ["*"]
+      allowed_methods    = ["GET", "POST"]
+      allowed_origins    = ["https://app.example.com"]
+      exposed_headers    = ["x-ms-request-id"]
+      max_age_in_seconds = 1800
+    }
+  ]
+}
+```
+
 ### Enabling Retention Policies
 
 Retention policies are disabled by default for immediate deletion. For production environments where you want to retain deleted items, you can enable them:
