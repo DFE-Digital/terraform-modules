@@ -11,6 +11,7 @@ Shared modules used by various DfE services.
 - [aks/job_configuration](aks/job_configuration)
 - [aks/postgres](aks/postgres)
 - [aks/redis](aks/redis)
+- [aks/redis_managed](aks/redis_managed)
 - [aks/secrets](aks/secrets)
 - [dns/records](dns/records)
 - [dns/zones](dns/zones)
