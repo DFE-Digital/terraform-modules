@@ -23,11 +23,12 @@ locals {
 resource "azurerm_managed_redis" "main" {
   count = var.use_azure ? 1 : 0
 
-  name                  = local.azure_name
-  location              = data.azurerm_resource_group.main[0].location
-  resource_group_name   = data.azurerm_resource_group.main[0].name
-  sku_name              = var.azure_managed_redis_sku
-  public_network_access = var.azure_public_network_access_enabled
+  name                      = local.azure_name
+  location                  = data.azurerm_resource_group.main[0].location
+  resource_group_name       = data.azurerm_resource_group.main[0].name
+  sku_name                  = var.azure_managed_redis_sku
+  high_availability_enabled = var.managed_redis_high_availability
+  public_network_access     = var.azure_public_network_access_enabled
 
   default_database {
     access_keys_authentication_enabled = true
