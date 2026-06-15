@@ -89,3 +89,10 @@ variable "rate_limit_max" {
   default     = null
   description = "create a block rule that will limit any IP that goes above var.rate_limit_max over a 5 minute period"
 }
+
+variable "block_common_paths" {
+  type        = bool
+  nullable    = false
+  default     = false
+  description = "Enable hardcoded WAF rules to block common scanning paths (PHP, WordPress, sensitive files, etc.)"
+}
