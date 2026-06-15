@@ -47,6 +47,7 @@ No modules.
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
 | <a name="input_db_clustering_policy"></a> [db\_clustering\_policy](#input\_db\_clustering\_policy) | The default database clustering policy specified at create time | `string` | `"NoCluster"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
+| <a name="input_managed_redis_high_availability"></a> [managed\_redis\_high\_availability](#input\_managed\_redis\_high\_availability) | Whether to enable high availability for the Managed Redis instance. Defaults to false. Changing this forces a new Managed Redis instance to be created. | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the instance that gets added as a suffix to the standard resource name. | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
 | <a name="input_server_docker_repo"></a> [server\_docker\_repo](#input\_server\_docker\_repo) | n/a | `string` | `"ghcr.io/dfe-digital/teacher-services-cloud"` | no |

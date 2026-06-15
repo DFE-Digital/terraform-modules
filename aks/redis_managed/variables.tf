@@ -132,3 +132,9 @@ variable "azure_managed_redis_sku" {
     error_message = "The SKU must be one the values defined at https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/managed_redis#sku_name-1"
   }
 }
+
+variable "managed_redis_high_availability" {
+  type        = bool
+  description = "Whether to enable high availability for the Managed Redis instance. Defaults to false. Changing this forces a new Managed Redis instance to be created."
+  default     = false
+}
