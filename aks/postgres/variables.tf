@@ -179,6 +179,26 @@ variable "use_airbyte" {
   description = "Whether to add configuration changes required by Airbyte"
 }
 
+variable "sync_replication_slots" {
+  description = "A Postgres config setting required for version 17 and above on HA for slot replication. Important for AirByte"
+  type        = string
+  default     = "on"
+  validation {
+    condition     = contains(["on", "off"], var.sync_replication_slots)
+    error_message = "The sync_replication_slots must be one of: on, off"
+  }
+}
+
+variable "hot_standby_feedback" {
+  description = "A Postgres config setting required for version 17 and above on HA for slot replication. Important for AirByte"
+  type        = string
+  default     = "on"
+  validation {
+    condition     = contains(["on", "off"], var.hot_standby_feedback)
+    error_message = "The hot_standby_feedback must be one of: on, off"
+  }
+}
+
 locals {
   server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
   command             = var.use_airbyte ? ["postgres", "-c", "wal_level=logical", "-c", "max_wal_senders=2", "-c", "max_replication_slots=1", "-c", "max_slot_wal_keep_size=2048"] : null

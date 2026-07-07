@@ -441,3 +441,19 @@ resource "azurerm_postgresql_flexible_server_configuration" "min_wal_size" {
   server_id = azurerm_postgresql_flexible_server.main[0].id
   value     = 2048
 }
+
+resource "azurerm_postgresql_flexible_server_configuration" "sync_replication_slots" {
+  count = var.use_azure && var.use_airbyte && var.azure_enable_high_availability && var.server_version >= 17 ? 1 : 0
+  # Parameter min_wal_size = 2048 MB the lower limit that ensures enough WAL files are retained or reused to prevent the disk space from shrinking too much between checkpoints
+  name      = "sync_replication_slots"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = var.sync_replication_slots
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "hot_standby_feedback" {
+  count = var.use_azure && var.use_airbyte && var.azure_enable_high_availability && var.server_version >= 17 ? 1 : 0
+  # Parameter min_wal_size = 2048 MB the lower limit that ensures enough WAL files are retained or reused to prevent the disk space from shrinking too much between checkpoints
+  name      = "hot_standby_feedback"
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  value     = var.hot_standby_feedback
+}
