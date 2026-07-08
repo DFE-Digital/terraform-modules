@@ -140,6 +140,17 @@ variable "dotnet_application_directory" {
   description = "The path to application containing the dfe-analytics directory"
 }
 
+variable "airbyte_sync_mode" {
+  type        = string
+  default     = "incremental_append"
+  description = "The Airbyte sync mode"
+
+  validation {
+    condition     = contains(["incremental_append", "incremental_deduped_history"], var.airbyte_sync_mode)
+    error_message = "Sync mode must be incremental_append, or incremental_deduped_history."
+  }
+}
+
 locals {
   source_name      = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-pg-source"
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
