@@ -121,7 +121,9 @@ module "dotnet_streams_update_job" {
     "--airbyte-client-secret",
     var.client_secret,
     "--airbyte-connection-id",
-    airbyte_connection.connection.connection_id
+    airbyte_connection.connection.connection_id,
+    "--airbyte-sync-mode",
+    var.airbyte_sync_mode
   ]
   job_name       = "airbyte-stream-update"
   enable_logit   = true
