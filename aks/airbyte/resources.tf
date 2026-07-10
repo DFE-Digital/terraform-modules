@@ -101,7 +101,7 @@ module "dotnet_streams_update_job" {
   service_name = var.service_name
   docker_image = var.docker_image
   commands     = ["/bin/sh"]
-  arguments = [
+  arguments = flatten([
     "-f",
     "${coalesce(trimsuffix(var.dotnet_application_directory, "/"), ".")}/dfe-analytics/apply-config.sh",
     "--connection-string",
@@ -114,6 +114,7 @@ module "dotnet_streams_update_job" {
     local.gcp_dataset_name,
     "--hidden-policy-tag-name",
     local.gcp_policy_tag_name,
+    [for alias, tag in var.additional_policy_tags : ["--policy-tag", alias, "projects/${data.google_project.main.project_id}/locations/${local.gcp_region}/taxonomies/${var.gcp_taxonomy_id}/policyTags/${tag}"]],
     "--airbyte-api-base-address",
     var.server_url,
     "--airbyte-client-id",
@@ -124,7 +125,7 @@ module "dotnet_streams_update_job" {
     airbyte_connection.connection.connection_id,
     "--airbyte-sync-mode",
     var.airbyte_sync_mode
-  ]
+  ])
   job_name       = "airbyte-stream-update"
   enable_logit   = true
   enable_gcp_wif = true

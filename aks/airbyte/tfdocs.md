@@ -55,6 +55,7 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_additional_policy_tags"></a> [additional\_policy\_tags](#input\_additional\_policy\_tags) | A map of policy tag aliases to tag IDs | `map(string)` | `{}` | no |
 | <a name="input_airbyte_sync_mode"></a> [airbyte\_sync\_mode](#input\_airbyte\_sync\_mode) | The Airbyte sync mode | `string` | `"incremental_append"` | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | n/a | yes |
 | <a name="input_client_id"></a> [client\_id](#input\_client\_id) | Airbyte client id | `string` | n/a | yes |
