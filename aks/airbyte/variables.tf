@@ -151,6 +151,12 @@ variable "airbyte_sync_mode" {
   }
 }
 
+variable "additional_policy_tags" {
+  type        = map(string)
+  default     = {}
+  description = "A map of policy tag aliases to tag IDs"
+}
+
 locals {
   source_name      = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-pg-source"
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
