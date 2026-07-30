@@ -115,6 +115,8 @@ module "dotnet_streams_update_job" {
     "--hidden-policy-tag-name",
     local.gcp_policy_tag_name,
     [for alias, tag in var.additional_policy_tags : ["--policy-tag", alias, "projects/${data.google_project.main.project_id}/locations/${local.gcp_region}/taxonomies/${var.gcp_taxonomy_id}/policyTags/${tag}"]],
+    "--skip-policy-tags",
+    var.skip_policy_tags,
     "--airbyte-api-base-address",
     var.server_url,
     "--airbyte-client-id",

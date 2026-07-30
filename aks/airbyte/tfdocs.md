@@ -89,6 +89,7 @@
 | <a name="input_server_url"></a> [server\_url](#input\_server\_url) | Server url | `string` | `null` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
+| <a name="input_skip_policy_tags"></a> [skip\_policy\_tags](#input\_skip\_policy\_tags) | Whether to skip applying policy tags to tables in Big Query | `bool` | `false` | no |
 | <a name="input_use_azure"></a> [use\_azure](#input\_use\_azure) | Whether to deploy using Azure Postgres | `bool` | n/a | yes |
 | <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Airbyte workspace id | `string` | `null` | no |
 
