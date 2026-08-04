@@ -106,3 +106,11 @@ resource "google_bigquery_dataset_iam_member" "bqowner" {
   role       = "roles/bigquery.dataOwner"
   member     = "serviceAccount:${data.google_service_account.bqappender[0].email}"
 }
+
+resource "google_data_catalog_taxonomy_iam_member" "bqownerdc" {
+  count = var.gcp_bq_sa == null ? 0 : 1
+
+  taxonomy = "projects/${data.google_project.main.project_id}/locations/${local.gcp_region}/taxonomies/${var.gcp_taxonomy_id}"
+  role     = "roles/datacatalog.viewer"
+  member   = "serviceAccount:${data.google_service_account.bqappender[0].email}"
+}
