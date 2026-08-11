@@ -32,6 +32,8 @@ Custom roles:
 Airbyte_workflow_IAM with permissions (with id Airbyte_workflow_IAM)
 - resourcemanager.projects.getIamPolicy
 - resourcemanager.projects.setIamPolicy
+- datacatalog.taxonomies.getIamPolicy
+- datacatalog.taxonomies.setIamPolicy
 
 BigQuery Appender Airbyte (with id bigquery_appender_airbyte)
 - bigquery.datasets.get
@@ -94,40 +96,6 @@ provider "google" {
   project = "apply-for-qts-in-england" # change as required
 }
 
-data "azurerm_key_vault" "key_vault" {
-  name                = var.key_vault_name
-  resource_group_name = local.app_resource_group_name
-}
-
-data "azurerm_key_vault_secret" "airbyte_client_id" {
-  count = var.airbyte_enabled ? 1 : 0
-
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "AIRBYTE-CLIENT-ID"
-}
-
-data "azurerm_key_vault_secret" "airbyte_client_secret" {
-  count = var.airbyte_enabled ? 1 : 0
-
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "AIRBYTE-CLIENT-SECRET"
-}
-
-data "azurerm_key_vault_secret" "airbyte_workspace_id" {
-  count = var.airbyte_enabled ? 1 : 0
-
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "AIRBYTE-WORKSPACE-ID"
-}
-
-# change this to a random password?
-data "azurerm_key_vault_secret" "airbyte_replication_password" {
-  count = var.airbyte_enabled ? 1 : 0
-
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "AIRBYTE-REPLICATION-PASSWORD"
-}
-
 module "airbyte" {
   source = "./vendor/modules/aks//aks/airbyte"
 
@@ -143,12 +111,13 @@ module "airbyte" {
 
   host_name          = module.postgres.host
   database_name      = module.postgres.name
-  workspace_id       = data.azurerm_key_vault_secret.airbyte_workspace_id[0].value
-  client_id          = data.azurerm_key_vault_secret.airbyte_client_id[0].value
-  client_secret      = data.azurerm_key_vault_secret.airbyte_client_secret[0].value
-  repl_password      = data.azurerm_key_vault_secret.airbyte_replication_password[0].value
+  workspace_id       = var.airbyte_enabled ? module.secrets.map.AIRBYTE-WORKSPACE-ID : null
+  client_id          = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : null
+  client_secret      = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : null
+  repl_password      = var.airbyte_enabled ? module.secrets.map.AIRBYTE-REPLICATION-PASSWORD : null
   server_url         = "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
   connection_status  = var.connection_status
+  connection_streams = local.connection_streams
 
   cluster           = var.cluster
   namespace         = var.namespace
@@ -162,6 +131,7 @@ module "airbyte" {
   cpu            = module.cluster_data.configuration_map.cpu_min
 
   use_azure = var.deploy_azure_backing_services
+  gcp_bq_sa = var.airbyte_enabled ? module.secrets.map.AIRBYTE-BQ-SA : null
 }
 
 ## Airbyte module variables
@@ -177,6 +147,36 @@ variable "connection_status" {
   description = "Connectin status, either active or inactive"
 }
 
+locals {
+  connection_streams = var.airbyte_enabled ? file("workspace_variables/airbyte_stream_config.json") : null
+  gcp_dataset_name   = replace("${var.service_short}_airbyte_${local.app_name_suffix}", "-", "_")
+}
+
+module "secrets" {
+  source = "./vendor/modules/aks//aks/secrets"
+
+  azure_resource_prefix = var.azure_resource_prefix
+  service_short         = var.service_short
+  config_short          = var.config_short
+}
+
+#merge into env variables
+{
+  BIGQUERY_AIRBYTE_DATASET                    = var.airbyte_enabled ? local.gcp_dataset_name : null
+  AIRBYTE_SERVER_URL                          = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}" : null
+  BIGQUERY_HIDDEN_POLICY_TAG                  = var.airbyte_enabled ? "projects/rugged-abacus-218110/locations/europe-west2/taxonomies/69524444121704657/policyTags/6523652585511281766" : null
+  AIRBYTE_INTERNAL_DATASET                    = var.airbyte_enabled ? "${local.gcp_dataset_name}_internal" : null
+}
+
+#merge into secret variables
+{
+  AIRBYTE_CONFIGURATION = var.airbyte_enabled ? jsonencode({
+  SOURCE_ID      = module.airbyte[0].airbyte_source_id
+  DESTINATION_ID = module.airbyte[0].airbyte_destination_id
+  CONNECTION_ID  = module.airbyte[0].airbyte_connection_id
+  }) : null
+}
+
 terraform {
   required_version = "~> 1.9.8"
   required_providers {
@@ -188,11 +188,16 @@ terraform {
   }
   ...
 
+airbyte = {
+      source  = "airbytehq/airbyte"
+      version = "0.10.0"
+    }
+
 provider "airbyte" {
   # Configuration options
   server_url = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}/api/public/v1" : ""
-  client_id = var.airbyte_enabled ? data.azurerm_key_vault_secret.airbyte_client_id[0].value : ""
-  client_secret = var.airbyte_enabled ? data.azurerm_key_vault_secret.airbyte_client_secret[0].value: ""
+  client_id = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : ""
+  client_secret = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : ""
 }
 ```
 
