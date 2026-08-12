@@ -34,6 +34,7 @@
 | [google_bigquery_dataset_iam_member.bqowner](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.owner](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
 | [google_bigquery_dataset_iam_member.owner_internal](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/bigquery_dataset_iam_member) | resource |
+| [google_data_catalog_taxonomy_iam_member.bqownerdc](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/data_catalog_taxonomy_iam_member) | resource |
 | [google_project_iam_member.appender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.bqappender](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.viewer](https://registry.terraform.io/providers/hashicorp/google/6.6.0/docs/resources/project_iam_member) | resource |
