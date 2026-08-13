@@ -4,8 +4,8 @@ on:
   release:
     types: [published]
 
-# permissions:
-#   contents: write
+permissions:
+  contents: write
 
 jobs:
   update-stable-tag:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ !github.event.release.prerelease }}
     steps:
-      - uses: actions/checkout@latest
+      - uses: actions/checkout@7
         with: {ref: "${{ github.event.release.tag_name }}"}
       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
         with: {ref: stable}
@@ -22,7 +22,7 @@ jobs:
     name: Update testing tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@latest
+      - uses: actions/checkout@7
         with: {ref: "${{ github.event.release.tag_name }}"}
       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
         with: {ref: testing}
