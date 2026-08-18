@@ -35,6 +35,7 @@ No modules.
 | [azurerm_postgresql_flexible_server_configuration.sync_replication_slots](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.wal_level](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_database.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_database) | resource |
+| [azurerm_private_endpoint.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_storage_account.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_container.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [azurerm_storage_container_immutability_policy.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container_immutability_policy) | resource |
@@ -46,9 +47,12 @@ No modules.
 | [azurerm_monitor_action_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_action_group) | data source |
 | [azurerm_monitor_diagnostic_categories.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_diagnostic_categories) | data source |
 | [azurerm_private_dns_zone.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
+| [azurerm_private_dns_zone.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
 | [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_resource_group.monitoring](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_subnet.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet) | data source |
+| [azurerm_subnet.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet) | data source |
+| [azurerm_virtual_network.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network) | data source |
 
 ## Inputs
 
@@ -57,6 +61,8 @@ No modules.
 | <a name="input_admin_password"></a> [admin\_password](#input\_admin\_password) | Password of the admin user | `string` | `null` | no |
 | <a name="input_admin_username"></a> [admin\_username](#input\_admin\_username) | Username of the admin user | `string` | `null` | no |
 | <a name="input_alert_window_size"></a> [alert\_window\_size](#input\_alert\_window\_size) | The period of time that is used to monitor alert activity e.g. PT1M, PT5M, PT15M, PT30M, PT1H, PT6H, PT12H. The interval between checks is adjusted accordingly. | `string` | `"PT5M"` | no |
+| <a name="input_azure_backup_storage_private_endpoint_enabled"></a> [azure\_backup\_storage\_private\_endpoint\_enabled](#input\_azure\_backup\_storage\_private\_endpoint\_enabled) | Use a private endpoint for backup storage account access | `bool` | `false` | no |
+| <a name="input_azure_backup_storage_public_network_access_enabled"></a> [azure\_backup\_storage\_public\_network\_access\_enabled](#input\_azure\_backup\_storage\_public\_network\_access\_enabled) | Whether public network access is allowed for the storage account | `bool` | `true` | no |
 | <a name="input_azure_cpu_threshold"></a> [azure\_cpu\_threshold](#input\_azure\_cpu\_threshold) | n/a | `number` | `80` | no |
 | <a name="input_azure_enable_backup_storage"></a> [azure\_enable\_backup\_storage](#input\_azure\_enable\_backup\_storage) | n/a | `bool` | `true` | no |
 | <a name="input_azure_enable_high_availability"></a> [azure\_enable\_high\_availability](#input\_azure\_enable\_high\_availability) | n/a | `bool` | `false` | no |

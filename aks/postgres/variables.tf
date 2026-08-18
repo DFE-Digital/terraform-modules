@@ -203,3 +203,15 @@ locals {
   server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
   command             = var.use_airbyte ? ["postgres", "-c", "wal_level=logical", "-c", "max_wal_senders=2", "-c", "max_replication_slots=1", "-c", "max_slot_wal_keep_size=2048"] : null
 }
+
+variable "azure_backup_storage_private_endpoint_enabled" {
+  type        = bool
+  default     = false
+  description = "Use a private endpoint for backup storage account access"
+}
+
+variable "azure_backup_storage_public_network_access_enabled" {
+  type        = bool
+  description = "Whether public network access is allowed for the storage account"
+  default     = true
+}

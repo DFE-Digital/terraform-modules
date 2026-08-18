@@ -37,3 +37,23 @@ data "azurerm_monitor_diagnostic_categories" "main" {
 
   resource_id = azurerm_postgresql_flexible_server.main[0].id
 }
+
+#Blob Private networking
+data "azurerm_virtual_network" "priv" {
+  count               = local.azure_enable_backup_storage && var.azure_backup_storage_private_endpoint_enabled ? 1 : 0
+  name                = "${var.cluster_configuration_map.resource_prefix}-vnet"
+  resource_group_name = var.cluster_configuration_map.resource_group_name
+}
+
+data "azurerm_subnet" "priv" {
+  count                = local.azure_enable_backup_storage && var.azure_backup_storage_private_endpoint_enabled ? 1 : 0
+  name                 = "private-storage-snet"
+  virtual_network_name = "${var.cluster_configuration_map.resource_prefix}-vnet"
+  resource_group_name  = var.cluster_configuration_map.resource_group_name
+}
+
+data "azurerm_private_dns_zone" "priv" {
+  count               = local.azure_enable_backup_storage && var.azure_backup_storage_private_endpoint_enabled ? 1 : 0
+  name                = "privatelink.blob.core.windows.net"
+  resource_group_name = "${var.cluster_configuration_map.resource_prefix}-bs-rg"
+}
