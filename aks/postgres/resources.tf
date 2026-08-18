@@ -139,6 +139,7 @@ resource "azurerm_storage_account" "backup" {
   account_replication_type         = "GRS"
   allow_nested_items_to_be_public  = false
   cross_tenant_replication_enabled = false
+  public_network_access_enabled    = var.azure_backup_storage_public_network_access_enabled
 
   blob_properties {
     delete_retention_policy {
@@ -151,6 +152,34 @@ resource "azurerm_storage_account" "backup" {
   }
 
   lifecycle { ignore_changes = [tags] }
+}
+
+resource "azurerm_private_endpoint" "storage" {
+  count = local.azure_enable_backup_storage && var.azure_backup_storage_private_endpoint_enabled ? 1 : 0
+
+  name                = "${azurerm_storage_account.backup[0].name}-pe"
+  location            = data.azurerm_resource_group.main[0].location
+  resource_group_name = data.azurerm_resource_group.main[0].name
+  subnet_id           = data.azurerm_subnet.priv[0].id
+
+  private_dns_zone_group {
+    name                 = data.azurerm_private_dns_zone.priv[0].name
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.priv[0].id]
+  }
+
+  private_service_connection {
+    name                           = "${azurerm_storage_account.backup[0].name}-pe"
+    private_connection_resource_id = azurerm_storage_account.backup[0].id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+
 }
 
 resource "azurerm_storage_management_policy" "backup" {
