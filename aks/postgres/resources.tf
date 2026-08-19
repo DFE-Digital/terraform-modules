@@ -129,6 +129,15 @@ resource "azurerm_postgresql_flexible_server_database" "main" {
   charset   = "utf8"
 }
 
+resource "azurerm_postgresql_flexible_server_database" "extra" {
+  for_each = var.use_azure ? toset(var.extra_databases) : toset([])
+
+  name      = each.value
+  server_id = azurerm_postgresql_flexible_server.main[0].id
+  collation = "en_US.utf8"
+  charset   = "utf8"
+}
+
 resource "azurerm_storage_account" "backup" {
   count = local.azure_enable_backup_storage ? 1 : 0
 
