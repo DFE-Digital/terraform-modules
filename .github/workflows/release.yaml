@@ -8,12 +8,13 @@ on:
     branches:
       - fix-release-workflow
 
+permissions:
+  contents: write
+
 jobs:
   debug-tag:
     name: Set debug tag
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v7
       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
