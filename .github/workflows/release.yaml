@@ -4,27 +4,43 @@ name: Release
 on:
   release:
     types: [published]
+  push:
+    branches:
+      - fix-release-workflow
 
 jobs:
-  update-stable-tag:
-    name: Update stable tag
+  debug-tag:
+    name: Set debug tag
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    if: ${{ !github.event.release.prerelease }}
     steps:
-      - uses: actions/checkout@7
-        with: {ref: "${{ github.event.release.tag_name }}"}
+      - uses: actions/checkout@v7
       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
-        with: {ref: stable}
+        with:
+          ref: testingupdatetag
+          description: testing tagging
 
-  update-testing-tag:
-    name: Update testing tag
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@7
-        with: {ref: "${{ github.event.release.tag_name }}"}
-      - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
-        with: {ref: testing}
+
+  # update-stable-tag:
+  #   name: Update stable tag
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   if: ${{ !github.event.release.prerelease }}
+  #   steps:
+  #     - uses: actions/checkout@7
+  #       with: {ref: "${{ github.event.release.tag_name }}"}
+  #     - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
+  #       with: {ref: stable}
+
+  # update-testing-tag:
+  #   name: Update testing tag
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - uses: actions/checkout@7
+  #       with: {ref: "${{ github.event.release.tag_name }}"}
+  #     - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
+  #       with: {ref: testing}
