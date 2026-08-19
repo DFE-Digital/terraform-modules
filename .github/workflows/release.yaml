@@ -6,7 +6,7 @@ on:
     types: [published]
   push:
     branches:
-      - fix-release-workflow
+      - rdg-testing-release
 
 permissions:
   contents: write
@@ -16,7 +16,9 @@ jobs:
     name: Set debug tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@7
+      - uses: actions/checkout@v7
+        with:
+          ref: 311a3e9f06e2d5f22157c8b27867511a39aeaf5e
       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
         with:
           ref: testingupdatetag
