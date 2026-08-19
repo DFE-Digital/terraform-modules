@@ -1,39 +1,39 @@
-# ---
-# name: Release
+---
+name: Release
 
-# on:
-#   push:
-#     branches:
-#       - rdg-testing-release
+on:
+  push:
+    branches:
+      - rdg-testing-release
 
-# permissions:
-#   contents: write
+permissions:
+  contents: write
 
-# env:
-#   STABLE_SHA: 1074d54f76c0e0eb92c305718a435440c34a7750
-#   TESTING_SHA: 655098205b87d993e3066313a212cfa2ba97ad9b
+env:
+  STABLE_SHA: 1074d54f76c0e0eb92c305718a435440c34a7750
+  TESTING_SHA: 655098205b87d993e3066313a212cfa2ba97ad9b
 
-# jobs:
-#   update-stable-tag:
-#     name: Update stable tag
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v7
-#         with:
-#           ref: "${{ env.STABLE_SHA }}"
+jobs:
+  update-stable-tag:
+    name: Update stable test tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: "${{ env.STABLE_SHA }}"
 
-#       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
-#         with:
-#           ref: "stable"
+      - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
+        with:
+          ref: "testingtagstable"
 
-#   update-testing-tag:
-#     name: Update testing tag
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v7
-#         with:
-#           ref: "${{ env.STABLE_SHA }}"
+  update-testing-tag:
+    name: Update testing test tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: "${{ env.STABLE_SHA }}"
 
-#       - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
-#         with:
-#           ref: "stable"
+      - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
+        with:
+          ref: "testingtagtesting"
