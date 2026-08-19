@@ -5,13 +5,12 @@ on:
   release:
     types: [published]
 
-permissions:
-  contents: write
-
 jobs:
   update-stable-tag:
     name: Update stable tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: ${{ !github.event.release.prerelease }}
     steps:
       - uses: actions/checkout@7
@@ -22,6 +21,8 @@ jobs:
   update-testing-tag:
     name: Update testing tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@7
         with: {ref: "${{ github.event.release.tag_name }}"}
