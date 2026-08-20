@@ -1,0 +1,42 @@
+---
+name: Manually Set Release Tags
+
+on:
+  workflow_dispatch:
+    inputs:
+      stable_sha:
+        description: Full SHA to point the stable tag at
+        required: true
+        type: string
+      testing_sha:
+        description: Full SHA to point the stable tag at
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-stable-tag:
+    name: Update stable tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: "${{ inputs.stable_sha }}"
+
+      - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
+        with:
+          ref: "stable"
+
+  update-testing-tag:
+    name: Update testing tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: "${{ inputs.testing_sha }}"
+
+      - uses: EndBug/latest-tag@8fcae8848c1e23fd8212258f69a9619bc62cad67
+        with:
+          ref: "testing"
