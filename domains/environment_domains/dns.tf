@@ -13,6 +13,10 @@ resource "azurerm_dns_txt_record" "main" {
   record {
     value = azurerm_cdn_frontdoor_custom_domain.main[each.key].validation_token
   }
+
+  tags = {
+    Environment = local.environment_tags[each.key]
+  }
 }
 
 resource "azurerm_dns_txt_record" "apex" {
@@ -24,6 +28,10 @@ resource "azurerm_dns_txt_record" "apex" {
 
   record {
     value = azurerm_cdn_frontdoor_custom_domain.main[each.key].validation_token
+  }
+
+  tags = {
+    Environment = local.environment_tags[each.key]
   }
 }
 
@@ -37,6 +45,10 @@ resource "azurerm_dns_cname_record" "main" {
   resource_group_name = var.resource_group_name
   ttl                 = 300
   record              = azurerm_cdn_frontdoor_endpoint.main[each.key].host_name
+
+  tags = {
+    Environment = local.environment_tags[each.key]
+  }
 }
 
 resource "azurerm_dns_a_record" "main" {
@@ -47,4 +59,8 @@ resource "azurerm_dns_a_record" "main" {
   resource_group_name = var.resource_group_name
   ttl                 = 300
   target_resource_id  = azurerm_cdn_frontdoor_endpoint.main[each.key].id
+
+  tags = {
+    Environment = local.environment_tags[each.key]
+  }
 }
