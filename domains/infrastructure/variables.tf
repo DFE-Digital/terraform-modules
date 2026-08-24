@@ -19,6 +19,12 @@ variable "azure_enable_monitoring" {
   default     = false
 }
 
+variable "frontdoor_sku_name" {
+  description = "Sets the sku for frontdoor"
+  type        = string
+  default     = "Standard_AzureFrontDoor"
+}
+
 
 locals {
   default_records = {
