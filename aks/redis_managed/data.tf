@@ -33,7 +33,7 @@ data "azurerm_monitor_action_group" "main" {
 }
 
 data "azurerm_managed_redis" "main" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.create_managed_redis ? 1 : 0
 
   name                = azurerm_managed_redis.main[0].name
   resource_group_name = azurerm_managed_redis.main[0].resource_group_name

@@ -21,7 +21,7 @@ locals {
 # Azure Managed Redis
 
 resource "azurerm_managed_redis" "main" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.create_managed_redis ? 1 : 0
 
   name                      = local.azure_name
   location                  = data.azurerm_resource_group.main[0].location
@@ -49,7 +49,7 @@ resource "azurerm_managed_redis" "main" {
 # Required Private Endpoint
 
 resource "azurerm_private_endpoint" "main" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.create_managed_redis ? 1 : 0
 
   name                = local.azure_private_endpoint_name
   location            = data.azurerm_resource_group.main[0].location
@@ -76,7 +76,7 @@ resource "azurerm_private_endpoint" "main" {
 # Alert if high memory usage
 
 resource "azurerm_monitor_metric_alert" "memory" {
-  count = local.azure_enable_monitoring ? 1 : 0
+  count = local.azure_enable_monitoring && var.create_managed_redis ? 1 : 0
 
   name                = "${azurerm_managed_redis.main[0].name}-memory"
   resource_group_name = data.azurerm_resource_group.main[0].name

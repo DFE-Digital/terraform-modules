@@ -138,3 +138,9 @@ variable "managed_redis_high_availability" {
   description = "Whether to enable high availability for the Managed Redis instance. Defaults to false. Changing this forces a new Managed Redis instance to be created."
   default     = false
 }
+
+variable "create_managed_redis" {
+  description = "Whether to create a Managed Redis instance"
+  type        = bool
+  default     = true
+}

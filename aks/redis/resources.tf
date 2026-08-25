@@ -21,7 +21,7 @@ locals {
 # Azure
 
 resource "azurerm_redis_cache" "main" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.create_cache_redis ? 1 : 0
 
   name                          = local.azure_name
   location                      = data.azurerm_resource_group.main[0].location
@@ -63,7 +63,7 @@ resource "azurerm_redis_cache" "main" {
 }
 
 resource "azurerm_private_endpoint" "main" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.create_cache_redis ? 1 : 0
 
   name                = local.azure_private_endpoint_name
   location            = data.azurerm_resource_group.main[0].location
@@ -90,7 +90,7 @@ resource "azurerm_private_endpoint" "main" {
 }
 
 resource "azurerm_monitor_metric_alert" "memory" {
-  count = local.azure_enable_monitoring ? 1 : 0
+  count = local.azure_enable_monitoring && var.create_cache_redis ? 1 : 0
 
   name                = "${azurerm_redis_cache.main[0].name}-memory"
   resource_group_name = data.azurerm_resource_group.main[0].name

@@ -126,3 +126,9 @@ variable "server_docker_repo" {
   nullable = false
   default  = "ghcr.io/dfe-digital/teacher-services-cloud"
 }
+
+variable "create_cache_redis" {
+  description = "Whether to create a Cache for Redis instance"
+  type        = bool
+  default     = true
+}
