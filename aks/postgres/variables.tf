@@ -167,6 +167,13 @@ variable "create_database" {
   description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
 }
 
+variable "extra_databases" {
+  type        = list(string)
+  default     = []
+  nullable    = false
+  description = "Additional PostgreSQL databases to create on the same PostgreSQL server"
+}
+
 variable "server_docker_repo" {
   type     = string
   nullable = false

@@ -25,8 +25,25 @@ output "name" {
   value = local.database_name
 }
 
+output "extras" {
+  value       = var.extra_databases
+  sensitive   = true
+  description = "Displays extra PostgreSQL DB names for use in connection string"
+}
+
 output "url" {
   value     = "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${local.database_name}?sslmode=${var.use_azure ? "require" : "prefer"}"
+  sensitive = true
+}
+
+output "extra_database_urls" {
+  description = "Connection URLs for additional PostgreSQL databases"
+
+  value = {
+    for db in var.extra_databases :
+    db => "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${db}?sslmode=${var.use_azure ? "require" : "prefer"}"
+  }
+
   sensitive = true
 }
 
@@ -35,6 +52,16 @@ output "dotnet_connection_string" {
   sensitive = true
 }
 
+output "extra_dotnet_connection_strings" {
+  description = "Connection strings for additional PostgreSQL databases"
+
+  value = {
+    for db in var.extra_databases :
+    db => "Server=${local.host};Database=${db};Port=${local.port};User Id=${local.database_username};Password='${local.database_password}';Ssl Mode=${var.use_azure ? "Require" : "Prefer"};Trust Server Certificate=true"
+  }
+
+  sensitive = true
+}
 
 output "azure_backup_storage_account_name" {
   value = local.azure_enable_backup_storage ? azurerm_storage_account.backup[0].name : null

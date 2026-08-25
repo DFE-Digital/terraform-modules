@@ -34,6 +34,7 @@ No modules.
 | [azurerm_postgresql_flexible_server_configuration.min_wal_size](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.sync_replication_slots](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.wal_level](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
+| [azurerm_postgresql_flexible_server_database.extra](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_database) | resource |
 | [azurerm_postgresql_flexible_server_database.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_database) | resource |
 | [azurerm_private_endpoint.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_storage_account.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
@@ -80,6 +81,7 @@ No modules.
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
 | <a name="input_create_database"></a> [create\_database](#input\_create\_database) | Create default database. If the app creates the database instead of this module, set to false. Default: true | `bool` | `true` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
+| <a name="input_extra_databases"></a> [extra\_databases](#input\_extra\_databases) | Additional PostgreSQL databases to create on the same PostgreSQL server | `list(string)` | `[]` | no |
 | <a name="input_hot_standby_feedback"></a> [hot\_standby\_feedback](#input\_hot\_standby\_feedback) | A Postgres config setting required for version 17 and above on HA for slot replication. Important for AirByte | `string` | `"on"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the instance | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
@@ -100,6 +102,9 @@ No modules.
 | <a name="output_azure_backup_storage_container_name"></a> [azure\_backup\_storage\_container\_name](#output\_azure\_backup\_storage\_container\_name) | n/a |
 | <a name="output_azure_server_id"></a> [azure\_server\_id](#output\_azure\_server\_id) | n/a |
 | <a name="output_dotnet_connection_string"></a> [dotnet\_connection\_string](#output\_dotnet\_connection\_string) | n/a |
+| <a name="output_extra_database_urls"></a> [extra\_database\_urls](#output\_extra\_database\_urls) | Connection URLs for additional PostgreSQL databases |
+| <a name="output_extra_dotnet_connection_strings"></a> [extra\_dotnet\_connection\_strings](#output\_extra\_dotnet\_connection\_strings) | Connection strings for additional PostgreSQL databases |
+| <a name="output_extras"></a> [extras](#output\_extras) | Displays extra PostgreSQL DB names for use in connection string |
 | <a name="output_host"></a> [host](#output\_host) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_password"></a> [password](#output\_password) | n/a |

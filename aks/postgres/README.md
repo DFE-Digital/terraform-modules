@@ -20,6 +20,8 @@ module "postgres" {
   service_short         = "afqts"
   config_short          = "dv"
 
+  extra_databases       = var.extra_databases # Optional: Specify additional databases to deploy alongside primary
+
   cluster_configuration_map = module.aks_cluster_data.configuration_map
 
   use_azure = var.deploy_azure_backing_services
@@ -67,6 +69,10 @@ The port of the PostgreSQL instance.
 ### `name`
 
 The name of the database.
+
+### `extras`
+
+The name of any additional databases deployed alongside the primary.
 
 ### `url`
 
