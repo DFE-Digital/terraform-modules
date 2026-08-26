@@ -2,7 +2,7 @@ resource "azurerm_cdn_frontdoor_profile" "main" {
   for_each            = var.hosted_zone
   name                = each.value.front_door_name
   resource_group_name = each.value.resource_group_name
-  sku_name            = each.value.frontdoor_sku_name
+  sku_name            = var.frontdoor_sku_name
   tags                = var.tags
 
   lifecycle { ignore_changes = [tags] }
