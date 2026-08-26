@@ -25,10 +25,9 @@ output "name" {
   value = local.database_name
 }
 
-output "extras" {
-  value       = var.extra_databases
-  sensitive   = true
-  description = "Displays extra PostgreSQL DB names for use in connection string"
+output "extra_databases" {
+  value       = local.extra_database_names
+  description = "Names of additional PostgreSQL databases created by the module"
 }
 
 output "url" {
@@ -41,7 +40,7 @@ output "extra_database_urls" {
 
   value = {
     for db in var.extra_databases :
-    db => "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${db}?sslmode=${var.use_azure ? "require" : "prefer"}"
+    db => "postgres://${urlencode(local.database_username)}:${urlencode(local.database_password)}@${local.host}:${local.port}/${local.database_name}_${db}?sslmode=${var.use_azure ? "require" : "prefer"}"
   }
 
   sensitive = true
@@ -57,7 +56,7 @@ output "extra_dotnet_connection_strings" {
 
   value = {
     for db in var.extra_databases :
-    db => "Server=${local.host};Database=${db};Port=${local.port};User Id=${local.database_username};Password='${local.database_password}';Ssl Mode=${var.use_azure ? "Require" : "Prefer"};Trust Server Certificate=true"
+    db => "Server=${local.host};Database=${local.database_name}_${db};Port=${local.port};User Id=${local.database_username};Password='${local.database_password}';Ssl Mode=${var.use_azure ? "Require" : "Prefer"};Trust Server Certificate=true"
   }
 
   sensitive = true

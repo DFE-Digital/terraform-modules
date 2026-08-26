@@ -41,6 +41,7 @@ No modules.
 | [azurerm_storage_container.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [azurerm_storage_container_immutability_policy.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container_immutability_policy) | resource |
 | [azurerm_storage_management_policy.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy) | resource |
+| [kubernetes_config_map.postgres_init](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_deployment.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_service.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
@@ -103,8 +104,8 @@ No modules.
 | <a name="output_azure_server_id"></a> [azure\_server\_id](#output\_azure\_server\_id) | n/a |
 | <a name="output_dotnet_connection_string"></a> [dotnet\_connection\_string](#output\_dotnet\_connection\_string) | n/a |
 | <a name="output_extra_database_urls"></a> [extra\_database\_urls](#output\_extra\_database\_urls) | Connection URLs for additional PostgreSQL databases |
+| <a name="output_extra_databases"></a> [extra\_databases](#output\_extra\_databases) | Names of additional PostgreSQL databases created by the module |
 | <a name="output_extra_dotnet_connection_strings"></a> [extra\_dotnet\_connection\_strings](#output\_extra\_dotnet\_connection\_strings) | Connection strings for additional PostgreSQL databases |
-| <a name="output_extras"></a> [extras](#output\_extras) | Displays extra PostgreSQL DB names for use in connection string |
 | <a name="output_host"></a> [host](#output\_host) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_password"></a> [password](#output\_password) | n/a |
