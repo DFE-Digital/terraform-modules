@@ -1,5 +1,15 @@
+# variable "hosted_zone" {
+#   type = map(any)
+# }
+
 variable "hosted_zone" {
-  type = map(any)
+  type = map(object({
+    caa_records         = map(any)
+    txt_records         = map(any)
+    resource_group_name = string
+    front_door_name     = string
+    frontdoor_sku_name  = optional(string)
+  }))
 }
 
 variable "deploy_default_records" {
