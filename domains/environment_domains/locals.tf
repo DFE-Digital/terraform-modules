@@ -13,4 +13,36 @@ locals {
   cached_domain_list = length(var.cached_paths) > 0 ? var.domains : []
 
   max_frontdoor_endpoint_name_length = 46
+
+  # Metadata tagging for Azure DNS records based on domain names.
+  # Classification is driven by the configured domains list.
+  # Any domain not explicitly classified as Prod or Dev defaults to Test.
+  prod_domains = [
+    "apex",
+    "www",
+    "preprod",
+    "preproduction",
+    "sandbox",
+    "sandbox.api",
+    "tps-sandbox",
+    "tps",
+    "t",
+    "api"
+  ]
+
+  dev_domains = [
+    "dev",
+    "development"
+  ]
+
+  environment_tags = {
+    for domain in var.domains :
+    domain => (
+      contains(local.prod_domains, lower(domain))
+      ? "Prod"
+      : contains(local.dev_domains, lower(domain))
+      ? "Dev"
+      : "Test"
+    )
+  }
 }
