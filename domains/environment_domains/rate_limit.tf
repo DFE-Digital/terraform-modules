@@ -1,5 +1,5 @@
 resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
-  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0
+  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip || var.block_common_paths ? 1 : 0
 
   name                              = "${local.short_policy_name}${var.environment}RateLimitFirewallPolicy"
   resource_group_name               = var.resource_group_name
@@ -82,11 +82,30 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
     }
   }
 
+  dynamic "custom_rule" {
+    for_each = var.block_common_paths ? local.block_path_rules : []
+    content {
+      name     = custom_rule.value.name
+      priority = custom_rule.value.priority
+      enabled  = true
+      type     = "MatchRule"
+      action   = "Block"
+
+      match_condition {
+        match_variable     = "RequestUri"
+        operator           = custom_rule.value.operator
+        match_values       = custom_rule.value.patterns
+        negation_condition = false
+        transforms         = ["Lowercase"]
+      }
+    }
+  }
+
   lifecycle { ignore_changes = [tags] }
 }
 
 resource "azurerm_cdn_frontdoor_security_policy" "rate_limit" {
-  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0
+  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip || var.block_common_paths ? 1 : 0
 
   name                     = "${var.environment}RateLimitSecurityPolicy"
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id

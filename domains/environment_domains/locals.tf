@@ -13,4 +13,49 @@ locals {
   cached_domain_list = length(var.cached_paths) > 0 ? var.domains : []
 
   max_frontdoor_endpoint_name_length = 46
+
+  block_path_rules = [
+    {
+      name     = "BlockScriptExtensions"
+      priority = 20
+      patterns = [".php", ".asp", ".aspx", ".jsp", ".cgi"]
+      operator = "EndsWith"
+    },
+    {
+      name     = "BlockCMSPaths"
+      priority = 21
+      patterns = ["/wp-admin", "/wp-login", "/wp-content", "/wp-includes", "/xmlrpc.php", "/wp-cron.php"]
+      operator = "Contains"
+    },
+    {
+      name     = "BlockSensitiveFiles"
+      priority = 22
+      patterns = ["/.env", "/.git", "/.htaccess", "/.htpasswd", "/web.config"]
+      operator = "Contains"
+    },
+    {
+      name     = "BlockAdminTools"
+      priority = 23
+      patterns = ["/phpmyadmin", "/phpinfo", "/server-status", "/server-info", "/adminer"]
+      operator = "Contains"
+    },
+    {
+      name     = "BlockConfigFiles"
+      priority = 24
+      patterns = ["/composer.json", "/composer.lock", "/package.json", "/meta.json", "/Gemfile"]
+      operator = "Contains"
+    },
+    {
+      name     = "BlockBackupFiles"
+      priority = 25
+      patterns = [".bak", ".old", ".swp", ".sql"]
+      operator = "EndsWith"
+    },
+    {
+      name     = "BlockTraversalPaths"
+      priority = 26
+      patterns = ["/etc/passwd", "/proc/self", "../"]
+      operator = "Contains"
+    },
+  ]
 }
