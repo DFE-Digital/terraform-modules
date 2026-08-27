@@ -25,7 +25,11 @@ SELECT EXISTS(SELECT 1 FROM pg_replication_slots WHERE slot_name = 'airbyte_slot
  \echo 'Replication slot "airbyte_slot" already exists.'
 \else
  ALTER ROLE CURRENT_USER WITH REPLICATION;
- SELECT * FROM pg_create_logical_replication_slot('airbyte_slot', 'pgoutput');
+ SELECT * FROM pg_create_logical_replication_slot(
+    slot_name => 'airbyte_slot',
+    plugin    => 'pgoutput',
+    failover  => true
+);
  ALTER ROLE CURRENT_USER WITH NOREPLICATION;
 \endif
 \set publication_exists false
