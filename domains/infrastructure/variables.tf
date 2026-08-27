@@ -20,11 +20,19 @@ variable "azure_enable_monitoring" {
 }
 
 variable "frontdoor_sku_name" {
-  description = "Sets the sku for frontdoor"
+  description = "Default Azure Front Door SKU."
   type        = string
   default     = "Standard_AzureFrontDoor"
-}
 
+  validation {
+    condition = contains([
+      "Standard_AzureFrontDoor",
+      "Premium_AzureFrontDoor"
+    ], var.frontdoor_sku_name)
+
+    error_message = "frontdoor_sku_name must be either Standard_AzureFrontDoor or Premium_AzureFrontDoor."
+  }
+}
 
 locals {
   default_records = {
