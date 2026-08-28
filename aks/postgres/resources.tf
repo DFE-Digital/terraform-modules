@@ -18,6 +18,11 @@ locals {
     "replica-${n + 1}" => "replica-${n + 1}"
   }
 
+  read_replicas = {
+    for n in range(var.read_replica_count) :
+    "replica-${n + 1}" => "replica-${n + 1}"
+  }
+
   name_suffix = var.name != null ? "-${var.name}" : ""
 
   azure_generated_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
@@ -130,11 +135,7 @@ resource "azurerm_postgresql_flexible_server" "replica" {
 
   lifecycle {
     ignore_changes = [
-      tags,
-      # Allow Azure to manage deployment zone. Ignore changes.
-      zone,
-      # Required for import because of https://github.com/hashicorp/terraform-provider-azurerm/issues/15586
-      create_mode
+      tags
     ]
   }
 }

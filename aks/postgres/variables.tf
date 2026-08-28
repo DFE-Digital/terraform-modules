@@ -175,8 +175,8 @@ variable "extra_databases" {
 }
 
 variable "read_replica_count" {
-  type        = number
-  default     = 0
+  type    = number
+  default = 0
   description = "Number of read replicas to create"
 
   validation {
