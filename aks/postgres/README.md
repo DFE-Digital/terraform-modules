@@ -31,6 +31,50 @@ module "postgres" {
 }
 ```
 
+### Implementing multiple databases on a single PostgreSQL server
+
+The `extra_databases` input accepts short database identifiers. The module prefixes each value with the standard database naming convention:
+
+`${service_short}_${environment}_${newdbname}`
+
+For example:
+
+```
+extra_databases = [
+  "audit",
+  "reporting"
+]
+```
+
+produces:
+
+```
+service_env_audit
+service_env_reporting
+```
+
+**Consuming generated outputs**
+
+Note that consuming the outputs is still achieved using the shortened database name you provided upon creation.
+
+For example, to retrieve the PostgreSQL URL for the generated `service_env_audit` database:
+
+```
+module.postgres.extra_database_urls["audit"]
+```
+
+To retrieve the .NET connection string for the generated `service_env_reporting` database:
+
+```
+module.postgres.extra_dotnet_connection_strings["reporting"]
+```
+
+**Review app support**
+
+When `use_azure = false`, additional databases are generated using PostgreSQL initialisation scripts mounted into `/docker-entrypoint-initdb.d`. This ensures review-app PostgreSQL containers create the same additional databases as Azure Flexible Server deployments
+
+Note that PostgreSQL initialisation scripts are only executed when a database container is initialised for the first time.
+
 ### Enabling logical replication for airbyte
 
 If configuring airbyte for a service, then add
@@ -68,19 +112,27 @@ The port of the PostgreSQL instance.
 
 ### `name`
 
-The name of the database.
+The name of the primary database.
 
-### `extras`
+### `extra_databases`
 
-The name of any additional databases deployed alongside the primary.
+List of names of any additional databases deployed alongside the primary.
 
 ### `url`
 
 The URL used to connect to the PostgreSQL instance.
 
+### `extra_database_urls`
+
+A map of additional database names to PostgreSQL connection URLs.
+
 ### `dotnet_connection_string`
 
 A connection string that's compatible with .NET applications to the PostgreSQL instance.
+
+### `extra_dotnet_connection_strings`
+
+A map of additional database names to .NET connection strings.
 
 ### `azure_backup_storage_account_name`
 

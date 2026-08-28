@@ -1,6 +1,18 @@
 locals {
   database_name = "${var.service_short}_${var.environment}"
 
+  extra_database_names = [
+    for db in var.extra_databases :
+    "${local.database_name}_${db}"
+  ]
+
+  extra_database_sql = join("\n", [
+    for db in local.extra_database_names :
+    "CREATE DATABASE \"${db}\";"
+  ])
+
+  postgres_init_hash = substr(sha1(local.extra_database_sql), 0, 12)
+
   name_suffix = var.name != null ? "-${var.name}" : ""
 
   azure_generated_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
@@ -130,7 +142,7 @@ resource "azurerm_postgresql_flexible_server_database" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server_database" "extra" {
-  for_each = var.use_azure ? toset(var.extra_databases) : toset([])
+  for_each = var.use_azure ? toset(local.extra_database_names) : toset([])
 
   name      = each.value
   server_id = azurerm_postgresql_flexible_server.main[0].id
@@ -355,6 +367,17 @@ resource "kubernetes_deployment" "main" {
           "teacherservices.cloud/node_pool" = "applications"
           "kubernetes.io/os"                = "linux"
         }
+        dynamic "volume" {
+          for_each = length(local.extra_database_names) > 0 ? [1] : []
+
+          content {
+            name = "postgres-init"
+
+            config_map {
+              name = kubernetes_config_map.postgres_init[0].metadata[0].name
+            }
+          }
+        }
         container {
           name  = local.kubernetes_name
           image = local.server_docker_image
@@ -387,6 +410,15 @@ resource "kubernetes_deployment" "main" {
               value = local.database_name
             }
           }
+          dynamic "volume_mount" {
+            for_each = length(local.extra_database_names) > 0 ? [1] : []
+
+            content {
+              name       = "postgres-init"
+              mount_path = "/docker-entrypoint-initdb.d"
+              read_only  = true
+            }
+          }
         }
       }
     }
@@ -407,6 +439,19 @@ resource "kubernetes_service" "main" {
     selector = {
       app = local.kubernetes_name
     }
+  }
+}
+
+resource "kubernetes_config_map" "postgres_init" {
+  count = !var.use_azure && length(local.extra_database_names) > 0 ? 1 : 0
+
+  metadata {
+    name      = "${local.kubernetes_name}-init-${local.postgres_init_hash}"
+    namespace = var.namespace
+  }
+
+  data = {
+    "create-extra-databases.sql" = local.extra_database_sql
   }
 }
 
