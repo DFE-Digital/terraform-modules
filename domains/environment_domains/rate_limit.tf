@@ -1,7 +1,7 @@
 resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
   count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0
 
-  name                              = "${local.short_policy_name}${var.environment}RateLimitFirewallPolicy"
+  name                              = "${local.short_policy_name}${var.environment}RateLimitFirewallPolicy${local.firewall_policy_suffix}"
   resource_group_name               = var.resource_group_name
   sku_name                          = data.azurerm_cdn_frontdoor_profile.main.sku_name
   mode                              = "Prevention"

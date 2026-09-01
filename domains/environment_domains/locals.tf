@@ -45,4 +45,6 @@ locals {
       : "Test"
     )
   }
+
+  firewall_policy_suffix = data.azurerm_cdn_frontdoor_profile.main.sku_name == "Premium_AzureFrontDoor" ? "Premium" : ""
 }
