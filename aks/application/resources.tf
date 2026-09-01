@@ -15,6 +15,7 @@ locals {
   logit_annotations = var.enable_logit ? {
     "logit.io/send"        = "true"
     "fluentbit.io/exclude" = "true"
+    "splunk/send"          = "true"
   } : {}
 
   gcp_wif_label = var.enable_gcp_wif ? {
