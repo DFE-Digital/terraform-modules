@@ -1,0 +1,148 @@
+locals {
+  storage_account_env  = var.config_short != "rv" ? var.config_short : (var.environment == "review" ? "rv" : "rv${replace(var.environment, "/^.*-/", "")}")
+  storage_account_name = "${var.azure_resource_prefix}${var.service_short}${var.name}${local.storage_account_env}sa"
+}
+
+resource "azurerm_storage_account" "main" {
+  access_tier                       = "Hot"
+  account_kind                      = "StorageV2"
+  account_replication_type          = var.environment != "production" ? "LRS" : var.production_replication_type
+  account_tier                      = "Standard"
+  allow_nested_items_to_be_public   = false
+  https_traffic_only_enabled        = true
+  infrastructure_encryption_enabled = var.infrastructure_encryption_enabled
+  location                          = "UK South"
+  min_tls_version                   = "TLS1_2"
+  name                              = local.storage_account_name
+  public_network_access_enabled     = var.public_network_access_enabled
+  resource_group_name               = data.azurerm_resource_group.main.name
+
+  blob_properties {
+    versioning_enabled = var.blob_versioning_enabled
+
+    dynamic "delete_retention_policy" {
+      for_each = var.blob_delete_retention_days != null ? [1] : []
+      content {
+        days = var.blob_delete_retention_days
+      }
+    }
+
+    dynamic "container_delete_retention_policy" {
+      for_each = var.container_delete_retention_days != null ? [1] : []
+      content {
+        days = var.container_delete_retention_days
+      }
+    }
+
+    dynamic "cors_rule" {
+      for_each = var.cors_rules
+      content {
+        allowed_headers    = cors_rule.value.allowed_headers
+        allowed_methods    = cors_rule.value.allowed_methods
+        allowed_origins    = cors_rule.value.allowed_origins
+        exposed_headers    = cors_rule.value.exposed_headers
+        max_age_in_seconds = cors_rule.value.max_age_in_seconds
+      }
+    }
+
+    last_access_time_enabled = var.last_access_time_enabled
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+}
+
+resource "azurerm_storage_encryption_scope" "main" {
+  count = var.create_encryption_scope ? 1 : 0
+
+  name               = var.encryption_scope_name
+  storage_account_id = azurerm_storage_account.main.id
+  source             = "Microsoft.Storage"
+}
+
+resource "azurerm_storage_container" "containers" {
+  for_each = { for container in var.containers : container.name => container }
+
+  name               = each.value.name
+  storage_account_id = azurerm_storage_account.main.id
+}
+resource "azurerm_storage_queue" "queues" {
+  for_each           = { for queue in var.queues : queue.name => queue }
+  name               = each.value.name
+  storage_account_id = azurerm_storage_account.main.id
+}
+
+resource "azurerm_storage_management_policy" "main" {
+  count = var.blob_delete_after_days > 0 ? 1 : 0
+
+  storage_account_id = azurerm_storage_account.main.id
+
+  rule {
+    name    = "DeleteAfter${var.blob_delete_after_days}Days"
+    enabled = true
+    filters {
+      blob_types = ["blockBlob"]
+    }
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = var.blob_delete_after_days
+      }
+    }
+  }
+}
+
+resource "azurerm_private_endpoint" "storage" {
+  count = var.use_private_storage ? 1 : 0
+
+  name                = "${local.storage_account_name}-pe"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  subnet_id           = var.subnet_id # data.azurerm_subnet.priv[0].id
+
+  private_dns_zone_group {
+    name                 = var.dnszone_name # data.azurerm_private_dns_zone.priv[0].name
+    private_dns_zone_ids = [var.dnszone_id] # data.azurerm_private_dns_zone.priv[0].id]
+  }
+
+  private_service_connection {
+    name                           = "${local.storage_account_name}-pe"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["blob"]
+    is_manual_connection           = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
+
+}
+
+resource "azurerm_private_endpoint" "storage_queue" {
+  count = var.use_private_storage && length(var.queues) > 0 ? 1 : 0
+
+  name                = "${local.storage_account_name}-queue-pe"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  subnet_id           = var.subnet_id # data.azurerm_subnet.priv[0].id
+
+  private_dns_zone_group {
+    name                 = var.dnszone_name # data.azurerm_private_dns_zone.priv_queue[0].name
+    private_dns_zone_ids = [var.dnszone_id] # data.azurerm_private_dns_zone.priv_queue[0].id]
+  }
+
+  private_service_connection {
+    name                           = "${local.storage_account_name}-queue-pe"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["queue"]
+    is_manual_connection           = false
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
