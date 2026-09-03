@@ -36,6 +36,10 @@ variable "enable_postgres" {
   default = false
 }
 
+variable "enable_sql_logical_server" {
+  default = false
+}
+
 variable "enable_redis" {
   default = false
 }
