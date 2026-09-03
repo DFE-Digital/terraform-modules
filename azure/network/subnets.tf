@@ -3,7 +3,7 @@ resource "azurerm_subnet" "postgres" {
   count = var.enable_postgres ? 1 : 0
 
   name                 = "postgres-snet"
-  virtual_network_name = "postgres-subnet"
+  virtual_network_name = azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_resource_group.main.name
   address_prefixes     = var.postgres_subnet
 
@@ -22,7 +22,7 @@ resource "azurerm_subnet" "redis" {
   count = var.enable_redis ? 1 : 0
 
   name                 = "redis-snet"
-  virtual_network_name = "redis-subnet"
+  virtual_network_name = azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_resource_group.main.name
   address_prefixes     = var.redis_subnet
 
@@ -33,10 +33,9 @@ resource "azurerm_subnet" "storage" {
   count = var.enable_storage ? 1 : 0
 
   name                 = "private-storage-snet"
-  virtual_network_name = "private-storage-subnet"
+  virtual_network_name = azurerm_virtual_network.vnet.name
   resource_group_name  = data.azurerm_resource_group.main.name
   address_prefixes     = var.storage_subnet
 
   private_endpoint_network_policies = "Enabled"
-
 }
