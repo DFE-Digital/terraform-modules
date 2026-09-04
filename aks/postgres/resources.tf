@@ -128,9 +128,25 @@ resource "azurerm_postgresql_flexible_server" "replica" {
   private_dns_zone_id           = data.azurerm_private_dns_zone.main[0].id
   public_network_access_enabled = false
 
+  # we either need to set this or work around it as tf tries to apply as a change
+  zone = 2
+
+  dynamic "high_availability" {
+    for_each = var.azure_enable_high_availability ? [1] : []
+    content {
+      mode = "ZoneRedundant"
+    }
+  }
+
   lifecycle {
     ignore_changes = [
-      tags
+      tags,
+      # Allow Azure to manage deployment zone. Ignore changes.
+      zone,
+      # Allow Azure to manage primary and standby server on fail-over. Ignore changes.
+      high_availability[0].standby_availability_zone,
+      # Required for import because of https://github.com/hashicorp/terraform-provider-azurerm/issues/15586
+      create_mode
     ]
   }
 }
