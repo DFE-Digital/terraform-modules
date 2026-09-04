@@ -13,11 +13,6 @@ locals {
 
   postgres_init_hash = substr(sha1(local.extra_database_sql), 0, 12)
 
-  read_replicas = {
-    for n in range(var.read_replica_count) :
-    "replica-${n + 1}" => "replica-${n + 1}"
-  }
-
   name_suffix = var.name != null ? "-${var.name}" : ""
 
   azure_generated_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-pg${local.name_suffix}"
@@ -114,14 +109,18 @@ resource "azurerm_postgresql_flexible_server" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server" "replica" {
-  for_each = var.use_azure ? local.read_replicas : {}
+  for_each = var.replicas
 
-  name                          = "${local.azure_name}-${each.value}"
+  name                          = "${local.azure_name}-replica-${each.key}"
   location                      = data.azurerm_resource_group.main[0].location
   resource_group_name           = data.azurerm_resource_group.main[0].name
   version                       = var.server_version
-  create_mode                   = "Replica"
+
+  administrator_login           = local.database_username
+  administrator_password        = local.database_password
+  
   source_server_id              = azurerm_postgresql_flexible_server.main[0].id
+  
   storage_mb                    = azurerm_postgresql_flexible_server.main[0].storage_mb
   storage_tier                  = var.azure_storage_tier
   sku_name                      = azurerm_postgresql_flexible_server.main[0].sku_name
@@ -513,7 +512,7 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
-  count = var.use_azure && var.use_airbyte ? 1 : 0
+  count = var.use_azure && (var.use_airbyte || var.use_logical_replication) ? 1 : 0
   # Parameter wal_level = logical enables logical decoding and writes extra information to the Write-Ahead log (WAL)
   name      = "wal_level"
   server_id = azurerm_postgresql_flexible_server.main[0].id
@@ -521,7 +520,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "wal_level" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_wal_senders" {
-  count = var.use_azure && var.use_airbyte ? 1 : 0
+  count = var.use_azure && (var.use_airbyte || var.use_logical_replication) ? 1 : 0
   # Parameter max_wal_senders = 5 enables a maximum of five simultaneous replication streams
   name      = "max_wal_senders"
   server_id = azurerm_postgresql_flexible_server.main[0].id
@@ -529,7 +528,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "max_wal_senders" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "max_replication_slots" {
-  count = var.use_azure && var.use_airbyte ? 1 : 0
+  count = var.use_azure && (var.use_airbyte || var.use_logical_replication) ? 1 : 0
   # Parameter max_replication_slots = 5 sets the max number of concurrent connections that can use replication slots to five
   name      = "max_replication_slots"
   server_id = azurerm_postgresql_flexible_server.main[0].id
