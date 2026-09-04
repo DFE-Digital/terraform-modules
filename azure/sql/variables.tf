@@ -24,6 +24,18 @@ variable "config_short" {
   description = "Short name of the configuration"
 }
 
+variable "subnet_id" {
+  default = null
+}
+
+variable "dnszone_name" {
+  default = null
+}
+
+variable "dnszone_id" {
+  default = null
+}
+
 # Server variables
 variable "server_name_suffix" {
   type        = string
@@ -57,7 +69,35 @@ variable "admin_password" {
   sensitive = true
 }
 
+variable "public_network_access_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether public network access is allowed for the SQL logical server"
+}
+
+variable "storage_account_type" {
+  type        = string
+  default     = "Geo"
+  description = "Storage account type for the Azure SQL database. Options: LRS, GRS, ZRS, RAGRS, RAGZRS"
+}
+
 # Database variables
+variable "create_database" {
+  type        = bool
+  default     = true
+  description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
+
+  nullable = false
+}
+
+variable "extra_databases" {
+  type        = list(string)
+  default     = []
+  description = "Additional SQL logical server databases to create on the same SQL logical server"
+
+  nullable = false
+}
+
 variable "azure_sql_sku" {
   type        = string
   default     = "GP_Gen5_2"
@@ -112,18 +152,114 @@ variable "azure_enable_backup_storage" {
   nullable = false
 }
 
-variable "create_database" {
-  type        = bool
-  default     = true
-  description = "Create default database. If the app creates the database instead of this module, set to false. Default: true"
+variable "enable_immutable_backups" {
+  type    = bool
+  default = false
+  description = "Specifies if the backups are immutable"
 
   nullable = false
 }
 
-variable "extra_databases" {
+variable "lt_ret_pol_week_of_year" {
+  type    = number
+  default = 1
+  description = "Specifies the week of the year to retain the backup for. The value is a number between 1 and 52."
+
+  nullable = false
+}
+
+variable "lt_ret_pol_weekly_retention" {
+  type    = string
+  default = "PT0S"
+  description = "Specifies the number of weeks to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format."
+
+  nullable = false
+}
+
+variable "lt_ret_pol_monthly_retention" {
+  type    = string
+  default = "PT0S"
+  description = "Specifies the number of months to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format."
+
+  nullable = false
+}
+
+variable "lt_ret_pol_yearly_retention" {
+  type    = string
+  default = "PT0S"
+  description = "Specifies the number of years to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format."
+
+  nullable = false
+}
+
+variable "st_ret_pol_backup_interval_in_hours" {
+  type    = number
+  default = 12
+  description = "Specifies the interval in hours between backups. The value is a number between 1 and 24."
+
+  nullable = false
+}
+
+variable "st_ret_pol_retention_days" {
+  type    = number
+  default = 7
+  description = "Specifies the number of days to retain the backup for. The value is a number between 1 and 35."
+
+  nullable = false
+}
+
+variable "threat_pol_state" {
+  type        = string
+  default     = "Disabled"
+  description = "Specifies the state of the threat detection policy. Possible values are: Enabled, Disabled"
+
+  nullable = false
+}
+
+variable "threat_pol_disabled_alerts" {
   type        = list(string)
   default     = []
-  description = "Additional PostgreSQL databases to create on the same PostgreSQL server"
+  description = "Specifies the list of alerts that are disabled. Possible values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Data_Exfiltration_Vulnerability, Brute_Force, Sql_Injection_Brute_Force"
+
+  nullable = false
+}
+
+variable "threat_pol_email_account_admins" {
+  type        = string
+  default     = "Disabled"
+  description = "Specifies whether to send email notifications to the account administrators when a threat detection alert is triggered. Possible values are: Enabled, Disabled"
+
+  nullable = false
+}
+
+variable "threat_pol_email_addresses" {
+  type        = list(string)
+  default     = []
+  description = "Specifies the list of email addresses to send notifications to when a threat detection alert is triggered."
+
+  nullable = false
+}
+
+variable "threat_pol_retention_days" {
+  type        = number
+  default     = 0
+  description = "Specifies the number of days to retain threat detection logs. The value is a number between 0 and 365."
+
+  nullable = false
+}
+
+variable "threat_pol_storage_account_access_key" {
+  type        = string
+  default     = ""
+  description = "Specifies the access key of the storage account to store threat detection logs."
+
+  nullable = false
+}
+
+variable "threat_pol_storage_endpoint" {
+  type        = string
+  default     = ""
+  description = "Specifies the endpoint of the storage account to store threat detection logs."
 
   nullable = false
 }

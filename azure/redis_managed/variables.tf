@@ -122,9 +122,11 @@ variable "managed_redis_high_availability" {
 variable "subnet_id" {
   default = null
 }
+
 variable "dnszone_name" {
   default = null
 }
+
 variable "dnszone_id" {
   default = null
 }

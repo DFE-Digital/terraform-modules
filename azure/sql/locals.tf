@@ -1,5 +1,5 @@
 locals {
-  database_name              = "${var.service_short}_${var.environment}"
+  database_name              = "${local.azure_name}-${var.service_short}-${var.environment}"
   database_username          = var.admin_username != null ? var.admin_username : "u${random_string.username[0].result}"
   original_database_password = var.admin_password != null ? var.admin_password : random_password.password[0].result
   database_password          = replace(local.original_database_password, "/\\$+/", "$") # Remove sequences of multiple dollar signs.
@@ -9,7 +9,7 @@ locals {
   azure_generated_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-sql${local.name_suffix}"
   azure_name           = var.azure_name_override == null ? local.azure_generated_name : var.azure_name_override
 
-  host = azurerm_mssql_server.main[0].fully_qualified_domain_name
+  host = azurerm_mssql_server.main.fully_qualified_domain_name
   port = 1433
 
   alert_frequency_map = {

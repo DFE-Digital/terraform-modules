@@ -4,6 +4,12 @@ output "postgres_subnet" {
   value = var.enable_postgres ? azurerm_subnet.postgres[0].id : null
 }
 
+output "sql_subnet" {
+  description = "Connection URLs for additional SQL databases"
+
+  value = var.enable_sql ? azurerm_subnet.sql[0].id : null
+}
+
 output "redis_subnet" {
   description = "Connection URLs for additional PostgreSQL databases"
 
@@ -26,6 +32,18 @@ output "postgres_privdns_id" {
   description = "Connection URLs for additional PostgreSQL databases"
 
   value = var.enable_postgres ? azurerm_private_dns_zone.postgres[0].id : null
+}
+
+output "sql_privdns_name" {
+  description = "Connection URLs for additional SQL databases"
+
+  value = var.enable_sql ? azurerm_private_dns_zone.sql[0].name : null
+}
+
+output "sql_privdns_id" {
+  description = "Connection URLs for additional SQL databases"
+
+  value = var.enable_sql ? azurerm_private_dns_zone.sql[0].id : null
 }
 
 output "redis_privdns_name" {
