@@ -124,6 +124,7 @@ resource "azurerm_postgresql_flexible_server" "replica" {
   storage_mb                    = azurerm_postgresql_flexible_server.main[0].storage_mb
   storage_tier                  = var.azure_storage_tier
   sku_name                      = azurerm_postgresql_flexible_server.main[0].sku_name
+  delegated_subnet_id           = data.azurerm_subnet.main[0].id
   private_dns_zone_id           = data.azurerm_private_dns_zone.main[0].id
   public_network_access_enabled = false
 
