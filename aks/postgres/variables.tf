@@ -174,14 +174,16 @@ variable "extra_databases" {
   description = "Additional PostgreSQL databases to create on the same PostgreSQL server"
 }
 
-variable "read_replica_count" {
-  type    = number
-  default = 0
-  description = "Number of read replicas to create"
+variable "replicas" {
+  type = map(object({
+    name = string
+  }))
+  default     = {}
+  description = "Postgres Replica's"
 
   validation {
-    condition     = var.read_replica_count >= 0 && var.read_replica_count <= 5
-    error_message = "read_replica_count must be between 0 and 5."
+    condition     = length(var.replicas) <= 5
+    error_message = "replicas must contain no more than 5 items."
   }
 }
 
@@ -195,6 +197,16 @@ variable "use_airbyte" {
   type        = bool
   default     = false
   description = "Whether to add configuration changes required by Airbyte"
+}
+
+variable "use_logical_replication" {
+  type        = bool
+  default     = false
+  description = "Whether to add configuration changes required by logical replication"
+  validation {
+    condition     = !(var.use_airbyte && var.use_logical_replication)
+    error_message = "use_airbyte and use_logical_replication cannot both be true."
+  }
 }
 
 variable "sync_replication_slots" {
