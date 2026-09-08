@@ -123,6 +123,7 @@ variable "queues" {
   description = "List of queues to create on the storage account. Requires use_private_storage = true for private network access."
   default     = []
 }
+
 variable "cors_rules" {
   type = list(object({
     allowed_headers    = optional(list(string), ["Content-Type", "Content-MD5", "Content-Disposition", "x-ms-blob-content-disposition", "x-ms-blob-type"]),
@@ -147,9 +148,11 @@ variable "cors_rules" {
 variable "subnet_id" {
   default = null
 }
+
 variable "dnszone_name" {
   default = null
 }
+
 variable "dnszone_id" {
   default = null
 }

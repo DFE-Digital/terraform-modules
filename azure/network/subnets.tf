@@ -18,6 +18,17 @@ resource "azurerm_subnet" "postgres" {
   }
 }
 
+resource "azurerm_subnet" "sql" {
+  count = var.enable_sql ? 1 : 0
+
+  name                 = "sql-snet"
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  resource_group_name  = data.azurerm_resource_group.main.name
+  address_prefixes     = var.sql_subnet
+
+  private_endpoint_network_policies = "Enabled"
+}
+
 resource "azurerm_subnet" "redis" {
   count = var.enable_redis ? 1 : 0
 
