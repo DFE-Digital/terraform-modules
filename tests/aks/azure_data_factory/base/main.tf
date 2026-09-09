@@ -15,20 +15,14 @@ locals {
 
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_resource_group" "main" {
-  name     = local.resource_group_name
-  location = local.location
-
-  tags = {
-    product = local.environment
-    service     = local.service_short
-  }
+data "azurerm_resource_group" "main" {
+  name     = local.resource_group_name  
 }
 
 resource "azurerm_key_vault" "main" {
   name                       = local.key_vault_name
-  location                   = azurerm_resource_group.main.location
-  resource_group_name        = azurerm_resource_group.main.name
+  location                   = data.azurerm_resource_group.main.location
+  resource_group_name        = data.azurerm_resource_group.main.name
   rbac_authorization_enabled = false
 
   tenant_id                = data.azurerm_client_config.current.tenant_id
@@ -52,6 +46,12 @@ resource "azurerm_key_vault" "main" {
       "Get",
     ]
   }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }
 }
 
 module "data_factory" {
@@ -62,18 +62,20 @@ module "data_factory" {
   azure_resource_prefix   = local.azure_resource_prefix
   resource_group_name     = local.resource_group_name
   location                = local.location
-  key_vault_name          = local.key_vault_name
-  git_enabled_environment = "none"
+  key_vault_name          = local.key_vault_name  
 
-  git_repository = {
-    account_name    = "test"
-    repository_name = "data-factory-code"
-    branch_name     = "main"
-    root_folder     = "/"
+  git_repository = {    
+    repository_name = "education-provider-registry-data"
+    branch_name     = "2841-adf-test-collab"
+    root_folder     = "/adf"
+    publishing_enabled = true
+    host_name = "https://github.com"
   }
 
+
+
   depends_on = [
-    azurerm_resource_group.main,
+    data.azurerm_resource_group.main,
     azurerm_key_vault.main,
   ]
 }

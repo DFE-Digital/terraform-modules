@@ -68,7 +68,7 @@ resource "azurerm_data_factory" "main" {
     for_each = local.git_enabled ? [var.git_repository] : []
 
     content {
-      account_name       = local.github_account_name
+      account_name       = local.github_account_name # preset to "DFE-Digital" for now, as this is the only account we currently support
       repository_name    = github_configuration.value.repository_name
       branch_name        = github_configuration.value.branch_name
       root_folder        = github_configuration.value.root_folder
@@ -76,6 +76,12 @@ resource "azurerm_data_factory" "main" {
       git_url            = try(github_configuration.value.host_name, null)
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }  
 }
 
 resource "azurerm_storage_account" "standard" {
@@ -89,6 +95,12 @@ resource "azurerm_storage_account" "standard" {
   account_kind                    = "StorageV2"
   min_tls_version                 = "TLS1_2"
   allow_nested_items_to_be_public = false
+
+  lifecycle {
+    ignore_changes = [
+      tags
+    ]
+  }  
 }
 
 resource "azurerm_data_factory_managed_private_endpoint" "standard_storage" {
