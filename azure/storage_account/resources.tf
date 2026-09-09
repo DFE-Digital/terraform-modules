@@ -16,6 +16,7 @@ resource "azurerm_storage_account" "main" {
   name                              = local.storage_account_name
   public_network_access_enabled     = var.public_network_access_enabled
   resource_group_name               = data.azurerm_resource_group.main.name
+  cross_tenant_replication_enabled  = var.cross_tenant_replication_enabled
 
   blob_properties {
     versioning_enabled = var.blob_versioning_enabled
