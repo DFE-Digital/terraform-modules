@@ -174,6 +174,17 @@ variable "extra_databases" {
   description = "Additional PostgreSQL databases to create on the same PostgreSQL server"
 }
 
+variable "read_replica_count" {
+  type    = number
+  default = 0
+  description = "Number of read replicas to create"
+
+  validation {
+    condition     = var.read_replica_count >= 0 && var.read_replica_count <= 5
+    error_message = "read_replica_count must be between 0 and 5."
+  }
+}
+
 variable "server_docker_repo" {
   type     = string
   nullable = false
