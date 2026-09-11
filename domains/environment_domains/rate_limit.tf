@@ -1,5 +1,5 @@
 resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
-  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0
+  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0 || local.block_nonprod ? 1 : 0
 
   name                              = "${local.short_policy_name}${var.environment}RateLimitFirewallPolicy${local.firewall_policy_suffix}"
   resource_group_name               = var.resource_group_name
@@ -82,11 +82,29 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
     }
   }
 
+  dynamic "custom_rule" {
+    for_each = local.block_nonprod ? ["this"] : []
+    content {
+      name     = "block-non-uk"
+      priority = 20
+      enabled  = "true"
+      type     = "MatchRule"
+      action   = "Block"
+
+      match_condition {
+        match_variable     = "RemoteAddr"
+        operator           = "GeoMatch"
+        negation_condition = true
+        match_values       = ["GB", "US", "ZZ"]
+      }
+    }
+  }
+
   lifecycle { ignore_changes = [tags] }
 }
 
 resource "azurerm_cdn_frontdoor_security_policy" "rate_limit" {
-  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0
+  count = length(var.rate_limit) > 0 || var.rate_limit_max != null || var.allow_aks || var.block_ip ? 1 : 0 || local.block_nonprod ? 1 : 0
 
   name                     = "${var.environment}RateLimitSecurityPolicy"
   cdn_frontdoor_profile_id = data.azurerm_cdn_frontdoor_profile.main.id
