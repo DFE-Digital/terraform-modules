@@ -13,16 +13,6 @@ variable "azure_resource_prefix" {
   description = "Azure prefix used to construct globally unique Data Factory names."
 }
 
-variable "resource_group_name" {
-  type        = string
-  description = "Name of the resource group where the Data Factory will be deployed."
-}
-
-variable "location" {
-  type        = string
-  description = "Azure location for the Data Factory."
-}
-
 variable "key_vault_name" {
   type        = string
   default     = null
@@ -39,8 +29,8 @@ variable "git_repository" {
   type = object({
     repository_name    = string
     branch_name        = string
-    root_folder        = optional(string, "/")
-    publishing_enabled = optional(bool, true)
+    root_folder        = optional(string, "/adf")
+    publishing_enabled = optional(bool, false)
     host_name          = optional(string)
   })
 
@@ -120,4 +110,9 @@ variable "storage_account_connections" {
     ])
     error_message = "Each storage_account_connections entry must provide connection_string_secret_name, or storage_account_name."
   }
+}
+
+variable "config_short" {
+  type        = string
+  description = "Short name of the configuration"
 }

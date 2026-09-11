@@ -4,6 +4,8 @@ locals {
   git_enabled                   = var.git_repository != null && var.environment == var.git_enabled_environment
   github_account_name           = "DFE-Digital"
 
+
+
   sql_private_endpoints = {
     for connection in var.sql_server_connections :
     connection.name => {
@@ -54,8 +56,8 @@ locals {
 
 resource "azurerm_data_factory" "main" {
   name                = local.data_factory_name
-  location            = var.location
-  resource_group_name = var.resource_group_name
+  location                      = data.azurerm_resource_group.main.location
+  resource_group_name           = data.azurerm_resource_group.main.name
 
   identity {
     type = "SystemAssigned"
@@ -88,8 +90,8 @@ resource "azurerm_storage_account" "standard" {
   count = var.create_standard_storage_account ? 1 : 0
 
   name                            = local.standard_storage_account_name
-  resource_group_name             = var.resource_group_name
-  location                        = var.location
+  location                      = data.azurerm_resource_group.main.location
+  resource_group_name           = data.azurerm_resource_group.main.name
   account_tier                    = "Standard"
   account_replication_type        = "LRS"
   account_kind                    = "StorageV2"

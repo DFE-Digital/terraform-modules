@@ -1,9 +1,12 @@
+data "azurerm_resource_group" "main" {  
+  name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-rg"
+}
 
 data "azurerm_key_vault" "main" {
   count = var.key_vault_name != null ? 1 : 0
 
   name                = var.key_vault_name
-  resource_group_name = var.resource_group_name
+  resource_group_name = data.azurerm_resource_group.main.name
 }
 
 data "azurerm_key_vault_secret" "sql_connection_strings" {

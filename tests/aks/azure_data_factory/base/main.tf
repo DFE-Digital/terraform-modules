@@ -1,7 +1,10 @@
 
 locals {
   environment           = "development"
+  config_short = "ts"
   service_short         = "eprdat"
+  #s189d01-eprdat-ts-rg
+  #s189d01-eprdat-dv-rg
   resource_group_name   = "${local.azure_resource_prefix}-${local.service_short}-ts-rg"
   location              = "uksouth"
   azure_resource_prefix = "s189d01"
@@ -9,7 +12,7 @@ locals {
   tags = {
     product = "Teacher services cloud"
     "Service Offering" = "Teacher services cloud"
-    Environment = "Dev"
+    Environment = "Dev"    
   }
 }
 
@@ -55,13 +58,12 @@ resource "azurerm_key_vault" "main" {
 }
 
 module "data_factory" {
-  source = "../../../../aks/azure_data_factory"
+  source = "../../../../azure_data_factory"
 
   environment             = local.environment
   service_short           = local.service_short
-  azure_resource_prefix   = local.azure_resource_prefix
-  resource_group_name     = local.resource_group_name
-  location                = local.location
+  config_short            = local.config_short
+  azure_resource_prefix   = local.azure_resource_prefix  
   key_vault_name          = local.key_vault_name  
 
   git_repository = {    
