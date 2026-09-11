@@ -40,6 +40,17 @@ resource "azurerm_subnet" "redis" {
   private_endpoint_network_policies = "Enabled"
 }
 
+resource "azurerm_subnet" "apps" {
+  count = var.enable_apps ? 1 : 0
+
+  name                 = "apps-snet"
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  resource_group_name  = data.azurerm_resource_group.main.name
+  address_prefixes     = var.apps_subnet
+
+  private_endpoint_network_policies = "Enabled"
+}
+
 resource "azurerm_subnet" "storage" {
   count = var.enable_storage ? 1 : 0
 

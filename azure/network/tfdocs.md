@@ -16,14 +16,17 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azurerm_private_dns_zone.apps](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.postgres](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.redis](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.sql_logical_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
+| [azurerm_private_dns_zone_virtual_network_link.apps](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.postgres](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.redis](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.sql_logical_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
+| [azurerm_subnet.apps](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.postgres](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.redis](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
@@ -35,9 +38,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.160.0/18"<br/>]</pre> | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Standard resource prefix. Usually s189t01 (test) or s189p01 (production) | `string` | n/a | yes |
 | <a name="input_config"></a> [config](#input\_config) | Long name of the environment configuration, e.g. development, staging, production... | `string` | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the environment configuration, e.g. dv, st, pd... | `string` | n/a | yes |
+| <a name="input_enable_apps"></a> [enable\_apps](#input\_enable\_apps) | n/a | `bool` | `false` | no |
 | <a name="input_enable_postgres"></a> [enable\_postgres](#input\_enable\_postgres) | n/a | `bool` | `false` | no |
 | <a name="input_enable_redis"></a> [enable\_redis](#input\_enable\_redis) | n/a | `bool` | `false` | no |
 | <a name="input_enable_sql"></a> [enable\_sql](#input\_enable\_sql) | n/a | `bool` | `false` | no |
@@ -56,15 +61,16 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_apps_subnet"></a> [apps\_subnet](#output\_apps\_subnet) | A subnet dedicated to web and function apps |
 | <a name="output_postgres_privdns_id"></a> [postgres\_privdns\_id](#output\_postgres\_privdns\_id) | Connection URLs for additional PostgreSQL databases |
 | <a name="output_postgres_privdns_name"></a> [postgres\_privdns\_name](#output\_postgres\_privdns\_name) | Connection URLs for additional PostgreSQL databases |
-| <a name="output_postgres_subnet"></a> [postgres\_subnet](#output\_postgres\_subnet) | Connection URLs for additional PostgreSQL databases |
+| <a name="output_postgres_subnet"></a> [postgres\_subnet](#output\_postgres\_subnet) | A subnet dedicated to PostgreSQL databases |
 | <a name="output_redis_privdns_id"></a> [redis\_privdns\_id](#output\_redis\_privdns\_id) | Connection URLs for additional PostgreSQL databases |
 | <a name="output_redis_privdns_name"></a> [redis\_privdns\_name](#output\_redis\_privdns\_name) | Connection URLs for additional PostgreSQL databases |
-| <a name="output_redis_subnet"></a> [redis\_subnet](#output\_redis\_subnet) | Connection URLs for additional PostgreSQL databases |
+| <a name="output_redis_subnet"></a> [redis\_subnet](#output\_redis\_subnet) | A subnet dedicated to Redis databases |
 | <a name="output_sql_privdns_id"></a> [sql\_privdns\_id](#output\_sql\_privdns\_id) | Connection URLs for additional SQL databases |
 | <a name="output_sql_privdns_name"></a> [sql\_privdns\_name](#output\_sql\_privdns\_name) | Connection URLs for additional SQL databases |
-| <a name="output_sql_subnet"></a> [sql\_subnet](#output\_sql\_subnet) | Connection URLs for additional SQL databases |
+| <a name="output_sql_subnet"></a> [sql\_subnet](#output\_sql\_subnet) | A subnet dedicated to SQL databases |
 | <a name="output_storage_privdns_id"></a> [storage\_privdns\_id](#output\_storage\_privdns\_id) | Connection URLs for additional PostgreSQL databases |
 | <a name="output_storage_privdns_name"></a> [storage\_privdns\_name](#output\_storage\_privdns\_name) | Connection URLs for additional PostgreSQL databases |
-| <a name="output_storage_subnet"></a> [storage\_subnet](#output\_storage\_subnet) | Connection URLs for additional PostgreSQL databases |
+| <a name="output_storage_subnet"></a> [storage\_subnet](#output\_storage\_subnet) | A subnet dedicated to storage accounts |
