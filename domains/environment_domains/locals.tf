@@ -47,4 +47,8 @@ locals {
   }
 
   firewall_policy_suffix = data.azurerm_cdn_frontdoor_profile.main.sku_name == "Premium_AzureFrontDoor" ? "Premium" : ""
+
+  is_nonprod = contains(["dv", "ts", "qa", "stg"], var.environment) ? true : false
+
+  block_nonprod = local.is_nonprod == true && var.dont_block_nonprod == false ? true : false
 }
