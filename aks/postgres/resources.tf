@@ -113,7 +113,7 @@ resource "azurerm_postgresql_flexible_server_configuration" "max_connections" {
 }
 
 resource "azurerm_postgresql_flexible_server_configuration" "connection_throttling" {
-  count = var.use_azure ? 1 : 0
+  count = var.use_azure && var.server_version <= 17 ? 1 : 0
   # Parameter connection_throttling = on enables temporary connection throttling per IP for too many login failures
   name      = "connection_throttle.enable"
   server_id = azurerm_postgresql_flexible_server.main[0].id
