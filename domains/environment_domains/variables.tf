@@ -89,3 +89,9 @@ variable "rate_limit_max" {
   default     = null
   description = "create a block rule that will limit any IP that goes above var.rate_limit_max over a 5 minute period"
 }
+
+variable "dont_block_nonprod" {
+  type        = bool
+  default     = false
+  description = "override to prevent nonprod traffic being limited to the UK"
+}
