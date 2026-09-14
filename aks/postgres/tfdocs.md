@@ -24,6 +24,7 @@ No modules.
 | [azurerm_monitor_metric_alert.memory](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_postgresql_flexible_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server) | resource |
+| [azurerm_postgresql_flexible_server.replica](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server) | resource |
 | [azurerm_postgresql_flexible_server_configuration.azure_extensions](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.connection_throttling](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
 | [azurerm_postgresql_flexible_server_configuration.hot_standby_feedback](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/postgresql_flexible_server_configuration) | resource |
@@ -86,6 +87,7 @@ No modules.
 | <a name="input_hot_standby_feedback"></a> [hot\_standby\_feedback](#input\_hot\_standby\_feedback) | A Postgres config setting required for version 17 and above on HA for slot replication. Important for AirByte | `string` | `"on"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the instance | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
+| <a name="input_read_replica_count"></a> [read\_replica\_count](#input\_read\_replica\_count) | Number of read replicas to create | `number` | `0` | no |
 | <a name="input_server_docker_image"></a> [server\_docker\_image](#input\_server\_docker\_image) | Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server\_version>-alpine | `string` | `null` | no |
 | <a name="input_server_docker_repo"></a> [server\_docker\_repo](#input\_server\_docker\_repo) | n/a | `string` | `"ghcr.io/dfe-digital/teacher-services-cloud"` | no |
 | <a name="input_server_version"></a> [server\_version](#input\_server\_version) | Version of PostgreSQL server | `string` | `"16"` | no |
@@ -110,5 +112,11 @@ No modules.
 | <a name="output_name"></a> [name](#output\_name) | n/a |
 | <a name="output_password"></a> [password](#output\_password) | n/a |
 | <a name="output_port"></a> [port](#output\_port) | n/a |
+| <a name="output_read_replica_dotnet_connection_strings"></a> [read\_replica\_dotnet\_connection\_strings](#output\_read\_replica\_dotnet\_connection\_strings) | n/a |
+| <a name="output_read_replica_extra_database_urls"></a> [read\_replica\_extra\_database\_urls](#output\_read\_replica\_extra\_database\_urls) | n/a |
+| <a name="output_read_replica_extra_dotnet_connection_strings"></a> [read\_replica\_extra\_dotnet\_connection\_strings](#output\_read\_replica\_extra\_dotnet\_connection\_strings) | n/a |
+| <a name="output_read_replica_hosts"></a> [read\_replica\_hosts](#output\_read\_replica\_hosts) | n/a |
+| <a name="output_read_replica_server_ids"></a> [read\_replica\_server\_ids](#output\_read\_replica\_server\_ids) | n/a |
+| <a name="output_read_replica_urls"></a> [read\_replica\_urls](#output\_read\_replica\_urls) | n/a |
 | <a name="output_url"></a> [url](#output\_url) | n/a |
 | <a name="output_username"></a> [username](#output\_username) | n/a |
