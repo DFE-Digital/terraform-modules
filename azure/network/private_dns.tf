@@ -59,6 +59,26 @@ resource "azurerm_private_dns_zone_virtual_network_link" "redis" {
   lifecycle { ignore_changes = [tags] }
 }
 
+resource "azurerm_private_dns_zone" "apps" {
+  count = var.enable_apps ? 1 : 0
+
+  name                = "privatelink.azurewebsites.net"
+  resource_group_name = data.azurerm_resource_group.main.name
+
+  lifecycle { ignore_changes = [tags] }
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "apps" {
+  count = var.enable_apps ? 1 : 0
+
+  name                  = azurerm_private_dns_zone.apps[0].name
+  resource_group_name   = data.azurerm_resource_group.main.name
+  private_dns_zone_name = azurerm_private_dns_zone.apps[0].name
+  virtual_network_id    = azurerm_virtual_network.vnet.id
+
+  lifecycle { ignore_changes = [tags] }
+}
+
 resource "azurerm_private_dns_zone" "storage" {
   count = var.enable_storage ? 1 : 0
 
