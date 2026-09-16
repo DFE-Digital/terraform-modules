@@ -85,7 +85,7 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
   dynamic "custom_rule" {
     for_each = local.block_nonprod ? ["this"] : []
     content {
-      name     = "block-non-uk"
+      name     = "blockNonUK"
       priority = 20
       enabled  = "true"
       type     = "MatchRule"
