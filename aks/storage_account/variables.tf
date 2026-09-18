@@ -96,6 +96,12 @@ variable "encryption_scope_name" {
   default     = "microsoftmanaged"
 }
 
+variable "infrastructure_encryption_required" {
+  type        = bool
+  description = "Whether infrastructure encryption is required for the encryption scope. Default is null when not configured."
+  default     = null
+}
+
 variable "containers" {
   type        = list(object({ name = string }))
   description = "List of containers to create on the storage account (all containers will be private)"
