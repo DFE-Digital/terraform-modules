@@ -58,9 +58,10 @@ resource "azurerm_storage_account" "main" {
 resource "azurerm_storage_encryption_scope" "main" {
   count = var.create_encryption_scope ? 1 : 0
 
-  name               = var.encryption_scope_name
-  storage_account_id = azurerm_storage_account.main.id
-  source             = "Microsoft.Storage"
+  name                               = var.encryption_scope_name
+  storage_account_id                 = azurerm_storage_account.main.id
+  source                             = "Microsoft.Storage"
+  infrastructure_encryption_required = var.infrastructure_encryption_required
 }
 
 resource "azurerm_storage_container" "containers" {
