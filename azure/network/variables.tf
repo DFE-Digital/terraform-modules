@@ -44,6 +44,10 @@ variable "enable_redis" {
   default = false
 }
 
+variable "enable_apps" {
+  default = false
+}
+
 variable "enable_storage" {
   default = false
 }
@@ -56,14 +60,18 @@ variable "postgres_subnet" {
   default = ["10.2.0.0/18"]
 }
 
+variable "sql_subnet" {
+  default = ["10.2.192.0/18"]
+}
+
 variable "redis_subnet" {
   default = ["10.2.64.0/18"]
 }
 
-variable "storage_subnet" {
-  default = ["10.2.128.0/18"]
+variable "apps_subnet" {
+  default = ["10.3.0.0/18"]
 }
 
-variable "sql_subnet" {
-  default = ["10.2.192.0/18"]
+variable "storage_subnet" {
+  default = ["10.2.128.0/18"]
 }
