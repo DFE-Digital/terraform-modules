@@ -40,4 +40,4 @@ jobs:
 
       - name: Run Terratest
         working-directory: tests/azure/azure_data_factory
-        run: go test -run TestTerraformScenarios/base -v
+        run: go test -run TestTerraformScenarios -v

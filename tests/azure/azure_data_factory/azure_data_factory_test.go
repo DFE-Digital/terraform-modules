@@ -1,7 +1,6 @@
 package azure_data_factory_test
 
 import (
-	"os"
 	"path/filepath"
 	"regexp"
 	"testing"
@@ -10,46 +9,70 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+type terraformScenario struct {
+	name               string
+	directory          string
+	expectedAlertNames []string
+}
+
+var terraformScenarios = []terraformScenario{
+	{
+		name:      "base",
+		directory: "base",
+		expectedAlertNames: []string{
+			"FactorySizeInGbUnits",
+			"PipelineFailedRuns",
+			"ResourceCount",
+		},
+	},
+	{
+		name:      "minimal",
+		directory: "minimal",
+	},
+}
+
+var (
+	dataFactoryNamePattern  = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`)
+	dataFactoryIDPattern    = regexp.MustCompile(`^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\.DataFactory/factories/[^/]+$`)
+	identityTenantIDPattern = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$`)
+	metricAlertIDPattern    = regexp.MustCompile(`^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\.Insights/metricAlerts/[^/]+$`)
+)
+
 func TestTerraformScenarios(t *testing.T) {
 	repositoryRoot := filepath.Clean(filepath.Join("..", "..", ".."))
 	scenariosRoot := filepath.Join(repositoryRoot, "tests", "azure", "azure_data_factory")
 
-	entries, err := os.ReadDir(scenariosRoot)
-	require.NoError(t, err)
-
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
-		}
-
-		scenarioDir := filepath.Join(scenariosRoot, entry.Name())
-		mainFile := filepath.Join(scenarioDir, "main.tf")
-
-		if _, err := os.Stat(mainFile); os.IsNotExist(err) {
-			continue
-		}
-
-		t.Run(entry.Name(), func(t *testing.T) {
-			t.Parallel()
-
+	for _, scenario := range terraformScenarios {
+		scenario := scenario
+		t.Run(scenario.name, func(t *testing.T) {
+			scenarioDir := filepath.Join(scenariosRoot, scenario.directory)
 			options := &terraform.Options{
 				TerraformDir: scenarioDir,
 				NoColor:      true,
+				Reconfigure:  true,
 			}
 
 			terraform.InitAndApply(t, options)
 			defer terraform.Destroy(t, options)
 
-			require.Regexp(t, regexp.MustCompile(`^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$`), terraform.Output(t, options, "data_factory_name"))
-			require.Regexp(t, regexp.MustCompile(`^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\.DataFactory/factories/[^/]+$`), terraform.Output(t, options, "data_factory_id"))
-			require.Regexp(t, regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$`), terraform.Output(t, options, "data_factory_identity_tenant_id"))
+			require.Regexp(t, dataFactoryNamePattern, terraform.Output(t, options, "data_factory_name"))
+			require.Regexp(t, dataFactoryIDPattern, terraform.Output(t, options, "data_factory_id"))
+			require.Regexp(t, identityTenantIDPattern, terraform.Output(t, options, "data_factory_identity_tenant_id"))
 
-			alerts := terraform.OutputMap(t, options, "data_factory_alerts")
-			require.Len(t, alerts, 3)
-			alertIDPattern := regexp.MustCompile(`^/subscriptions/[0-9a-fA-F-]{36}/resourceGroups/[^/]+/providers/Microsoft\.Insights/metricAlerts/[^/]+$`)
-			for _, metric := range []string{"FactorySizeInGbUnits", "PipelineFailedRuns", "ResourceCount"} {
+			outputs := terraform.OutputAll(t, options)
+			if len(scenario.expectedAlertNames) == 0 {
+				require.NotContains(t, outputs, "data_factory_alerts")
+				return
+			}
+
+			alerts, ok := outputs["data_factory_alerts"].(map[string]interface{})
+			require.True(t, ok, "data_factory_alerts should be a map")
+			require.Len(t, alerts, len(scenario.expectedAlertNames))
+			for _, metric := range scenario.expectedAlertNames {
 				require.Contains(t, alerts, metric)
-				require.Regexp(t, alertIDPattern, alerts[metric])
+				alertID, ok := alerts[metric].(string)
+				require.True(t, ok, "alert %q should contain a string ID", metric)
+				require.Regexp(t, metricAlertIDPattern, alertID)
 			}
 		})
 	}

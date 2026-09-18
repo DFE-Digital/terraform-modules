@@ -1,11 +1,17 @@
 # Azure Data Factory Terratest
 
-Scenarios are Terraform configurations used by Terratest.
+Scenarios are Terraform configurations used by Terratest. They run sequentially because scenarios may reuse the same Azure resource names and remote Terraform state.
 
-The current tests run `terraform init` and `terraform validate` and `terraform apply` for the examples in the `tests/azure/azure_data_factory` directory.
+The tests run `terraform init` and `terraform apply` for the registered scenarios in the `tests/azure/azure_data_factory` directory.
 Resources are created, tested, then destroyed (even on failure to create fully) when Terratest is run.
 
-More scenarios can be added by creating a new directory with sample Terraform and associating tests. See [Terratest](https://terratest.gruntwork.io/docs/) for more information.
+To add a scenario:
+
+1. Create a directory containing a complete Terraform fixture, including `main.tf` and provider configuration.
+2. Add the scenario directory and its expected outputs to `terraformScenarios` in `azure_data_factory_test.go`.
+3. Set `expectedAlertNames` to the alert metric keys expected for that fixture. Leave it empty when monitoring is disabled.
+
+See [Terratest](https://terratest.gruntwork.io/docs/) for more information.
 
 ## Run
 Change to the TSC development subscription (key vault and resource group pre-reqs are setup there)
@@ -15,13 +21,13 @@ az account set --subscription <subscription>
 cd ./tests/azure/azure_data_factory
 ```
 
-```powershell
+```sh
 go mod tidy
 go test ./...
 ```
 
 To run a specific scenario:
 
-```powershell
+```sh
 go test -run TestTerraformScenarios/base -v
 ```
