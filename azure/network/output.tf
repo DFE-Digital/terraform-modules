@@ -1,23 +1,29 @@
 output "postgres_subnet" {
-  description = "Connection URLs for additional PostgreSQL databases"
+  description = "A subnet dedicated to PostgreSQL databases"
 
   value = var.enable_postgres ? azurerm_subnet.postgres[0].id : null
 }
 
 output "sql_subnet" {
-  description = "Connection URLs for additional SQL databases"
+  description = "A subnet dedicated to SQL databases"
 
   value = var.enable_sql ? azurerm_subnet.sql[0].id : null
 }
 
 output "redis_subnet" {
-  description = "Connection URLs for additional PostgreSQL databases"
+  description = "A subnet dedicated to Redis databases"
 
   value = var.enable_redis ? azurerm_subnet.redis[0].id : null
 }
 
+output "apps_subnet" {
+  description = "A subnet dedicated to web and function apps"
+
+  value = var.enable_apps ? azurerm_subnet.apps[0].id : null
+}
+
 output "storage_subnet" {
-  description = "Connection URLs for additional PostgreSQL databases"
+  description = "A subnet dedicated to storage accounts"
 
   value = var.enable_storage ? azurerm_subnet.storage[0].id : null
 }
