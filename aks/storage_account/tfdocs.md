@@ -46,6 +46,7 @@ No modules.
 | <a name="input_encryption_scope_name"></a> [encryption\_scope\_name](#input\_encryption\_scope\_name) | Name of the encryption scope to create | `string` | `"microsoftmanaged"` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_infrastructure_encryption_enabled"></a> [infrastructure\_encryption\_enabled](#input\_infrastructure\_encryption\_enabled) | Enable infrastructure encryption for the storage account | `bool` | `true` | no |
+| <a name="input_infrastructure_encryption_required"></a> [infrastructure\_encryption\_required](#input\_infrastructure\_encryption\_required) | Whether infrastructure encryption is required for the encryption scope. Default is null when not configured. | `bool` | `null` | no |
 | <a name="input_last_access_time_enabled"></a> [last\_access\_time\_enabled](#input\_last\_access\_time\_enabled) | Enable last access time tracking for blobs | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name of the storage account (without prefix and suffix) | `string` | `null` | no |
 | <a name="input_production_replication_type"></a> [production\_replication\_type](#input\_production\_replication\_type) | Replication type for production environments. Non-production environments always use LRS for cost efficiency. | `string` | `"GRS"` | no |
