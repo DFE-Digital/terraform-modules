@@ -36,4 +36,6 @@ resource "azurerm_log_analytics_workspace" "main" {
   location            = "uksouth"
   resource_group_name = each.value.resource_group_name
   sku                 = "PerGB2018"
+
+  lifecycle { ignore_changes = [tags] }
 }
