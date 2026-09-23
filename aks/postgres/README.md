@@ -77,7 +77,7 @@ When `use_azure = false`, additional databases are generated using PostgreSQL in
 
 Note that PostgreSQL initialisation scripts are only executed when a database container is initialised for the first time.
 
-### Creating PostgreSQL read replicas
+### Creating a PostgreSQL read replica
 
 Azure PostgreSQL Flexible Server read replicas can be created by setting:
 
