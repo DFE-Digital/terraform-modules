@@ -14,13 +14,15 @@ The module is intentionally opinionated and does not expose broad Data Factory c
 
 ```hcl
 module "data_factory" {
-  source = "./vendor/modules/aks/azure/storage_account"
+  count  = var.enable_adf ? 1 : 0
+  source = "./vendor/modules/aks/azure/azure_data_factory"
 
-  environment           = var.environment
-  azure_resource_prefix = var.azure_resource_prefix
-  service_name          = "apply-for-qts"
-  service_short         = "afqts"
-  config_short          = "dv"
+  environment             = var.environment
+  azure_resource_prefix   = var.azure_resource_prefix
+  service_name            = var.service_name
+  service_short           = var.service_short
+  config_short            = var.config_short
+  azure_enable_monitoring = false
 
   git_enabled_environment = "development"
   git_repository = {
