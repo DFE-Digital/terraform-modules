@@ -1,9 +1,8 @@
 locals {
-  data_factory_name             = lower(replace("${var.azure_resource_prefix}-${var.service_short}-${var.environment}-adf", "/[^a-z0-9-]/", ""))
-  standard_storage_account_name = substr(lower(replace("${var.azure_resource_prefix}${var.service_short}${var.environment}adf", "/[^a-z0-9]/", "")), 0, 24)
-  git_enabled                   = var.git_repository != null && var.environment == var.git_enabled_environment
-  azure_enable_monitoring       = var.azure_enable_monitoring
-  github_account_name           = "DFE-Digital"
+  data_factory_name       = lower(replace("${var.azure_resource_prefix}-${var.service_short}-${var.environment}-adf", "/[^a-z0-9-]/", ""))
+  git_enabled             = var.git_repository != null && var.environment == var.git_enabled_environment
+  azure_enable_monitoring = var.azure_enable_monitoring
+  github_account_name     = "DFE-Digital"
 
   alert_frequency_map = {
     PT5M  = "PT1M"
