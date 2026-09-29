@@ -100,10 +100,23 @@ module "dotnet_streams_update_job" {
   environment  = var.environment
   service_name = var.service_name
   docker_image = var.docker_image
-  commands     = ["/bin/sh"]
+  # Invoke dotnet directly when the assembly is known, so the image doesn't need a shell
+  commands = var.dotnet_application_assembly != "" ? ["dotnet"] : ["/bin/sh"]
   arguments = flatten([
-    "-f",
-    "${coalesce(trimsuffix(var.dotnet_application_directory, "/"), ".")}/dfe-analytics/apply-config.sh",
+    var.dotnet_application_assembly != "" ? [
+      "exec",
+      "--runtimeconfig",
+      "${local.dotnet_application_directory}/dfe-analytics/apply-config.runtimeconfig.json",
+      "${local.dotnet_application_directory}/${var.dotnet_application_assembly}",
+      "--",
+      "config",
+      "apply",
+      "--path",
+      "dfe-analytics/db-config.json"
+      ] : [
+      "-f",
+      "${local.dotnet_application_directory}/dfe-analytics/apply-config.sh"
+    ],
     "--connection-string",
     "Server=${var.host_name};Database=${var.database_name};User Id=airbyte_replication;Password='${local.replication_password}';Ssl Mode=Require;Trust Server Certificate=true",
     "--google-credentials",
