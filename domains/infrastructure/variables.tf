@@ -19,6 +19,12 @@ variable "azure_enable_monitoring" {
   default     = false
 }
 
+variable "single_policy" {
+  type        = bool
+  nullable    = false
+  default     = false
+  description = "Use a single policy instead of one per env"
+}
 
 locals {
   default_records = {
