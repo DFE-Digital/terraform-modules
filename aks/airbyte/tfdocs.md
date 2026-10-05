@@ -68,8 +68,8 @@
 | <a name="input_cpu"></a> [cpu](#input\_cpu) | formerly: module.cluster\_data.configuration\_map.cpu\_min | `string` | n/a | yes |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | database name | `string` | n/a | yes |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Current application environment | `string` | n/a | yes |
-| <a name="input_dotnet_application_assembly_name"></a> [dotnet\_application\_assembly\_name](#input\_dotnet\_application\_assembly\_name) | The name of the .NET application's main assembly, without the .dll extension (e.g. MyApp). When set, the Airbyte deployment job runs dotnet directly rather than apply-config.sh, so the image does not need a shell | `string` | `""` | no |
 | <a name="input_dotnet_application_directory"></a> [dotnet\_application\_directory](#input\_dotnet\_application\_directory) | The path to application containing the dfe-analytics directory | `string` | `""` | no |
+| <a name="input_dotnet_use_dfe_analytics_executable"></a> [dotnet\_use\_dfe\_analytics\_executable](#input\_dotnet\_use\_dfe\_analytics\_executable) | Whether to run the Airbyte deployment using the dfe-analytics executable rather than apply-config.sh. The executable does not need a shell in the image | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_gcp_bq_sa"></a> [gcp\_bq\_sa](#input\_gcp\_bq\_sa) | Name of BQ service account | `string` | `null` | no |
 | <a name="input_gcp_dataset"></a> [gcp\_dataset](#input\_gcp\_dataset) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |

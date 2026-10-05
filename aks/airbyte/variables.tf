@@ -140,10 +140,10 @@ variable "dotnet_application_directory" {
   description = "The path to application containing the dfe-analytics directory"
 }
 
-variable "dotnet_application_assembly_name" {
-  type        = string
-  default     = ""
-  description = "The name of the .NET application's main assembly, without the .dll extension (e.g. MyApp). When set, the Airbyte deployment job runs dotnet directly rather than apply-config.sh, so the image does not need a shell"
+variable "dotnet_use_dfe_analytics_executable" {
+  type        = bool
+  default     = false
+  description = "Whether to run the Airbyte deployment using the dfe-analytics executable rather than apply-config.sh. The executable does not need a shell in the image"
 }
 
 variable "airbyte_sync_mode" {
