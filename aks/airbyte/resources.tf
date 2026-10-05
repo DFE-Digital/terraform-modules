@@ -101,14 +101,15 @@ module "dotnet_streams_update_job" {
   service_name = var.service_name
   docker_image = var.docker_image
   # Invoke dotnet directly when the assembly is known, so the image doesn't need a shell
-  commands = var.dotnet_application_assembly != "" ? ["dotnet"] : ["/bin/sh"]
+  commands = var.dotnet_application_assembly_name != "" ? ["dotnet"] : ["/bin/sh"]
   arguments = flatten([
-    var.dotnet_application_assembly != "" ? [
+    var.dotnet_application_assembly_name != "" ? [
       "exec",
+      "--depsfile",
+      "${local.dotnet_application_directory}/${var.dotnet_application_assembly_name}.deps.json",
       "--runtimeconfig",
-      "${local.dotnet_application_directory}/dfe-analytics/apply-config.runtimeconfig.json",
-      "${local.dotnet_application_directory}/${var.dotnet_application_assembly}",
-      "--",
+      "${local.dotnet_application_directory}/${var.dotnet_application_assembly_name}.runtimeconfig.json",
+      "${local.dotnet_application_directory}/Dfe.Analytics.EFCore.dll",
       "config",
       "apply",
       "--path",
