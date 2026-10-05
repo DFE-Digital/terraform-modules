@@ -69,7 +69,6 @@
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | database name | `string` | n/a | yes |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Current application environment | `string` | n/a | yes |
 | <a name="input_dotnet_application_directory"></a> [dotnet\_application\_directory](#input\_dotnet\_application\_directory) | The path to application containing the dfe-analytics directory | `string` | `""` | no |
-| <a name="input_dotnet_use_dfe_analytics_executable"></a> [dotnet\_use\_dfe\_analytics\_executable](#input\_dotnet\_use\_dfe\_analytics\_executable) | Whether to run the Airbyte deployment using the dfe-analytics executable rather than apply-config.sh. The executable does not need a shell in the image | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_gcp_bq_sa"></a> [gcp\_bq\_sa](#input\_gcp\_bq\_sa) | Name of BQ service account | `string` | `null` | no |
 | <a name="input_gcp_dataset"></a> [gcp\_dataset](#input\_gcp\_dataset) | Name of an existing dataset. Optional: if not provided, create a new dataset | `string` | `null` | no |
@@ -93,6 +92,7 @@
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
 | <a name="input_skip_policy_tags"></a> [skip\_policy\_tags](#input\_skip\_policy\_tags) | Whether to skip applying policy tags to tables in Big Query | `bool` | `false` | no |
 | <a name="input_use_azure"></a> [use\_azure](#input\_use\_azure) | Whether to deploy using Azure Postgres | `bool` | n/a | yes |
+| <a name="input_use_legacy_dotnet_shim"></a> [use\_legacy\_dotnet\_shim](#input\_use\_legacy\_dotnet\_shim) | Whether to run the Airbyte deployment using the apply-config.sh shell script rather than the dfe-analytics executable. The executable does not need a shell in the image but requires a recent version of DfeAnalytics.EFCore | `bool` | `true` | no |
 | <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Airbyte workspace id | `string` | `null` | no |
 
 ## Outputs

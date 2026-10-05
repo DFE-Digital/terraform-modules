@@ -140,10 +140,10 @@ variable "dotnet_application_directory" {
   description = "The path to application containing the dfe-analytics directory"
 }
 
-variable "dotnet_use_dfe_analytics_executable" {
+variable "use_legacy_dotnet_shim" {
   type        = bool
-  default     = false
-  description = "Whether to run the Airbyte deployment using the dfe-analytics executable rather than apply-config.sh. The executable does not need a shell in the image"
+  default     = true
+  description = "Whether to run the Airbyte deployment using the apply-config.sh shell script rather than the dfe-analytics executable. The executable does not need a shell in the image but requires a recent version of DfeAnalytics.EFCore"
 }
 
 variable "airbyte_sync_mode" {
