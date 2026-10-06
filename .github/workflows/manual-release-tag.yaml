@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       testing_sha:
-        description: Full SHA to point the stable tag at
+        description: Full SHA to point the testing tag at
         required: true
         type: string
 
