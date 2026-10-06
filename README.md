@@ -43,30 +43,37 @@ A release is created that includes the features which were in the `testing` phas
 
 ### Promotion Process
 
-Let's assume the `stable` tag points to `v0.x.0` and `testing` points to `v0.y.0`. You can view the tags and their commit IDs [in the tags list](https://github.com/DFE-Digital/terraform-modules/tags).
+Let's assume the `stable` tag points to `v0.x.0` for example `v0.19.0`
+
+and `testing` points to `v0.y.0` for example `v.0.20.0`. 
+
+You can view the tags and their commit IDs [in the tags list](https://github.com/DFE-Digital/terraform-modules/tags).
 
 #### To promote `testing` to `stable`
 
-1. Delete the current pre-release pointing to `v0.y.0`
+1. Navigate to the [releases tab](https://github.com/DFE-Digital/terraform-modules/releases)
+1. Delete the current pre-release pointing to testing at `v0.y.0`/`v0.20.0`
 1. Create a new release:
     - Select `Draft new release`
-    - Click `Choose a tag` and enter `v0.y.0`
-    - Select `Previous tag` `v0.x.0`
-    - Click `Generate release notes`
-    - Check the `Set as the latest release` box
+    - On the `Tag:Select tag` dropdown enter `v0.y.0`/`v0.20.0`
+    - On the new `Previous tag:` dropdown select `v0.x.0`/`v.0.19.0`
+1. Click `Generate release notes`
+    - Check the `Latest` release label box
     - Click `Publish release`
 
 #### To promote new commits in `main` to `testing`
 
-If there are new commits in `main` that you want to promote to `testing`, increment `v0.y.0` to `v0.z.0`, then create a new pre-release:
+Check there have been new commits since the current testing branch in the commit history tab. This can be done by comparing the `testing` [commit tag](https://github.com/DFE-Digital/terraform-modules/tags) with the [commit history](https://github.com/DFE-Digital/terraform-modules/commits/main/). If `testing` is pointing to the latest commit then the below can be skipped.
 
+If there are new commits in `main` that you want to promote to `testing`, follow the steps below to increment `v0.y.0`/`v.0.20.0` to `v0.z.0`/`v.21.0`:
+
+1. Navigate to the [releases tab](https://github.com/DFE-Digital/terraform-modules/releases)
 1. Select `Draft new release`
-1. Click `Choose a tag` and enter `v0.z.0`
-1. Click `Create new tag`
-1. Select the `Previous tag` `v0.y.0`
+    - On the `Tag:Select tag` dropdown select `Create new tag` enter `v0.z.0`/`v0.21.0`
+1. On the new `Previous tag:` dropdown select `v0.y.0`/`v.0.20.0`
 1. Click `Generate release notes`
-1. Check the `Set as a pre-release` box
-1. Click `Publish release`
+    - Check the `Pre-release` release label box
+    - Click `Publish release`
 
 ## Updating [Terraform Docs]
 
