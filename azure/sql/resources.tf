@@ -137,13 +137,6 @@ resource "azurerm_mssql_database" "extra" {
   }
 }
 
-locals {
-  allowed_ips = {
-    home   = "203.0.113.10"
-    office = "198.51.100.20"
-  }
-}
-
 resource "azurerm_mssql_firewall_rule" "this" {
   for_each = {
     for rule in var.firewall_rules :

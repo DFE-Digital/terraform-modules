@@ -23,7 +23,7 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "rate_limit" {
         match_variable = try(custom_rule.value["match_variable"], "RequestHeader")
         selector       = try(custom_rule.value["selector"], "")
         operator       = custom_rule.value["operator"]
-        match_values   = ["${custom_rule.value["match_values"]}"]
+        match_values   = try(tolist(custom_rule.value["match_values"]), [tostring(custom_rule.value["match_values"])])
       }
     }
   }
