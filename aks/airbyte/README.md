@@ -4,120 +4,490 @@ Create resources in Azure and Google cloud for airbyte to send data to BigQuery
 ## Terraform documentation
 For the list of requirement, inputs, outputs, resources... check the [terraform module documentation](tfdocs.md).
 
-## Usage
+# Configure a service to use Airbyte
 
-See https://github.com/DFE-Digital/dfe-analytics/blob/main/docs/airbyte.md for a detailed overview of how Airbyte is being used.
+This guide explains how to configure a service to replicate data from Azure PostgreSQL to Google BigQuery using Airbyte.
 
-Before using this module, the following must have already been completed.
+## Overview
 
-### 1. Airbyte base resources
+The setup consists of:
 
-Each namespace has it's own airbyte base resources (airbyte ui, worker, cron, etc).
+1. Authenticating with Google Cloud.
+2. Checking the existing Google Cloud resources.
+3. Creating any missing Google Cloud resources.
+4. Creating the Airbyte base resources and workspace.
+5. Adding the required secrets to Azure Key Vault.
+6. Configuring PostgreSQL logical replication.
+7. Adding the Airbyte Terraform configuration.
+8. Configuring GitHub Actions authentication.
+9. Deploying and enabling the Airbyte connection.
+10. Validating the connection in the Airbyte UI.
+11. Enabling PostgreSQL monitoring.
 
-A Service will then have its own connection within that namespace.
+## Prerequisites
 
-Ask the SD infra ops to either create the base resources or create a workspace as per https://github.com/DFE-Digital/teacher-services-cloud/tree/main/airbyte
+Before starting, make sure:
 
+- You have the `Owner` role on the relevant Google Cloud project.
+- You know the target:
+  - service repository
+  - environment
+  - Azure Kubernetes namespace
+  - Google Cloud project
+  - BigQuery project
+- The service uses the shared Terraform modules from `teacher-services-cloud`.
+- You have access to the relevant Azure Key Vault.
+- You have agreed a deployment window with the service technical lead.
 
-### 2. Create secrets in the relevant Azure Key Vault.
-Once the base resources have been created, the following 5 secrets will need to be added to the infrastructure Azure Key Vault for the target environment. Some services require the secrets set up in their app Key Vault in which case just add AIRBYTE-CLIENT-ID and AIRBYTE-CLIENT-SECRET
-For example s189p01-rtt-pd-kv for rtt production but s189p01-ittms-pd-inf-kv for ittms production.
+> Enabling PostgreSQL logical replication can trigger several database server restarts. Agree a suitable time before merging the change.
 
-- AIRBYTE-CLIENT-ID - Airbyte UI -> Settings->Applications->Client ID
-- AIRBYTE-CLIENT-SECRET - Airbyte UI -> Settings->Applications->Client Secret
-- AIRBYTE-WORKSPACE-ID - The part of the URL before /settings
-- AIRBYTE-REPLICATION-PASSWORD -  Create one. Follow the standards used by other accounts.
-- Add AIRBYTE-BQ-SA - GCP -> IAM and admin->Service accounts -> email address in full. These can vary wildly but generally start `app-wif`.
+## 1. Authenticate with Google Cloud
 
-### 3. Create these GCP resources if they don't already exist
+Run:
 
-To log into GCP see [below](#google-cloud-authentication)
-
-#### Custom roles:
-
-Airbyte_workflow_IAM with permissions (with id Airbyte_workflow_IAM)
-- resourcemanager.projects.getIamPolicy
-- resourcemanager.projects.setIamPolicy
-- datacatalog.taxonomies.getIamPolicy
-- datacatalog.taxonomies.setIamPolicy
-
+```shell
+gcloud auth application-default login
 ```
+
+Then:
+
+1. Open the link provided by the command.
+2. Select your DfE email address.
+3. Select **Continue**.
+4. Select **Continue** again.
+5. Copy the provided code.
+6. Paste the code into your terminal.
+
+List the projects you can access:
+
+```shell
+gcloud projects list
+```
+
+Set the project used by subsequent commands:
+
+```shell
+gcloud config set project <PROJECT_ID>
+```
+
+Confirm the active account and project:
+
+```shell
+gcloud config list
+```
+
+## 2. Check the existing Google Cloud resources
+
+Some of the required resources may already exist. Check them before running any create commands.
+
+### 2.1 Get the project number
+
+The project number is required when constructing Workload Identity Federation principal sets.
+
+```shell
+gcloud projects describe <PROJECT_ID> \
+  --format="value(projectNumber)"
+```
+
+### 2.2 Get the Data Catalog taxonomy
+
+```shell
+gcloud data-catalog taxonomies list \
+  --location=europe-west2 \
+  --format="value(name)"
+```
+
+The returned path contains the taxonomy ID:
+
+```text
+projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>
+```
+
+Record the numeric `<TAXONOMY_ID>` for the Terraform configuration.
+
+### 2.3 Get the `hidden` policy tag
+
+```shell
+gcloud data-catalog taxonomies policy-tags list \
+  --taxonomy="projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>" \
+  --location="europe-west2" \
+  --filter="displayName:hidden" \
+  --format="value(name)"
+```
+
+The returned path contains the policy tag ID:
+
+```text
+projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>/policyTags/<POLICY_TAG_ID>
+```
+
+Record the numeric `<POLICY_TAG_ID>` for the Terraform configuration.
+
+### 2.4 Get the Cloud KMS key ring
+
+```shell
+gcloud kms keyrings list \
+  --location=europe-west2 \
+  --project=<PROJECT_ID>
+```
+
+Record the key ring name.
+
+### 2.5 Get the Cloud KMS key
+
+```shell
+gcloud kms keys list \
+  --location=europe-west2 \
+  --keyring=<KEY_RING> \
+  --project=<PROJECT_ID>
+```
+
+Record the key name.
+
+### 2.6 Check the Workload Identity Pool
+
+Each project should have a Workload Identity Pool named:
+
+```text
+azure-cip-identity-pool
+```
+
+List the pools:
+
+```shell
+gcloud iam workload-identity-pools list \
+  --project=<PROJECT_ID> \
+  --location=global
+```
+
+### 2.7 Check the Workload Identity Pool provider
+
+Each project should have a provider named:
+
+```text
+azure-cip-oidc-provider
+```
+
+List the providers:
+
+```shell
+gcloud iam workload-identity-pools providers list \
+  --project=<PROJECT_ID> \
+  --location=global \
+  --workload-identity-pool=azure-cip-identity-pool
+```
+
+The full provider resource name is used for Workload Identity Federation authentication.
+
+### 2.8 Check the internal Airbyte dataset
+
+Each BigQuery project requires a dataset named:
+
+```text
+airbyte_internal
+```
+
+Check whether it exists:
+
+```shell
+bq ls --project_id=<PROJECT_ID>
+```
+
+### 2.9 Check the legacy custom role
+
+> **Note:** The `Airbyte_workflow_IAM` custom role is no longer required for new services. Only check or create it when supporting an existing service that still depends on it.
+
+Check whether the role exists:
+
+```shell
+gcloud iam roles describe Airbyte_workflow_IAM \
+  --project=<PROJECT_ID>
+```
+
+If it exists, the response will look similar to:
+
+```yaml
+description: "Created on: 2025-09-24"
+etag: BwZYx499999=
+includedPermissions:
+  - datacatalog.taxonomies.getIamPolicy
+  - datacatalog.taxonomies.setIamPolicy
+  - resourcemanager.projects.getIamPolicy
+  - resourcemanager.projects.setIamPolicy
+name: projects/<PROJECT_ID>/roles/Airbyte_workflow_IAM
+stage: ALPHA
+title: Airbyte Workflow IAM
+```
+
+If it does not exist, the command returns `NOT_FOUND`.
+
+Do not create this role for a new service.
+
+## 3. Create missing Google Cloud resources
+
+Only create resources that are not already present.
+
+### 3.1 Create the Workload Identity Pool
+
+The preferred method is to use the existing script:
+
+[create-gcp-workload-identity-pool.sh](https://github.com/DFE-Digital/teacher-services-analytics-cloud/blob/main/scripts/gcloud/create-gcp-workload-identity-pool.sh)
+
+Alternatively, create it directly:
+
+```shell
+gcloud iam workload-identity-pools create "azure-cip-identity-pool" \
+  --location="global" \
+  --description="Azure CIP to GCP Workload Identity Pool" \
+  --display-name="azure-cip-identity-pool" \
+  --project=<PROJECT_ID>
+```
+
+### 3.2 Create the Workload Identity Pool provider
+
+The preferred method is to use the existing script:
+
+[create-gcp-workload-identity-pool-provider.sh](https://github.com/DFE-Digital/teacher-services-analytics-cloud/blob/main/scripts/gcloud/create-gcp-workload-identity-pool-provider.sh)
+
+Alternatively, create it directly:
+
+```shell
+gcloud iam workload-identity-pools providers create-oidc \
+  azure-cip-oidc-provider \
+  --workload-identity-pool="azure-cip-identity-pool" \
+  --issuer-uri="https://login.microsoftonline.com/9c7d9dd3-840c-4b3f-818e-552865082e16/v2.0" \
+  --allowed-audiences="fb60f99c-7a34-4190-8149-302f77469936" \
+  --location="global" \
+  --attribute-mapping="google.subject=assertion.sub" \
+  --project=<PROJECT_ID>
+```
+
+### 3.3 Create the internal Airbyte dataset
+
+Create one `airbyte_internal` dataset per BigQuery project.
+
+The dataset must:
+
+- be located in `europe-west2`
+- use the project Cloud KMS key
+- apply a one-day default table expiry
+
+```shell
+bq --location=europe-west2 mk \
+  --dataset \
+  --default_kms_key=projects/<PROJECT_ID>/locations/europe-west2/keyRings/<KEY_RING>/cryptoKeys/<KEY> \
+  --default_table_expiration=86400 \
+  --description="Airbyte internal table - Only for Airbyte use" \
+  <PROJECT_ID>:airbyte_internal
+```
+
+### 3.4 Create the custom IAM role
+
+
+The role ID is:
+
+```text
+Airbyte_workflow_IAM
+```
+
+Create it with:
+
+```shell
 gcloud iam roles create Airbyte_workflow_IAM \
-  --project=rugged-abacus-218110 \
+  --project=<PROJECT_ID> \
   --title="Airbyte Workflow IAM" \
---description="Created on: 2026-09-15" \
+  --description="Created for the Airbyte workflow" \
   --permissions="resourcemanager.projects.getIamPolicy,resourcemanager.projects.setIamPolicy,datacatalog.taxonomies.getIamPolicy,datacatalog.taxonomies.setIamPolicy" \
   --stage=ALPHA
 ```
 
-NOTE: This custom role is no longer needed so ignore for new services.
-BigQuery Appender Airbyte (with id bigquery_appender_airbyte)
-- bigquery.datasets.get
-- bigquery.tables.get
-- bigquery.tables.updateData
+### 3.5 Add the custom role binding
 
-#### BQ dataset:
 
-A dataset for the internal airbyte raw tables with fixed name: airbyte_internal
-- One required per BigQuery project
-- The expiry on the table should be set to 1 day
-- Encryption should be changed to the project Cloud KMS Key
-
-```
-bq --location=europe-west2 mk
-–dataset
-–default_kms_key projects/<PROJECT_ID>/locations/europe-west2/keyRings/<my-keyring>/cryptoKeys/<my-key>
-–default_table_expiration 86400
-–description “Airbyte internal table - Only for airbyte use”
-<PROJECT_ID>:<DATASET_ID>
+```shell
+gcloud projects add-iam-policy-binding <PROJECT_ID> \
+  --member="principalSet://iam.googleapis.com/projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/<WORKLOAD_IDENTITY_POOL>/attribute.repository/DFE-Digital/<REPOSITORY_NAME>" \
+  --role="projects/<PROJECT_ID>/roles/Airbyte_workflow_IAM"
 ```
 
-#### Workload identity pool:
+## 4. Create the Airbyte base resources
 
-For each project a workload identity pool with the name azure-cip-identity-pool should exist.
+Each Kubernetes namespace has its own shared Airbyte base resources, including:
 
-If this does not exist then one can be created with either the create gcp workload identity pool gcloud script at https://github.com/DFE-Digital/teacher-services-analytics-cloud/blob/main/scripts/gcloud/create-gcp-workload-identity-pool.sh or from the IAM gcloud console using the attributes specified in the gcloud script.
+- Airbyte UI
+- worker
+- cron jobs
+- supporting Airbyte services
 
-Workload identity pool provider:
+Each consuming service then has its own Airbyte connection within the namespace workspace.
 
-For each project a workload identity pool with the name azure-cip-oidc-provider should exist.
+Ask the SD Infrastructure Operations team to do one of the following:
 
-If this does not exist then one can be created with either the create gcp workload identity pool provider gcloud script at https://github.com/DFE-Digital/teacher-services-analytics-cloud/blob/main/scripts/gcloud/create-gcp-workload-identity-pool-provider.sh or from the IAM gcloud console using the attributes specified in the gcloud script.
+- create the Airbyte base resources for the namespace
+- create a workspace in the existing namespace Airbyte deployment
 
-### 4. Configure the Postgres database to use logical replication
-- NOTE: that this will trigger several restarts of the database server. Agree a time to merge the PR with the service technical lead.
+The Airbyte infrastructure configuration is in:
 
-Add the following variable to the variables.tf
+[teacher-services-cloud/airbyte](https://github.com/DFE-Digital/teacher-services-cloud/tree/main/airbyte)
+
+Once the workspace is available, record:
+
+- the Airbyte server URL
+- the workspace ID
+- an application client ID
+- an application client secret
+
+## 5. Add the secrets to Azure Key Vault
+
+Once the Airbyte workspace has been created, add the required secrets to the relevant Azure Key Vault.
+
+Most services use the infrastructure Key Vault. For example:
+
+- RTT production: `s189p01-rtt-pd-kv`
+- ITTMS production: `s189p01-ittms-pd-inf-kv`
+
+Some services retrieve the Airbyte credentials from the application Key Vault. In those services, only `AIRBYTE-CLIENT-ID` and `AIRBYTE-CLIENT-SECRET` may need to be added there.
+
+Add the following secrets:
+
+- `AIRBYTE-CLIENT-ID`
+- `AIRBYTE-CLIENT-SECRET`
+- `AIRBYTE-WORKSPACE-ID`
+- `AIRBYTE-REPLICATION-PASSWORD`
+- `AIRBYTE-BQ-SA`
+
+### `AIRBYTE-CLIENT-ID`
+
+In the Airbyte UI, go to:
+
+```text
+Settings -> Applications -> Client ID
 ```
-# pg_airbyte_enabled used in the postgres module
-variable "pg_airbyte_enabled" { default = false }
 
+### `AIRBYTE-CLIENT-SECRET`
+
+In the Airbyte UI, go to:
+
+```text
+Settings -> Applications -> Client Secret
 ```
-Add to the database terraform definition in the service
+
+### `AIRBYTE-WORKSPACE-ID`
+
+Open the workspace in the Airbyte UI.
+
+The workspace ID is the section of the URL immediately before `/settings`.
+
+### `AIRBYTE-REPLICATION-PASSWORD`
+
+Generate a password for the PostgreSQL replication user.
+
+Follow the password standards used by the existing Airbyte-enabled services.
+
+### `AIRBYTE-BQ-SA`
+
+In Google Cloud, go to:
+
+```text
+IAM & Admin -> Service Accounts
 ```
+
+Use the service account's complete email address.
+
+The service account names vary, but commonly begin with `app-wif`.
+
+## 6. Configure PostgreSQL logical replication
+
+> This change can trigger several database server restarts. Agree a deployment time with the service technical lead before merging it.
+
+### 6.1 Add the Terraform variable
+
+Add the following to `variables.tf`:
+
+```hcl
+variable "pg_airbyte_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable PostgreSQL logical replication for Airbyte"
+}
+```
+
+### 6.2 Pass the setting to the PostgreSQL module
+
+Update the service's PostgreSQL module:
+
+```hcl
 module "postgres" {
   source = "./vendor/modules/aks//aks/postgres"
-  ...
+
+  # Existing configuration...
+
   use_airbyte = var.pg_airbyte_enabled
 }
 ```
 
-Add the following to the env.tfvars.json to enable for an environment
-```
-"pg_airbyte_enabled": true
+### 6.3 Enable logical replication for the environment
+
+Add the following to the environment's `env.tfvars.json`:
+
+```json
+{
+  "pg_airbyte_enabled": true
+}
 ```
 
-### 5. Add the below to the service terraform to create the airbyte source, destination and connection and gcp resources
+Deploy this change and allow the PostgreSQL restarts to complete before enabling the Airbyte connection.
 
-- The provider block may or may not already be defined depending on the service.
-- Other variables may be configured differently which should be outlined by your IDE. Search the code to find how they're configured.
-- Remove the ` # change as required` comments once copied over.
+## 7. Add the Airbyte Terraform provider
+
+Update `terraform.tf`.
+
+Add the Airbyte provider to the existing `required_providers` block:
+
+```hcl
+terraform {
+  required_version = "~> 1.9.8"
+
+  required_providers {
+    # Existing providers...
+
+    airbyte = {
+      source  = "airbytehq/airbyte"
+      version = "0.10.0"
+    }
+  }
+}
+```
+
+Configure the provider:
+
+```hcl
+provider "airbyte" {
+  server_url = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}/api/public/v1" : ""
+
+  client_id = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : ""
+
+  client_secret = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : ""
+}
+```
+
+If it is not already configured, add the Google provider:
 
 ```hcl
 provider "google" {
-  project = "apply-for-qts-in-england" # change as required
+  project = "<PROJECT_ID>"
 }
+```
 
+Replace `<PROJECT_ID>` with the service's Google Cloud project ID.
+
+## 8. Add the Airbyte module
+
+Add the Airbyte module to the service Terraform configuration.
+
+Values marked with placeholders must be replaced with the values discovered in #2-check-the-existing-google-cloud-resources.
+
+```hcl
 module "airbyte" {
   source = "./vendor/modules/aks//aks/airbyte"
 
@@ -131,22 +501,26 @@ module "airbyte" {
   postgres_version      = var.postgres_version
   postgres_url          = module.postgres.url
 
-  host_name          = module.postgres.host
-  database_name      = module.postgres.name
-  workspace_id       = var.airbyte_enabled ? module.secrets.map.AIRBYTE-WORKSPACE-ID : null
-  client_id          = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : null
-  client_secret      = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : null
-  repl_password      = var.airbyte_enabled ? module.secrets.map.AIRBYTE-REPLICATION-PASSWORD : null
-  server_url         = "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
+  host_name     = module.postgres.host
+  database_name = module.postgres.name
+
+  workspace_id  = var.airbyte_enabled ? module.secrets.map.AIRBYTE-WORKSPACE-ID : null
+  client_id     = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : null
+  client_secret = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : null
+  repl_password = var.airbyte_enabled ? module.secrets.map.AIRBYTE-REPLICATION-PASSWORD : null
+
+  server_url = "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
+
   connection_status  = var.connection_status
   connection_streams = local.connection_streams
 
-  cluster           = var.cluster
-  namespace         = var.namespace
-  gcp_taxonomy_id   = "69524444121704657" # change as required
-  gcp_policy_tag_id = "6523652585511281766" # change as required
-  gcp_keyring       = "bat-key-ring" # change as required
-  gcp_key           = "bat-key" # change as required
+  cluster   = var.cluster
+  namespace = var.namespace
+
+  gcp_taxonomy_id   = "<TAXONOMY_ID>"
+  gcp_policy_tag_id = "<POLICY_TAG_ID>"
+  gcp_keyring       = "<KEY_RING>"
+  gcp_key           = "<KEY>"
 
   config_map_ref = module.application_configuration.kubernetes_config_map_name
   secret_ref     = module.application_configuration.kubernetes_secret_name
@@ -155,22 +529,52 @@ module "airbyte" {
   use_azure = var.deploy_azure_backing_services
   gcp_bq_sa = var.airbyte_enabled ? module.secrets.map.AIRBYTE-BQ-SA : null
 }
+```
 
-## Airbyte module variables
+The provider block and some variable names may already exist or may be implemented differently in the service. Search the repository and follow the existing conventions where they differ.
 
-variable "airbyte_enabled" { default = false }
+## 9. Add the Airbyte variables and locals
+
+Add the following variables:
+
+```hcl
+variable "airbyte_enabled" {
+  type        = bool
+  default     = false
+  description = "Create the Airbyte source, destination and connection"
+}
 
 variable "connection_status" {
-  type = string
-  default = "inactive"
-  description = "Connection status, either active or inactive"
-}
+  type        = string
+  default     = "inactive"
+  description = "Airbyte connection status, either active or inactive"
 
+  validation {
+    condition     = contains(["active", "inactive"], var.connection_status)
+    error_message = "connection_status must be either active or inactive."
+  }
+}
+```
+
+Add the required locals:
+
+```hcl
 locals {
-  connection_streams = var.airbyte_enabled ? file("workspace_variables/airbyte_stream_config.json") : null
-  gcp_dataset_name   = replace("${var.service_short}_airbyte_${local.app_name_suffix}", "-", "_")
-}
+  connection_streams = var.airbyte_enabled
+    ? file("workspace_variables/airbyte_stream_config.json")
+    : null
 
+  gcp_dataset_name = replace(
+    "${var.service_short}_airbyte_${local.app_name_suffix}",
+    "-",
+    "_"
+  )
+}
+```
+
+Make sure the service's secrets module exposes the required Airbyte Key Vault secrets:
+
+```hcl
 module "secrets" {
   source = "./vendor/modules/aks//aks/secrets"
 
@@ -180,263 +584,214 @@ module "secrets" {
 }
 ```
 
+## 10. Add the Airbyte stream configuration
 
-#### Merge the following into env variables
+If DFE_analytics > 1.16 this can be skipped
 
-The exact method will depend of the service.
+Create:
 
+```text
+workspace_variables/airbyte_stream_config.json
 ```
+
+Define the tables and streams that Airbyte should replicate.
+
+The exact contents depend on the service schema and should be agreed with the service team.
+
+The file is loaded by:
+
+```hcl
+connection_streams = var.airbyte_enabled
+  ? file("workspace_variables/airbyte_stream_config.json")
+  : null
+```
+
+## 11. Add the application environment variables
+
+Merge the following values into the service's application environment variables.
+
+The exact implementation depends on how the service constructs its ConfigMap or environment variable map.
+
+```hcl
 {
-  BIGQUERY_AIRBYTE_DATASET                    = var.airbyte_enabled ? local.gcp_dataset_name : null
-  AIRBYTE_SERVER_URL                          = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}" : null
-  BIGQUERY_HIDDEN_POLICY_TAG                  = var.airbyte_enabled ? "projects/rugged-abacus-218110/locations/europe-west2/taxonomies/69524444121704657/policyTags/6523652585511281766" : null
-  AIRBYTE_INTERNAL_DATASET                    = var.airbyte_enabled ? "${local.gcp_dataset_name}_internal" : null
+  BIGQUERY_AIRBYTE_DATASET = var.airbyte_enabled
+    ? local.gcp_dataset_name
+    : null
+
+  AIRBYTE_SERVER_URL = var.airbyte_enabled
+    ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
+    : null
+
+  BIGQUERY_HIDDEN_POLICY_TAG = var.airbyte_enabled
+    ? "projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>/policyTags/<POLICY_TAG_ID>"
+    : null
+
+  AIRBYTE_INTERNAL_DATASET = var.airbyte_enabled
+    ? "${local.gcp_dataset_name}_internal"
+    : null
 }
 ```
 
-#### Merge the following into secret variables
+Replace:
 
-The exact method will depend of the service.
+- `<PROJECT_ID>`
+- `<TAXONOMY_ID>`
+- `<POLICY_TAG_ID>`
 
-```
+with the values for the target Google Cloud project.
+
+## 12. Add the application secret variables
+
+Merge the following into the service's secret environment variables:
+
+```hcl
 {
   AIRBYTE_CONFIGURATION = var.airbyte_enabled ? jsonencode({
-  SOURCE_ID      = module.airbyte[0].airbyte_source_id
-  DESTINATION_ID = module.airbyte[0].airbyte_destination_id
-  CONNECTION_ID  = module.airbyte[0].airbyte_connection_id
+    SOURCE_ID      = module.airbyte[0].airbyte_source_id
+    DESTINATION_ID = module.airbyte[0].airbyte_destination_id
+    CONNECTION_ID  = module.airbyte[0].airbyte_connection_id
   }) : null
 }
 ```
-#### Add to terraform.tf
 
-```
-terraform {
-  required_version = "~> 1.9.8"
-  required_providers {
-    ...
-    airbyte = {
-      source  = "airbytehq/airbyte"
-      version = "0.10.0"
-    }
-  }
-  ...
+This makes the Airbyte resource IDs available to the application.
 
-airbyte = {
-      source  = "airbytehq/airbyte"
-      version = "0.10.0"
-    }
 
-provider "airbyte" {
-  # Configuration options
-  server_url = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}/api/public/v1" : ""
-  client_id = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : ""
-  client_secret = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : ""
+## 14. Enable Airbyte
+
+Add the following to the environment's `env.tfvars.json`:
+
+```json
+{
+  "pg_airbyte_enabled": true,
+  "airbyte_enabled": true,
+  "connection_status": "active"
 }
 ```
 
-### 6. Enable Airbyte
+Deploy the environment.
 
-Add the following to env.tfvars.json.
+Setting `airbyte_enabled` to `true` creates:
+
+- the Airbyte source
+- the Airbyte destination
+- the Airbyte connection
+- the PostgreSQL replication slot
+- the Google Cloud service account
+- the service-specific BigQuery dataset
+- the associated Google Cloud resources managed by the Airbyte module
+
+Setting `connection_status` to `active` enables the connection so that it can be tested and run from the Airbyte UI.
+
+## 15. Validate the connection in the Airbyte UI
+
+Use the Airbyte Loop document to find the correct Airbyte URL for the namespace.
+
+In the Airbyte UI:
+
+1. Open the relevant workspace.
+2. Select the service connection.
+3. Check that the source and destination are configured correctly.
+4. Open the **Schema** tab.
+5. Check that the expected tables are present.
+6. Check that the required tables are selected.
+7. Select **Sync now**.
+
+If no application tables are selected:
+
+1. Select the `airbyte_heartbeat` table.
+2. Select **Sync now**.
+3. Confirm that the sync completes successfully.
+
+After the sync completes, confirm that:
+
+- the connection is active
+- the sync completed successfully
+- the expected tables appear in BigQuery
+- the BigQuery tables use the expected encryption key
+- policy tags have been applied where required
+
+## 17. Enable PostgreSQL monitoring
+
+If the service uses Azure Database for PostgreSQL, enable database monitoring in the PostgreSQL Terraform module:
 
 ```hcl
-"airbyte_enabled": true,
-"connection_status": "active"
+module "postgres" {
+  source = "./vendor/modules/aks//aks/postgres"
+
+  # Existing configuration...
+
+  azure_enable_monitoring = true
+}
 ```
 
+Depending on the service's existing infrastructure, this may require:
 
-Once you've added `"airbyte_enabled": true` to the env.tfvars.json this will then create the following
-- airbyte source
-- airbyte destination
-- airbyte connection (by default inactive)
-- initialise the database replication slot
-- create gcp resources, including
-  - service account
-  - bigquery dataset
+- an Azure Monitor resource
+- a monitoring resource group
+- diagnostic settings
+- permissions for the monitoring workspace
 
-By default the Airbyte connection will be inactive.
-Add `"connection_status": "active"` to the env.tfvars.json to enable it.
+Plan the Terraform changes before applying them and check whether enabling monitoring introduces any database changes or restarts.
 
-### 7. Log into the ui to check all looks ok
+## Troubleshooting commands
 
-- Go to our Airbyte Loop document for the structure and exact URLs.
-- Select the relevant connection.
-- Select the Schema tab.
-- If tables are selected with a blue/white tick click the `Sync now` button.
-- If no tables are selected, select the `airbyte_heartbeat` table and click the `Sync now` button.
+### List Workload Identity Pools
 
-### 8. Enable monitoring for the database server if using Azure Postgresql
-
-- set azure_enable_monitoring = true in the terraform for the postgres module
-- this may require a new resource group and azure monitor to be created
-
-## Google Cloud Authentication
-
-The user must have the Owner role on the Google project.
-
-- Run `gcloud auth application-default login`
-
-## Github actions Authentication
-
-Github action workflows use workload identity federation to authenticate to Google.
-
-Use the `authorise_workflow.sh` script to set it up, once per repository. The Owner role is required.
-
-- Run the `authorise_workflow.sh` located in this terraform module, under *aks/dfe_analytics*:
-  ```
-  ./authorise_workflow.sh <PROJECT_ID> <REPO>
-  ```
-  Example:
-  ```
-  ./authorise_workflow.sh apply-for-qts-in-england apply-for-qualified-teacher-status
-  ```
-- The script shows the *permissions* and *google-github-actions/auth step* to add to the workflow job e.g.:
-  ```
-  deploy_job:
-    permissions:
-      id-token: write
-      ...
-  ```
-  ```
-  steps:
-  ...
-  - uses: google-github-actions/auth@v2
-    with:
-      project_id: teaching-qualifications
-      workload_identity_provider: projects/708780292301/locations/global/workloadIdentityPools/check-childrens-barred-list/providers/check-childrens-barred-list
-  ```
-- :warning: Adding the permission removes the [default token permissions](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#permissions-for-the-github_token), which may be an issue for some actions that rely on them. For example, the [marocchino/sticky-pull-request-comment](https://github.com/marocchino/sticky-pull-request-comment) action requires `pull-requests: write`. It must then be added explicitly.
-- Run the workflow
-
-## Additional Google Cloud Resources
-
-The following resources are all required. Some may have already been created whilst others may not have. Please check if they exist before running any create commands.
-
-### Login (Authenticate)
+```shell
+gcloud iam workload-identity-pools list \
+  --project=<PROJECT_ID> \
+  --location=global
 ```
-gcloud auth application-default login
-```
-- Click the link provided
-- Select your DfE email address
-- Select Continue
-- Select Continue
-- Copy the provided code and paste into your terminal
 
-### Checking resources
+### List providers in a Workload Identity Pool
 
-The user must have Owner role on the Google project.
-
-#### List projects
-
-`gcloud projects list`
-
-#### Select project
-
-`gcloud config set project <Project ID>`
-
-#### Get project taxonomy
-  ```
-  gcloud data-catalog taxonomies list --location=europe-west2 --format="value(name)"
-  ```
-
-  The path contains the taxonomy id as a number e.g. taxonomies/nnnnnnnnnnnnnnnnnnn
-
-#### Get policy tags
-  ```
-  gcloud data-catalog taxonomies policy-tags list --taxonomy="projects/<Project ID>/locations/europe-west2/taxonomies/nnnnnnnnnnnnnnnnnnn" --location="europe-west2" --filter="displayName:hidden" --format="value(name)"
-  ```
-
-  The path contains the policy tag id as a number e.g. 2399328962407973209
-
-#### Get GCP Keyring
-
-`gcloud kms keyrings list --location=europe-west2 --project=<Project ID>`
-
-#### Get GCP Key
-
-`gcloud kms keys list --location=europe-west2 --keyring=<Keyring from above> --project=<Project ID>`
-
-#### List Workload Identity Pools (WIP) for a Project
-
-`gcloud iam workload-identity-pools list --project=<Project ID> --location=global`
-
-#### WIP Providers for a WIP
-
-This is the value that goes in the GitHub variable gcp-wip
-```
+```shell
 gcloud iam workload-identity-pools providers list \
- --project=<Project ID> \
- --location=global \
- --workload-identity-pool=<WIP from above>
+  --project=<PROJECT_ID> \
+  --location=global \
+  --workload-identity-pool=<WORKLOAD_IDENTITY_POOL>
 ```
 
-#### Custom Roles
-`gcloud iam roles describe Airbyte_workflow_IAM --project=<Project ID>`
+### Describe a provider
 
-The response will either be
-```
-description: 'Created on: 2025-09-24'
-etag: BwZYx499999=
-includedPermissions:
-- datacatalog.taxonomies.getIamPolicy
-- datacatalog.taxonomies.setIamPolicy
-- resourcemanager.projects.getIamPolicy
-- resourcemanager.projects.setIamPolicy
-name: projects/<Project ID>/roles/Airbyte_workflow_IAM
-stage: ALPHA
-title: Airbyte workflow IAM
+```shell
+gcloud iam workload-identity-pools providers describe \
+  <PROVIDER_NAME> \
+  --project=<PROJECT_ID> \
+  --location=global \
+  --workload-identity-pool=<WORKLOAD_IDENTITY_POOL>
 ```
 
-Or
+### List the BigQuery datasets
 
-```
-ERROR: (gcloud.iam.roles.describe) NOT_FOUND: The role named projects/<Project ID>/roles/Airbyte_workflow_IAM was not found. This command is authenticated as first.surname@plop.gov.uk which is the active account specified by the [core/account] property.
-```
-#### BQ Dataset (Look for airbyte_internal)
-
-```bq ls --project_id=get-into-teaching```
-
-### Creating Google Cloud Resources
-
-#### Work Identity Pool
-
-```
-  gcloud iam workload-identity-pools create "azure-cip-identity-pool" \
-   --location="global" \
-   --description="Azure CIP -> GCP Workload identity pool" \
-   --display-name="azure-cip-identity-pool" \
-   --project=<Project ID>
+```shell
+bq ls --project_id=<PROJECT_ID>
 ```
 
-#### Work Identity Pool Provider
+### Describe the internal Airbyte dataset
 
-```
-  gcloud iam workload-identity-pools providers create-oidc azure-cip-oidc-provider \
-   --workload-identity-pool="azure-cip-identity-pool" \
-   --issuer-uri="https://login.microsoftonline.com/9c7d9dd3-840c-4b3f-818e-552865082e16/v2.0" \
-   --allowed-audiences="fb60f99c-7a34-4190-8149-302f77469936" \
-   --location="global" \
-   --attribute-mapping="google.subject=assertion.sub" \
-   --project=<Project ID>
+```shell
+bq show \
+  --format=prettyjson \
+  <PROJECT_ID>:airbyte_internal
 ```
 
-#### Custom Roles
+### Check the legacy custom role
 
-```
-gcloud iam roles create Airbyte_workflow_IAM \
-  --project=<Project ID> \
-  --title="Airbyte Workflow IAM" \
---description="Created on: 2026-09-15" \
-  --permissions="resourcemanager.projects.getIamPolicy,resourcemanager.projects.setIamPolicy,datacatalog.taxonomies.getIamPolicy,datacatalog.taxonomies.setIamPolicy" \
-  --stage=ALPHA
+```shell
+gcloud iam roles describe Airbyte_workflow_IAM \
+  --project=<PROJECT_ID>
 ```
 
-#### BQ Dataset (airbyte_internal)
+### Check the active Google Cloud configuration
 
+```shell
+gcloud config list
 ```
-bq --location=europe-west2 mk \
-  --dataset \
-  --default_kms_key=projects/<Project ID>/locations/europe-west2/keyRings/<key-ring>/cryptoKeys/<key> \
-  --default_table_expiration=86400 \
-  --description="Airbyte internal table - Only for airbyte use" \
-  <Project ID>:airbyte_internal
+
+### Check application-default credentials
+
+```shell
+gcloud auth application-default print-access-token
 ```
