@@ -92,6 +92,7 @@
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
 | <a name="input_skip_policy_tags"></a> [skip\_policy\_tags](#input\_skip\_policy\_tags) | Whether to skip applying policy tags to tables in Big Query | `bool` | `false` | no |
 | <a name="input_use_azure"></a> [use\_azure](#input\_use\_azure) | Whether to deploy using Azure Postgres | `bool` | n/a | yes |
+| <a name="input_use_legacy_dotnet_shim"></a> [use\_legacy\_dotnet\_shim](#input\_use\_legacy\_dotnet\_shim) | Whether to run the Airbyte deployment using the apply-config.sh shell script rather than the dfe-analytics executable. The executable does not need a shell in the image but requires a recent version of DfeAnalytics.EFCore | `bool` | `true` | no |
 | <a name="input_workspace_id"></a> [workspace\_id](#input\_workspace\_id) | Airbyte workspace id | `string` | `null` | no |
 
 ## Outputs
