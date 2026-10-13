@@ -15,20 +15,17 @@ resource "random_password" "password" {
   special = true
 }
 
-# We need access to Key Vault secrets in s158 before we can implement this.
-# resource "azurerm_key_vault_secret" "sql_admin_username" {
-#   name         = upper("${local.resource_prefix}-${var.server_name_suffix}-sql-admin-username")
-#   value        = local.database_username
-#   key_vault_id = module.secrets.key_vault_id
-#   # key_vault_id = "/subscriptions/8d17a77c-e95e-4296-9bd6-58c90ee84d7b/resourceGroups/s158d01-gias-dv-rg/providers/Microsoft.KeyVault/vaults/s158d01-gias-dv-inf-kv"
-# }
+resource "azurerm_key_vault_secret" "sql_admin_username" {
+  name         = upper("${local.resource_prefix}-${var.server_name_suffix}-sql-admin-username")
+  value        = local.database_username
+  key_vault_id = var.key_vault_id
+}
 
-# resource "azurerm_key_vault_secret" "sql_admin_password" {
-#   name         = upper("${local.resource_prefix}-${var.server_name_suffix}-sql-admin-password")
-#   value        = local.database_password
-#   key_vault_id = module.secrets.key_vault_id
-#   # key_vault_id = "/subscriptions/8d17a77c-e95e-4296-9bd6-58c90ee84d7b/resourceGroups/s158d01-gias-dv-rg/providers/Microsoft.KeyVault/vaults/s158d01-gias-dv-inf-kv"
-# }
+resource "azurerm_key_vault_secret" "sql_admin_password" {
+  name         = upper("${local.resource_prefix}-${var.server_name_suffix}-sql-admin-password")
+  value        = local.database_password
+  key_vault_id = var.key_vault_id
+}
 
 resource "azurerm_mssql_server" "main" {
   name                = "${local.resource_prefix}-${var.server_name_suffix}-sql"

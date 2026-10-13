@@ -17,6 +17,8 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azurerm_key_vault_secret.sql_admin_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
+| [azurerm_key_vault_secret.sql_admin_username](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) | resource |
 | [azurerm_monitor_metric_alert.cpu](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_monitor_metric_alert.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_metric_alert) | resource |
 | [azurerm_mssql_database.extra](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_database) | resource |
@@ -57,6 +59,7 @@ No modules.
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_extra_databases"></a> [extra\_databases](#input\_extra\_databases) | Additional SQL logical server databases to create on the same SQL logical server | `list(string)` | `[]` | no |
 | <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | List of firewall rules to create for the SQL logical server. Each rule is an object with name, start\_ip\_address, and end\_ip\_address. | `list(object({ name = string, ip_address = optional(string), start_ip_address = optional(string), end_ip_address = optional(string) }))` | `[]` | no |
+| <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | Key Vault ID where SQL secrets should be stored | `string` | n/a | yes |
 | <a name="input_lt_ret_pol_monthly_retention"></a> [lt\_ret\_pol\_monthly\_retention](#input\_lt\_ret\_pol\_monthly\_retention) | Specifies the number of months to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format. | `string` | `"PT0S"` | no |
 | <a name="input_lt_ret_pol_week_of_year"></a> [lt\_ret\_pol\_week\_of\_year](#input\_lt\_ret\_pol\_week\_of\_year) | Specifies the week of the year to retain the backup for. The value is a number between 1 and 52. | `number` | `1` | no |
 | <a name="input_lt_ret_pol_weekly_retention"></a> [lt\_ret\_pol\_weekly\_retention](#input\_lt\_ret\_pol\_weekly\_retention) | Specifies the number of weeks to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format. | `string` | `"PT0S"` | no |

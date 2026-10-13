@@ -296,3 +296,8 @@ variable "azure_backup_storage_public_network_access_enabled" {
   default     = true
   description = "Whether public network access is allowed for the storage account"
 }
+
+variable "key_vault_id" {
+  type        = string
+  description = "Key Vault ID where SQL secrets should be stored"
+}
