@@ -49,6 +49,14 @@ resource "azurerm_subnet" "apps" {
   address_prefixes     = var.apps_subnet
 
   private_endpoint_network_policies = "Enabled"
+
+  delegation {
+    name = "appservice-delegation"
+    service_delegation {
+      name    = "Microsoft.Web/serverFarms"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/action"]
+    }
+  }
 }
 
 resource "azurerm_subnet" "storage" {
