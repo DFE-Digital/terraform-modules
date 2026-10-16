@@ -100,10 +100,18 @@ module "dotnet_streams_update_job" {
   environment  = var.environment
   service_name = var.service_name
   docker_image = var.docker_image
-  commands     = ["/bin/sh"]
+  # The dfe-analytics executable doesn't need a shell, unlike apply-config.sh
+  commands = var.use_legacy_dotnet_shim ? ["/bin/sh"] : ["${local.dotnet_application_directory}/dfe-analytics/dfe-analytics"]
   arguments = flatten([
-    "-f",
-    "${coalesce(trimsuffix(var.dotnet_application_directory, "/"), ".")}/dfe-analytics/apply-config.sh",
+    var.use_legacy_dotnet_shim ? [
+      "-f",
+      "${local.dotnet_application_directory}/dfe-analytics/apply-config.sh"
+      ] : [
+      "config",
+      "apply",
+      "--path",
+      "dfe-analytics/db-config.json"
+    ],
     "--connection-string",
     "Server=${var.host_name};Database=${var.database_name};User Id=airbyte_replication;Password='${local.replication_password}';Ssl Mode=Require;Trust Server Certificate=true",
     "--google-credentials",

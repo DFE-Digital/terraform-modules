@@ -140,6 +140,12 @@ variable "dotnet_application_directory" {
   description = "The path to application containing the dfe-analytics directory"
 }
 
+variable "use_legacy_dotnet_shim" {
+  type        = bool
+  default     = true
+  description = "Whether to run the Airbyte deployment using the apply-config.sh shell script rather than the dfe-analytics executable. The executable does not need a shell in the image but requires a recent version of DfeAnalytics.EFCore"
+}
+
 variable "airbyte_sync_mode" {
   type        = string
   default     = "incremental_append"
@@ -167,6 +173,8 @@ locals {
   source_name      = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-pg-source"
   destination_name = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-bq-destination"
   connection_name  = "${var.azure_resource_prefix}-${var.service_short}-${var.environment}-airbyte-conn"
+
+  dotnet_application_directory = coalesce(trimsuffix(var.dotnet_application_directory, "/"), ".")
 
   cron_expression = var.schedule_type == "cron" ? "0 */15 * * * ? UTC" : null # Cron schedule for syncs every hour on the hour
 
