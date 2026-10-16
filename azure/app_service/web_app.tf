@@ -5,14 +5,16 @@ resource "azurerm_windows_web_app" "main" {
   location                      = data.azurerm_resource_group.main.location
   resource_group_name           = data.azurerm_resource_group.main.name
   service_plan_id               = azurerm_service_plan.main.id
-  app_settings                  = var.app_settings
+  app_settings                  = local.app_settings
   public_network_access_enabled = var.public_network_access_enabled
   https_only                    = true
   virtual_network_subnet_id     = var.subnet_id
+
   identity {
     identity_ids = []
     type         = "SystemAssigned"
   }
+
   logs {
     detailed_error_messages = var.logs.detailed_error_messages
     failed_request_tracing  = var.logs.failed_request_tracing
@@ -23,6 +25,7 @@ resource "azurerm_windows_web_app" "main" {
       }
     }
   }
+
   site_config {
     always_on                = var.always_on
     ftps_state               = var.ftps_state
@@ -42,6 +45,7 @@ resource "azurerm_windows_web_app" "main" {
       python                       = false
     }
   }
+
   sticky_settings {
     app_setting_names = var.sticky_app_settings
   }
@@ -83,8 +87,7 @@ resource "azurerm_windows_web_app_slot" "main" {
 
   name           = each.key
   app_service_id = azurerm_windows_web_app.main[0].id
-
-  app_settings = var.app_settings
+  app_settings   = local.app_settings
 
   https_only = true
 
@@ -114,8 +117,91 @@ resource "azurerm_windows_web_app_slot" "main" {
   }
 }
 
-# resource "azurerm_monitor_diagnostic_setting" "main" {
-#   name                       = "${local.resource_name_prefix}${var.web_app_name}-diagnostics"
-#   target_resource_id         = azurerm_windows_web_app.main[0].id
-#   log_analytics_workspace_id = var.log_analytics_workspace_id
-# }
+resource "azurerm_log_analytics_workspace" "main" {
+  count = var.azure_enable_monitoring ? 1 : 0
+
+  name                = "${local.resource_name_prefix}-${var.service_short}-app-service-log"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  sku                 = "PerGB2018"
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_application_insights" "main" {
+  count = var.azure_enable_monitoring ? 1 : 0
+
+  name                = "${local.resource_name_prefix}-${var.service_short}-app-service-appi"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+
+  application_type = var.application_insights_type
+
+  workspace_id = azurerm_log_analytics_workspace.main[0].id
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "main" {
+  count = var.azure_enable_monitoring ? 1 : 0
+
+  name                       = "${local.resource_name_prefix}${var.web_app_name}-diag"
+  target_resource_id         = azurerm_windows_web_app.main[0].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main[0].id
+
+  enabled_log {
+    category = "AppServiceHTTPLogs"
+  }
+
+  enabled_log {
+    category = "AppServiceConsoleLogs"
+  }
+
+  enabled_log {
+    category = "AppServiceAppLogs"
+  }
+
+  enabled_log {
+    category = "AppServicePlatformLogs"
+  }
+
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}
+
+resource "azurerm_monitor_diagnostic_setting" "slots" {
+  for_each = (
+    var.azure_enable_monitoring
+    ? azurerm_windows_web_app_slot.main
+    : {}
+  )
+
+  name                       = "${each.key}-diag"
+  target_resource_id         = each.value.id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main[0].id
+
+  enabled_log {
+    category = "AppServiceHTTPLogs"
+  }
+
+  enabled_log {
+    category = "AppServiceConsoleLogs"
+  }
+
+  enabled_log {
+    category = "AppServiceAppLogs"
+  }
+
+  enabled_log {
+    category = "AppServicePlatformLogs"
+  }
+
+  enabled_metric {
+    category = "AllMetrics"
+  }
+}

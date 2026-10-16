@@ -16,6 +16,10 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [azurerm_application_insights.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_insights) | resource |
+| [azurerm_log_analytics_workspace.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) | resource |
+| [azurerm_monitor_diagnostic_setting.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
+| [azurerm_monitor_diagnostic_setting.slots](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_private_endpoint.function_app_ep](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.web_app_ep](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_service_plan.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/service_plan) | resource |
@@ -23,6 +27,7 @@ No modules.
 | [azurerm_windows_web_app.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_web_app) | resource |
 | [azurerm_windows_web_app_slot.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/windows_web_app_slot) | resource |
 | [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_resource_group.monitoring](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 
 ## Inputs
 
@@ -31,7 +36,9 @@ No modules.
 | <a name="input_always_on"></a> [always\_on](#input\_always\_on) | Whether to enable the Always On feature for the Web App. | `bool` | `true` | no |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | A map of key-value pairs to configure the Web App settings. | `map(string)` | `{}` | no |
 | <a name="input_app_type"></a> [app\_type](#input\_app\_type) | The type of application to be deployed (e.g., web, function). | `string` | n/a | yes |
+| <a name="input_application_insights_type"></a> [application\_insights\_type](#input\_application\_insights\_type) | The type of Application Insights resource to create (e.g., 'web', 'java', 'Node.JS'). | `string` | `"java"` | no |
 | <a name="input_application_stack"></a> [application\_stack](#input\_application\_stack) | The application stack configuration for the Web App. | <pre>object({<br/>    dotnet_core_version = optional(string)<br/>    dotnet_version      = optional(string)<br/>    java_version        = optional(string)<br/>    node_version        = optional(string)<br/>    php_version         = optional(string)<br/>  })</pre> | `{}` | no |
+| <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | Enable monitoring | `bool` | `true` | no |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | The short name of the environment configuration e.g. dv, ts, pd | `string` | n/a | yes |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | The short name of the environment e.g. d01, t01, p01 | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The full name of the application service environment e.g. development, test, production | `string` | n/a | yes |
