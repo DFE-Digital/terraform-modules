@@ -33,3 +33,9 @@ output "possible_outbound_ip_addresses" {
 
   value = azurerm_windows_web_app.main[0].possible_outbound_ip_addresses
 }
+
+output "workspace_id" {
+  description = "The ID of the Log Analytics Workspace used for monitoring the App Service"
+
+  value = var.create_log_analytics_workspace ? azurerm_log_analytics_workspace.main[0].id : null
+}

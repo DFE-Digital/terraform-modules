@@ -217,3 +217,9 @@ variable "application_insights_type" {
   description = "The type of Application Insights resource to create (e.g., 'web', 'java', 'Node.JS')."
   default     = "java"
 }
+
+variable "create_log_analytics_workspace" {
+  type        = bool
+  description = "Whether to create a new Log Analytics Workspace or use an existing one."
+  default     = false
+}
