@@ -205,3 +205,15 @@ variable "log_analytics_workspace_id" {
   description = "The ID of the Log Analytics Workspace to which diagnostic logs will be sent."
   default     = null
 }
+
+variable "azure_enable_monitoring" {
+  type        = bool
+  description = "Enable monitoring"
+  default     = true
+}
+
+variable "application_insights_type" {
+  type        = string
+  description = "The type of Application Insights resource to create (e.g., 'web', 'java', 'Node.JS')."
+  default     = "java"
+}
