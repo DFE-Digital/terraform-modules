@@ -40,6 +40,7 @@ No modules.
 | <a name="input_application_stack"></a> [application\_stack](#input\_application\_stack) | The application stack configuration for the Web App. | <pre>object({<br/>    dotnet_core_version = optional(string)<br/>    dotnet_version      = optional(string)<br/>    java_version        = optional(string)<br/>    node_version        = optional(string)<br/>    php_version         = optional(string)<br/>  })</pre> | `{}` | no |
 | <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | Enable monitoring | `bool` | `true` | no |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | The short name of the environment configuration e.g. dv, ts, pd | `string` | n/a | yes |
+| <a name="input_create_log_analytics_workspace"></a> [create\_log\_analytics\_workspace](#input\_create\_log\_analytics\_workspace) | Whether to create a new Log Analytics Workspace or use an existing one. | `bool` | `false` | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | The short name of the environment e.g. d01, t01, p01 | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The full name of the application service environment e.g. development, test, production | `string` | n/a | yes |
 | <a name="input_ftps_state"></a> [ftps\_state](#input\_ftps\_state) | The FTPS state for the Web App. Possible values are 'AllAllowed', 'FtpsOnly', or 'Disabled'. | `string` | `"Disabled"` | no |
@@ -75,3 +76,4 @@ No modules.
 | <a name="output_name"></a> [name](#output\_name) | The name of the App Service |
 | <a name="output_outbound_ip_addresses"></a> [outbound\_ip\_addresses](#output\_outbound\_ip\_addresses) | The outbound IP addresses of the App Service |
 | <a name="output_possible_outbound_ip_addresses"></a> [possible\_outbound\_ip\_addresses](#output\_possible\_outbound\_ip\_addresses) | The possible outbound IP addresses of the App Service |
+| <a name="output_workspace_id"></a> [workspace\_id](#output\_workspace\_id) | The ID of the Log Analytics Workspace used for monitoring the App Service |

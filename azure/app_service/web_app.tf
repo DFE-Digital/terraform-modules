@@ -118,9 +118,9 @@ resource "azurerm_windows_web_app_slot" "main" {
 }
 
 resource "azurerm_log_analytics_workspace" "main" {
-  count = var.azure_enable_monitoring ? 1 : 0
+  count = (var.azure_enable_monitoring && var.create_log_analytics_workspace) ? 1 : 0
 
-  name                = "${local.resource_name_prefix}-${var.service_short}-app-service-log"
+  name                = "${local.resource_name_prefix}${var.service_short}-app-service-log"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
   sku                 = "PerGB2018"
@@ -133,13 +133,14 @@ resource "azurerm_log_analytics_workspace" "main" {
 resource "azurerm_application_insights" "main" {
   count = var.azure_enable_monitoring ? 1 : 0
 
-  name                = "${local.resource_name_prefix}-${var.service_short}-app-service-appi"
+  name                = "${local.resource_name_prefix}${var.service_short}-${var.web_app_name}-app-service-appi"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
 
   application_type = var.application_insights_type
 
-  workspace_id = azurerm_log_analytics_workspace.main[0].id
+  workspace_id = local.workspace_id
+  # workspace_id = var.create_log_analytics_workspace ? azurerm_log_analytics_workspace.main[0].id : data.azurerm_log_analytics_workspace.main[0].id
 
   lifecycle {
     ignore_changes = [tags]
@@ -151,7 +152,8 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
 
   name                       = "${local.resource_name_prefix}${var.web_app_name}-diag"
   target_resource_id         = azurerm_windows_web_app.main[0].id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.main[0].id
+  log_analytics_workspace_id = local.workspace_id
+  # log_analytics_workspace_id = var.create_log_analytics_workspace ? azurerm_log_analytics_workspace.main[0].id : data.azurerm_log_analytics_workspace.main[0].id
 
   enabled_log {
     category = "AppServiceHTTPLogs"
@@ -183,7 +185,8 @@ resource "azurerm_monitor_diagnostic_setting" "slots" {
 
   name                       = "${each.key}-diag"
   target_resource_id         = each.value.id
-  log_analytics_workspace_id = azurerm_log_analytics_workspace.main[0].id
+  log_analytics_workspace_id = local.workspace_id
+  # log_analytics_workspace_id = var.create_log_analytics_workspace ? azurerm_log_analytics_workspace.main[0].id : data.azurerm_log_analytics_workspace.main[0].id
 
   enabled_log {
     category = "AppServiceHTTPLogs"
