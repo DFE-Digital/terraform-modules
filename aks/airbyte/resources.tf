@@ -151,7 +151,7 @@ resource "kubernetes_job" "airbyte-database-setup" {
   depends_on = [kubernetes_secret.airbyte-sql, time_sleep.wait_15_seconds]
 
   metadata {
-    name      = "${var.service_short}-${var.environment}-ab-db-init-${kubernetes_secret.airbyte-sql.metadata[0].name}"
+    name      = local.airbyte_db_name
     namespace = var.namespace
   }
 
@@ -214,6 +214,12 @@ resource "kubernetes_job" "airbyte-database-setup" {
     }
 
     backoff_limit = 1
+  }
+  lifecycle {
+    precondition {
+      condition     = length(local.airbyte_db_name) < 64
+      error_message = "Airbyte database setup name must be less than 64 characters."
+    }
   }
 
   wait_for_completion = true

@@ -182,4 +182,8 @@ locals {
 
   sqlCommand      = templatefile("${path.module}/files/airbyte.sql.tmpl", local.template_variable_map)
   sql_secret_hash = substr(sha1("${local.sqlCommand}"), 0, 12)
+
+  airbyte_db_name_full = "${var.service_short}-${var.environment}-ab-db-init-${kubernetes_secret.airbyte-sql.metadata[0].name}"
+
+  airbyte_db_name = length(local.airbyte_db_name_full) < 64 ? local.airbyte_db_name_full : "${var.service_short}-${var.environment}-ab-db-init-absql${local.sql_secret_hash}"
 }
