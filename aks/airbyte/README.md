@@ -38,6 +38,7 @@ Before starting, make sure:
 - The service uses the shared Terraform modules from `teacher-services-cloud`.
 - You have access to the relevant Azure Key Vault.
 - You have agreed a deployment window with the service technical lead.
+- DFE Analytics is on version 1.16.1 or higher.
 
 > Enabling PostgreSQL logical replication can trigger several database server restarts. Agree a suitable time before merging the change.
 
@@ -303,13 +304,26 @@ gcloud iam roles create Airbyte_workflow_IAM \
 
 ### 3.5 Add the custom role binding
 
-
 ```shell
 gcloud projects add-iam-policy-binding <PROJECT_ID> \
-  --member="principalSet://iam.googleapis.com/projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/<WORKLOAD_IDENTITY_POOL>/attribute.repository/DFE-Digital/<REPOSITORY_NAME>" \
-  --role="projects/<PROJECT_ID>/roles/Airbyte_workflow_IAM"
+  --role="projects/<PROJECT_ID>/roles/Airbyte_workflow_IAM" \
+  --member="principalSet://iam.googleapis.com/projects/<project number>/locations/global/workloadIdentityPools/<workload identity pool>/attribute.repository/DFE-Digital/<repository name>"
+```
+Project number can be found using 
+
+```shell
+gcloud projects describe <PROJECT_ID> --format='value(projectNumber)'
 ```
 
+The workload identity pool used here is the same Workload identity that the 
+```
+BigQuery Data Owner
+Cloud KMS Viewer
+Data Catalog Viewer
+Service Account Admin
+```
+
+Roles were just created against
 ## 4. Create the Airbyte base resources
 
 Each Kubernetes namespace has its own shared Airbyte base resources, including:
@@ -346,7 +360,7 @@ Most services use the infrastructure Key Vault. For example:
 - RTT production: `s189p01-rtt-pd-kv`
 - ITTMS production: `s189p01-ittms-pd-inf-kv`
 
-Some services retrieve the Airbyte credentials from the application Key Vault. In those services, only `AIRBYTE-CLIENT-ID` and `AIRBYTE-CLIENT-SECRET` may need to be added there.
+Some services retrieve the Airbyte credentials from the application Key Vault. In those services, only `AIRBYTE-CLIENT-ID` and `AIRBYTE-CLIENT-SECRET` need to be added there.
 
 Add the following secrets:
 
@@ -394,7 +408,7 @@ IAM & Admin -> Service Accounts
 
 Use the service account's complete email address.
 
-The service account names vary, but commonly begin with `app-wif`.
+The service account names vary, but commonly begin with `app-wif`. If no service account exists for that environment, use the next environments service account.
 
 ## 6. Configure PostgreSQL logical replication
 
@@ -481,7 +495,7 @@ provider "google" {
 
 Replace `<PROJECT_ID>` with the service's Google Cloud project ID.
 
-## 8. Add the Airbyte module
+## 8. Add the Airbyte module to Airbyte.tf
 
 Add the Airbyte module to the service Terraform configuration.
 
@@ -493,7 +507,7 @@ module "airbyte" {
 
   count = var.airbyte_enabled ? 1 : 0
 
-  environment           = var.environment
+  environment           = local.environment
   azure_resource_prefix = var.azure_resource_prefix
   service_short         = var.service_short
   service_name          = var.service_name
@@ -533,7 +547,7 @@ module "airbyte" {
 
 The provider block and some variable names may already exist or may be implemented differently in the service. Search the repository and follow the existing conventions where they differ.
 
-## 9. Add the Airbyte variables and locals
+## 9. Add the Airbyte variables and locals to Airbyte.tf
 
 Add the following variables:
 
@@ -622,8 +636,8 @@ The exact implementation depends on how the service constructs its ConfigMap or 
     ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
     : null
 
-  BIGQUERY_HIDDEN_POLICY_TAG = var.airbyte_enabled
-    ? "projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>/policyTags/<POLICY_TAG_ID>"
+  BIGQUERY_POLICY_TAGS = var.airbyte_enabled
+    ? "{\"hidden\":\"projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>/policyTags/<POLICY_TAG_ID>"}"
     : null
 
   AIRBYTE_INTERNAL_DATASET = var.airbyte_enabled
@@ -640,21 +654,40 @@ Replace:
 
 with the values for the target Google Cloud project.
 
+
 ## 12. Add the application secret variables
 
-Merge the following into the service's secret environment variables:
+Merge the following into the service's secret environment variables, usually in application.tf:
 
 ```hcl
-{
-  AIRBYTE_CONFIGURATION = var.airbyte_enabled ? jsonencode({
-    SOURCE_ID      = module.airbyte[0].airbyte_source_id
-    DESTINATION_ID = module.airbyte[0].airbyte_destination_id
-    CONNECTION_ID  = module.airbyte[0].airbyte_connection_id
-  }) : null
-}
+  secret_variables = merge({
+    existing secrets
+    existing secrets
+    existing secrets
+    existing secrets
+    existing secrets
+    existing secrets
+    },
+    {
+      AIRBYTE_CONFIGURATION = var.airbyte_enabled ? jsonencode({
+        SOURCE_ID      = module.airbyte[0].airbyte_source_id
+        DESTINATION_ID = module.airbyte[0].airbyte_destination_id
+        CONNECTION_ID  = module.airbyte[0].airbyte_connection_id
+      }) : null
+  })
 ```
 
 This makes the Airbyte resource IDs available to the application.
+
+## 13. Add Airbyte locals to the application config variables
+
+These may vary from service to service
+
+```hcl
+  BIGQUERY_AIRBYTE_DATASET = var.airbyte_enabled ? local.gcp_dataset_name : null
+  AIRBYTE_SERVER_URL       = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}" : null
+  BIGQUERY_POLICY_TAGS     = var.airbyte_enabled ? "projects/<Project ID>/locations/europe-west2/taxonomies/<taxonomy id>/policyTags/<policy tag ID>" : null
+```
 
 
 ## 14. Enable Airbyte
