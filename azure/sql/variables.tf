@@ -301,3 +301,9 @@ variable "key_vault_id" {
   type        = string
   description = "Key Vault ID where SQL secrets should be stored"
 }
+
+variable "express_vulnerability_assessment_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to enable Express Vulnerability Assessment for the SQL logical server"
+}

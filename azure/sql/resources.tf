@@ -37,7 +37,8 @@ resource "azurerm_mssql_server" "main" {
   administrator_login          = local.database_username
   administrator_login_password = local.database_password
 
-  public_network_access_enabled = var.public_network_access_enabled
+  public_network_access_enabled            = var.public_network_access_enabled
+  express_vulnerability_assessment_enabled = var.express_vulnerability_assessment_enabled
 
   lifecycle {
     ignore_changes = [tags, azuread_administrator]

@@ -57,6 +57,7 @@ No modules.
 | <a name="input_dnszone_name"></a> [dnszone\_name](#input\_dnszone\_name) | n/a | `any` | `null` | no |
 | <a name="input_enable_immutable_backups"></a> [enable\_immutable\_backups](#input\_enable\_immutable\_backups) | Specifies if the backups are immutable | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
+| <a name="input_express_vulnerability_assessment_enabled"></a> [express\_vulnerability\_assessment\_enabled](#input\_express\_vulnerability\_assessment\_enabled) | Whether to enable Express Vulnerability Assessment for the SQL logical server | `bool` | `false` | no |
 | <a name="input_extra_databases"></a> [extra\_databases](#input\_extra\_databases) | Additional SQL logical server databases to create on the same SQL logical server | `list(string)` | `[]` | no |
 | <a name="input_firewall_rules"></a> [firewall\_rules](#input\_firewall\_rules) | List of firewall rules to create for the SQL logical server. Each rule is an object with name, start\_ip\_address, and end\_ip\_address. | `list(object({ name = string, ip_address = optional(string), start_ip_address = optional(string), end_ip_address = optional(string) }))` | `[]` | no |
 | <a name="input_key_vault_id"></a> [key\_vault\_id](#input\_key\_vault\_id) | Key Vault ID where SQL secrets should be stored | `string` | n/a | yes |
