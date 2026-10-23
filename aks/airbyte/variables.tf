@@ -190,4 +190,12 @@ locals {
 
   sqlCommand      = templatefile("${path.module}/files/airbyte.sql.tmpl", local.template_variable_map)
   sql_secret_hash = substr(sha1("${local.sqlCommand}"), 0, 12)
+
+  fixed_part_length = length(
+    "${var.service_short}--ab-db-init-${kubernetes_secret.airbyte-sql.metadata[0].name}"
+  )
+
+  max_env_length = max(0, 63 - local.fixed_part_length)
+
+  environment_short = substr(var.environment, 0, local.max_env_length)
 }
