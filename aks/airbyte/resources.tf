@@ -92,7 +92,8 @@ module "rails_streams_update_job" {
 }
 
 module "dotnet_streams_update_job" {
-  count = var.is_dotnet_application ? 1 : 0
+#   count = var.is_dotnet_application ? 1 : 0
+  count = 0
 
   source = "../job_configuration"
 
