@@ -113,7 +113,7 @@ module "dotnet_streams_update_job" {
       "dfe-analytics/db-config.json"
     ],
     "--connection-string",
-    "Server=${var.host_name};Database=${var.database_name};User Id=airbyte_replication;Password='${local.replication_password}';Ssl Mode=Require;Trust Server Certificate=true",
+    "Server=${var.host_name};Database=${var.database_name};User Id=airbyte_replication;Password='${local.replication_password}';Ssl Mode=${var.use_azure ? "Require" : "Prefer"};Trust Server Certificate=true",
     "--google-credentials",
     local.gcp_credentials,
     "--project-id",
