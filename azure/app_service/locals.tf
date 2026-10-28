@@ -9,4 +9,25 @@ locals {
       APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.main[0].instrumentation_key
     } : {}
   )
+
+  base_app_settings = merge(
+    var.app_settings,
+    var.azure_enable_monitoring ? {
+      APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main[0].connection_string
+      APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.main[0].instrumentation_key
+    } : {}
+  )
+
+  effective_app_settings = merge(
+    local.base_app_settings,
+    try(var.environment_app_settings[var.web_app_name], {})
+  )
+
+  slot_environment_settings = {
+    for slot_name in keys(var.slots) :
+    slot_name => try(
+      var.environment_slots[slot_name].app_settings,
+      {}
+    )
+  }
 }

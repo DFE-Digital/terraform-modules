@@ -99,6 +99,12 @@ variable "app_settings" {
   default     = {}
 }
 
+variable "environment_app_settings" {
+  type        = map(map(string))
+  description = "A map of key-value pairs to configure app settings differently by environment"
+  default     = {}
+}
+
 variable "sticky_app_settings" {
   type        = list(string)
   description = "A list of app setting keys that should be marked as sticky (not overridden during deployment)."
@@ -180,8 +186,16 @@ variable "slots" {
   default = {}
 }
 
-# Function App Variables
+variable "environment_slots" {
+  type = map(object({
+    app_settings        = optional(map(string), {})
+    sticky_app_settings = optional(list(string), [])
+  }))
+  default = {}
+}
+
 variable "function_app_name" {
+  # Function App Variables
   type        = string
   description = "The name of the Function App that gets added as a suffix to the standard resource name."
   default     = null
