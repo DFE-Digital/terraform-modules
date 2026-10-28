@@ -43,6 +43,8 @@ No modules.
 | <a name="input_create_log_analytics_workspace"></a> [create\_log\_analytics\_workspace](#input\_create\_log\_analytics\_workspace) | Whether to create a new Log Analytics Workspace or use an existing one. | `bool` | `false` | no |
 | <a name="input_env_short"></a> [env\_short](#input\_env\_short) | The short name of the environment e.g. d01, t01, p01 | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The full name of the application service environment e.g. development, test, production | `string` | n/a | yes |
+| <a name="input_environment_app_settings"></a> [environment\_app\_settings](#input\_environment\_app\_settings) | A map of key-value pairs to configure app settings differently by environment | `map(map(string))` | `{}` | no |
+| <a name="input_environment_slots"></a> [environment\_slots](#input\_environment\_slots) | n/a | <pre>map(object({<br/>    app_settings        = optional(map(string), {})<br/>    sticky_app_settings = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
 | <a name="input_ftps_state"></a> [ftps\_state](#input\_ftps\_state) | The FTPS state for the Web App. Possible values are 'AllAllowed', 'FtpsOnly', or 'Disabled'. | `string` | `"Disabled"` | no |
 | <a name="input_function_app_name"></a> [function\_app\_name](#input\_function\_app\_name) | The name of the Function App that gets added as a suffix to the standard resource name. | `string` | `null` | no |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | The path to the health check endpoint for the Web App. | `string` | `null` | no |
