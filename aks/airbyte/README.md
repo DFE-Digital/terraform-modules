@@ -10,19 +10,22 @@ This guide explains how to configure a service to replicate data from Azure Post
 
 ## Overview
 
-The setup consists of:
+The setup consists of the following steps. Each numbered step below matches this list.
 
-1. Authenticating with Google Cloud.
-2. Checking the existing Google Cloud resources.
-3. Creating any missing Google Cloud resources.
-4. Creating the Airbyte base resources and workspace.
-5. Adding the required secrets to Azure Key Vault.
-6. Configuring PostgreSQL logical replication.
-7. Adding the Airbyte Terraform configuration.
-8. Configuring GitHub Actions authentication.
-9. Deploying and enabling the Airbyte connection.
-10. Validating the connection in the Airbyte UI.
-11. Enabling PostgreSQL monitoring.
+1. Authenticate with Google Cloud (step 1).
+2. Check the existing Google Cloud resources (step 2).
+3. Create any missing Google Cloud resources, including the `Airbyte_workflow_IAM` role binding (step 3).
+4. Create the Airbyte base resources and workspace (step 4).
+5. Add the required secrets to Azure Key Vault (step 5).
+6. Configure PostgreSQL logical replication (step 6).
+7. Add the Airbyte Terraform provider, module, variables and locals (steps 7 to 9).
+8. Add the application environment variables and secrets (steps 11 and 12). Step 10 is legacy and can be skipped.
+9. Enable Airbyte in the application, if it is a Rails service (step 13).
+10. Deploy and enable the Airbyte connection (step 14).
+11. Validate the connection in the Airbyte UI (step 15).
+12. Enable PostgreSQL monitoring (step 16).
+
+Also read [.NET services](#net-services), [Review apps](#review-apps) and [Rollout order](#rollout-order).
 
 ## Prerequisites
 
@@ -194,9 +197,9 @@ Check whether it exists:
 bq ls --project_id=<PROJECT_ID>
 ```
 
-### 2.9 Check the legacy custom role
+### 2.9 Check the custom role
 
-> **Note:** The `Airbyte_workflow_IAM` custom role is no longer required for new services. Only check or create it when supporting an existing service that still depends on it.
+> **Note:** The `Airbyte_workflow_IAM` custom role is required. The service's GitHub Actions identity must be bound to it (step 3.5), otherwise the deploy fails with `403` errors from Google Cloud IAM or Data Catalog (for example `Permission 'datacatalog.taxonomies.getIamPolicy' denied`).
 
 Check whether the role exists:
 
@@ -220,9 +223,7 @@ stage: ALPHA
 title: Airbyte Workflow IAM
 ```
 
-If it does not exist, the command returns `NOT_FOUND`.
-
-Do not create this role for a new service.
+If it does not exist, the command returns `NOT_FOUND`. Create it in step 3.4.
 
 ## 3. Create missing Google Cloud resources
 
@@ -284,6 +285,7 @@ bq --location=europe-west2 mk \
 
 ### 3.4 Create the custom IAM role
 
+Skip this step if the role already exists (step 2.9).
 
 The role ID is:
 
@@ -304,26 +306,38 @@ gcloud iam roles create Airbyte_workflow_IAM \
 
 ### 3.5 Add the custom role binding
 
+This binding must be added for every service repository. It lets the service's GitHub Actions deploy set IAM policies on the taxonomy and project.
+
 ```shell
 gcloud projects add-iam-policy-binding <PROJECT_ID> \
   --role="projects/<PROJECT_ID>/roles/Airbyte_workflow_IAM" \
-  --member="principalSet://iam.googleapis.com/projects/<project number>/locations/global/workloadIdentityPools/<workload identity pool>/attribute.repository/DFE-Digital/<repository name>"
+  --member="principalSet://iam.googleapis.com/projects/<PROJECT_NUMBER>/locations/global/workloadIdentityPools/<WORKLOAD_IDENTITY_POOL>/attribute.repository/DFE-Digital/<REPOSITORY_NAME>"
 ```
-Project number can be found using 
+
+Get the project number with:
 
 ```shell
 gcloud projects describe <PROJECT_ID> --format='value(projectNumber)'
 ```
 
-The workload identity pool used here is the same Workload identity that the 
-```
+Use the same Workload Identity Pool that already holds the repository's other bindings. Those bindings grant these roles:
+
+```text
 BigQuery Data Owner
 Cloud KMS Viewer
 Data Catalog Viewer
 Service Account Admin
 ```
 
-Roles were just created against
+Check the binding exists:
+
+```shell
+gcloud projects get-iam-policy <PROJECT_ID> \
+  --flatten="bindings[].members" \
+  --filter="bindings.role:Airbyte_workflow_IAM AND bindings.members:<REPOSITORY_NAME>" \
+  --format="table(bindings.role, bindings.members)"
+```
+
 ## 4. Create the Airbyte base resources
 
 Each Kubernetes namespace has its own shared Airbyte base resources, including:
@@ -460,7 +474,7 @@ Add the Airbyte provider to the existing `required_providers` block:
 
 ```hcl
 terraform {
-  required_version = "~> 1.9.8"
+  required_version = "<existing version>" # keep the version the service already pins
 
   required_providers {
     # Existing providers...
@@ -477,13 +491,34 @@ Configure the provider:
 
 ```hcl
 provider "airbyte" {
-  server_url = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}/api/public/v1" : ""
-
-  client_id = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-ID : ""
-
-  client_secret = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : ""
+  server_url    = "${local.airbyte_server_url}/api/public/v1"
+  client_id     = try(module.secrets.map.AIRBYTE-CLIENT-ID, "")
+  client_secret = try(module.secrets.map.AIRBYTE-CLIENT-SECRET, "")
 }
 ```
+
+`local.airbyte_server_url` is defined in step 9. It is a local, rather than an inline string, because the provider, the Airbyte module and the application config all need the same URL.
+
+Do not gate the credentials on `var.airbyte_enabled`. When `airbyte_enabled` changes from `true` to `false`, the Airbyte module is removed from the plan and Terraform must call the Airbyte API to delete the source, destination and connection. This only works if the provider still has valid credentials during that run. A gated provider receives empty credentials at that point and the destroy fails.
+
+`try()` avoids the opposite problem. In environments where the Airbyte secrets have not been created, the lookup fails, `try()` returns `""`, and Terraform still plans and applies because no Airbyte resources need the provider.
+
+> Remove Airbyte from an environment (set `airbyte_enabled` to `false` and apply) before deleting its Airbyte secrets from Key Vault.
+
+> **Known gotcha:** many existing services still gate the credentials, for example `client_id = var.airbyte_enabled ? ... : ""`. With that pattern, destroying a review app or disabling Airbyte can fail because the provider has no credentials when it needs to delete the Airbyte resources. These services currently gate the provider and should be changed to the `try()` pattern above:
+>
+> - apply-for-qualified-teacher-status
+> - apply-for-teacher-training
+> - check-performance-data
+> - claim-additional-payments-for-teaching
+> - find-placement-schools
+> - itt-mentor-services
+> - npq-registration
+> - publish-teacher-training
+> - register-trainee-teachers
+> - teaching-record-system
+>
+> `teacher-training-entitlement` and `register-early-career-teachers-public` already use `try()`.
 
 If it is not already configured, add the Google provider:
 
@@ -499,7 +534,9 @@ Replace `<PROJECT_ID>` with the service's Google Cloud project ID.
 
 Add the Airbyte module to the service Terraform configuration.
 
-Values marked with placeholders must be replaced with the values discovered in #2-check-the-existing-google-cloud-resources.
+Values marked with placeholders must be replaced with the values discovered in [step 2](#2-check-the-existing-google-cloud-resources). Services in the same Google Cloud project group share a taxonomy, policy tag, key ring and key, so check an existing service in the same group (for example its `airbyte.tf` or `dfe_analytics` module) and reuse its values rather than creating new ones.
+
+This example is for a Rails service. For a .NET service see [.NET services](#net-services).
 
 ```hcl
 module "airbyte" {
@@ -523,10 +560,9 @@ module "airbyte" {
   client_secret = var.airbyte_enabled ? module.secrets.map.AIRBYTE-CLIENT-SECRET : null
   repl_password = var.airbyte_enabled ? module.secrets.map.AIRBYTE-REPLICATION-PASSWORD : null
 
-  server_url = "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
+  server_url = local.airbyte_server_url
 
-  connection_status  = var.connection_status
-  connection_streams = local.connection_streams
+  connection_status = var.connection_status
 
   cluster   = var.cluster
   namespace = var.namespace
@@ -545,7 +581,12 @@ module "airbyte" {
 }
 ```
 
-The provider block and some variable names may already exist or may be implemented differently in the service. Search the repository and follow the existing conventions where they differ.
+The provider block and some variable names may already exist or may be implemented differently in the service. Search the repository and follow the existing conventions where they differ. Common differences:
+
+- The secrets module may be named `infrastructure_secrets` (for example when it is declared with `key_vault_short = "inf"`) rather than `secrets`. Use whichever module reads the Key Vault holding the Airbyte secrets.
+- Services without `local.environment` should use `var.environment`. For review apps `var.environment` is `review-<PR number>`, so each review app gets its own dataset and Airbyte resources.
+- If the service has no dev/test Airbyte workspace secrets in place, `airbyte_enabled` must stay `false` for that environment, otherwise Terraform fails reading the Key Vault.
+- The GCP values (`gcp_taxonomy_id`, `gcp_policy_tag_id`, `gcp_keyring`, `gcp_key`) are often already set on the `dfe_analytics` module. Move them into shared `locals` and reference them from both modules.
 
 ## 9. Add the Airbyte variables and locals to Airbyte.tf
 
@@ -574,15 +615,13 @@ Add the required locals:
 
 ```hcl
 locals {
-  connection_streams = var.airbyte_enabled
-    ? file("workspace_variables/airbyte_stream_config.json")
-    : null
-
   gcp_dataset_name = replace(
     "${var.service_short}_airbyte_${local.app_name_suffix}",
     "-",
     "_"
   )
+
+  airbyte_server_url = "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
 }
 ```
 
@@ -598,27 +637,11 @@ module "secrets" {
 }
 ```
 
-## 10. Add the Airbyte stream configuration
+## 10. Stream configuration (legacy, skip for new services)
 
-If DFE_analytics > 1.16 this can be skipped
+New services do not need a stream configuration file. The module no longer uses the `connection_streams` input, and the streams are set up by the stream-update job (`rake dfe:analytics:airbyte_deploy_tasks` for Rails) using the DfE Analytics configuration.
 
-Create:
-
-```text
-workspace_variables/airbyte_stream_config.json
-```
-
-Define the tables and streams that Airbyte should replicate.
-
-The exact contents depend on the service schema and should be agreed with the service team.
-
-The file is loaded by:
-
-```hcl
-connection_streams = var.airbyte_enabled
-  ? file("workspace_variables/airbyte_stream_config.json")
-  : null
-```
+Older services (apply-for-teacher-training, publish-teacher-training, find-placement-schools, itt-mentor-services, register-trainee-teachers) still pass `connection_streams` from an `airbyte_stream_config.json` file. It has no effect and can be removed along with the `connection_streams` local.
 
 ## 11. Add the application environment variables
 
@@ -633,13 +656,14 @@ The exact implementation depends on how the service constructs its ConfigMap or 
     : null
 
   AIRBYTE_SERVER_URL = var.airbyte_enabled
-    ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}"
+    ? local.airbyte_server_url
     : null
 
   BIGQUERY_POLICY_TAGS = var.airbyte_enabled
-    ? "{\"hidden\":\"projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>/policyTags/<POLICY_TAG_ID>"}"
+    ? "{\"hidden\":\"projects/<PROJECT_ID>/locations/europe-west2/taxonomies/<TAXONOMY_ID>/policyTags/<POLICY_TAG_ID>\"}"
     : null
 
+  # Optional. Only set by some services.
   AIRBYTE_INTERNAL_DATASET = var.airbyte_enabled
     ? "${local.gcp_dataset_name}_internal"
     : null
@@ -679,15 +703,18 @@ Merge the following into the service's secret environment variables, usually in 
 
 This makes the Airbyte resource IDs available to the application.
 
-## 13. Add Airbyte locals to the application config variables
+## 13. Enable Airbyte in the Rails application (Rails services only)
 
-These may vary from service to service
+`BIGQUERY_AIRBYTE_DATASET` (step 11) must be set for the application to detect Airbyte. Enable it in `config/initializers/dfe_analytics.rb`, limited to the environments that run Airbyte:
 
-```hcl
-  BIGQUERY_AIRBYTE_DATASET = var.airbyte_enabled ? local.gcp_dataset_name : null
-  AIRBYTE_SERVER_URL       = var.airbyte_enabled ? "https://airbyte-${var.namespace}.${module.cluster_data.ingress_domain}" : null
-  BIGQUERY_POLICY_TAGS     = var.airbyte_enabled ? "projects/<Project ID>/locations/europe-west2/taxonomies/<taxonomy id>/policyTags/<policy tag ID>" : null
+```ruby
+# Perform airbyte checks on startup and allow airbyte config generation
+config.airbyte_enabled = Rails.env.in?(%w[review]) && ENV["BIGQUERY_AIRBYTE_DATASET"].present?
 ```
+
+Add each environment to the list as Airbyte is rolled out to it.
+
+> .NET services do not use this initializer. See [.NET services](#net-services).
 
 
 ## 14. Enable Airbyte
@@ -744,7 +771,7 @@ After the sync completes, confirm that:
 - the BigQuery tables use the expected encryption key
 - policy tags have been applied where required
 
-## 17. Enable PostgreSQL monitoring
+## 16. Enable PostgreSQL monitoring
 
 If the service uses Azure Database for PostgreSQL, enable database monitoring in the PostgreSQL Terraform module:
 
@@ -766,6 +793,66 @@ Depending on the service's existing infrastructure, this may require:
 - permissions for the monitoring workspace
 
 Plan the Terraform changes before applying them and check whether enabling monitoring introduces any database changes or restarts.
+
+## .NET services
+
+The steps above use a Rails service as the example. A .NET service follows the same steps for Google Cloud, Key Vault secrets, PostgreSQL and the provider, with these differences.
+
+Set these extra inputs on the Airbyte module:
+
+| Input | Value | Notes |
+| --- | --- | --- |
+| `is_rails_application` | `false` | The module runs `rake dfe:analytics:airbyte_deploy_tasks` for Rails, so this must be turned off. |
+| `is_dotnet_application` | `true` | Runs the .NET stream-update job instead. |
+| `dotnet_application_directory` | For example `/Apps/TrsCli` or `/app` | The folder in the container image that holds the `dfe-analytics` directory. Check the service's Dockerfile. |
+| `airbyte_sync_mode` | `incremental_deduped_history` | The default is `incremental_append`. Both existing .NET services use `incremental_deduped_history`. |
+| `use_legacy_dotnet_shim` | `true` (default) or `false` | `true` runs `dfe-analytics/apply-config.sh`, which needs a shell in the image. `false` runs the `dfe-analytics` executable with `config apply --path dfe-analytics/db-config.json`. It needs no shell but needs a recent `DfeAnalytics.EFCore`. |
+| `additional_policy_tags` | Map of alias to policy tag ID | Optional. TRS uses it for `sensitive_hidden`. |
+| `skip_policy_tags` | `true` or `false` | Optional. Skips applying policy tags to BigQuery tables. |
+| `gcp_dataset_internal` | For example `airbyte_internal` | Optional. Name of the internal Airbyte dataset. |
+
+Use the `dfe-analytics-dotnet` library in the application and register it, for example `app.MapDfeAnalyticsDbConfiguration<YourDbContext>()` in teaching-record-system. Set the `DfeAnalytics__*` environment variables instead of the Rails `BIGQUERY_*` variables in step 11, and skip steps 12 and 13, because the .NET job does not use `AIRBYTE_CONFIGURATION` or the Rails initializer.
+
+The container image must include the `dfe-analytics` directory (and `apply-config.sh` when `use_legacy_dotnet_shim` is `true`).
+
+Examples: [teaching-record-system](https://github.com/DFE-Digital/teaching-record-system/blob/main/terraform/aks/airbyte.tf) and [check-performance-data](https://github.com/DFE-Digital/check-performance-data/blob/main/terraform/application/airbyte.tf).
+
+> The .NET job receives the database connection string, Google credentials and Airbyte client secret as Kubernetes job arguments. They are visible in Terraform state and job metadata, so restrict access to both.
+
+## Review apps
+
+Review apps can run Airbyte so changes to it can be tested before a service rolls it out elsewhere. Examples: register-early-career-teachers-public and teacher-training-entitlement.
+
+Set these in `config/terraform/application/config/review.tfvars.json` (or the service's equivalent), as booleans and not strings:
+
+```json
+{
+  "pg_airbyte_enabled": true,
+  "airbyte_enabled": true,
+  "connection_status": "active"
+}
+```
+
+Things to know:
+
+- Each review app gets its own dataset, for example `<service_short>_airbyte_review_<PR number>`.
+- The Airbyte database setup job fills the database before the app's migration job runs. `db:prepare` then replays every migration against tables that already exist and fails. Override the review app's migration command to `["exec", "rails", "db:schema:load", "db:migrate"]`.
+- `db:schema:load` does not change enum types that already exist. If an earlier deploy half-migrated the database, delete the review app and redeploy, otherwise errors like a missing enum value remain.
+- The stream-update job waits 60 seconds so migrations can create tables first. If it fails on a missing table (for example `relation "solid_queue_jobs" does not exist`), re-run the deploy.
+- If the review app sets `create_bigquery_dataset` to `false`, the `dfe_analytics` module does not set the BigQuery and Workload Identity settings in the pod. Commands such as `DfE::Analytics::BigQueryApi.apply_policy_tags` then fail with a `ConfigurationError` listing the missing settings.
+- Make sure the repository's Workload Identity Pool binding for `Airbyte_workflow_IAM` exists (step 3.5), otherwise the deploy fails with `403`.
+- Use the `try()` provider pattern from step 7 so the review app can be deleted.
+
+## Rollout order
+
+Roll Airbyte out to one environment at a time. Some services set `pg_airbyte_enabled` without `airbyte_enabled`: logical replication is on but no connection exists. This is a valid state.
+
+1. Set `pg_airbyte_enabled` to `true` and deploy in the agreed window. This can restart the PostgreSQL server several times.
+2. Add the application environment variables and enable the Rails initializer for the environment.
+3. Set `airbyte_enabled` to `true` and deploy. The connection is created inactive.
+4. Set `connection_status` to `active`, deploy and validate in the Airbyte UI (step 15).
+
+In tfvars files use JSON booleans (`true`, not `"true"`).
 
 ## Troubleshooting commands
 
@@ -810,7 +897,7 @@ bq show \
   <PROJECT_ID>:airbyte_internal
 ```
 
-### Check the legacy custom role
+### Check the custom role
 
 ```shell
 gcloud iam roles describe Airbyte_workflow_IAM \
