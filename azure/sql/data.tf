@@ -20,3 +20,9 @@ data "azurerm_monitor_action_group" "main" {
   name                = "${var.azure_resource_prefix}-${var.service_short}"
   resource_group_name = data.azurerm_resource_group.monitoring[0].name
 }
+
+data "azuread_group" "sql_entra_admin" {
+  count = var.entra_admin == "" ? 0 : 1
+
+  display_name = var.entra_admin
+}

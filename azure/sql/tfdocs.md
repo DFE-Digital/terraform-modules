@@ -6,6 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
+| <a name="provider_azuread"></a> [azuread](#provider\_azuread) | n/a |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
@@ -28,6 +29,7 @@ No modules.
 | [azurerm_private_endpoint.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_string.username](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
+| [azuread_group.sql_entra_admin](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
 | [azurerm_monitor_action_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_action_group) | data source |
 | [azurerm_monitor_diagnostic_categories.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_diagnostic_categories) | data source |
 | [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
@@ -56,6 +58,7 @@ No modules.
 | <a name="input_dnszone_id"></a> [dnszone\_id](#input\_dnszone\_id) | n/a | `any` | `null` | no |
 | <a name="input_dnszone_name"></a> [dnszone\_name](#input\_dnszone\_name) | n/a | `any` | `null` | no |
 | <a name="input_enable_immutable_backups"></a> [enable\_immutable\_backups](#input\_enable\_immutable\_backups) | Specifies if the backups are immutable | `bool` | `false` | no |
+| <a name="input_entra_admin"></a> [entra\_admin](#input\_entra\_admin) | The Entra group or individual that are allowed to use a database query editor in the portal | `string` | `""` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Current application environment | `string` | n/a | yes |
 | <a name="input_express_vulnerability_assessment_enabled"></a> [express\_vulnerability\_assessment\_enabled](#input\_express\_vulnerability\_assessment\_enabled) | Whether to enable Express Vulnerability Assessment for the SQL logical server | `bool` | `false` | no |
 | <a name="input_extra_databases"></a> [extra\_databases](#input\_extra\_databases) | Additional SQL logical server databases to create on the same SQL logical server | `list(string)` | `[]` | no |
