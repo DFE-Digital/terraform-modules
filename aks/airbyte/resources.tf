@@ -75,6 +75,9 @@ resource "airbyte_connection" "connection" {
 module "rails_streams_update_job" {
   count = var.is_rails_application ? 1 : 0
 
+  # Gives the application's migration job time to create the tables the stream update needs
+  depends_on = [time_sleep.wait_60_seconds]
+
   source = "../job_configuration"
 
   namespace    = var.namespace
@@ -93,6 +96,8 @@ module "rails_streams_update_job" {
 
 module "dotnet_streams_update_job" {
   count = var.is_dotnet_application ? 1 : 0
+
+  depends_on = [time_sleep.wait_60_seconds]
 
   source = "../job_configuration"
 
