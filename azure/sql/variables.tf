@@ -1,4 +1,4 @@
-#Service variables
+# Service variables
 variable "environment" {
   type        = string
   description = "Current application environment"
@@ -306,4 +306,10 @@ variable "express_vulnerability_assessment_enabled" {
   type        = bool
   default     = false
   description = "Whether to enable Express Vulnerability Assessment for the SQL logical server"
+}
+
+variable "entra_admin" {
+  type        = string
+  default     = ""
+  description = "The Entra group or individual that are allowed to use a database query editor in the portal"
 }

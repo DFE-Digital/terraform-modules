@@ -31,14 +31,22 @@ resource "azurerm_mssql_server" "main" {
   name                = "${local.resource_prefix}-${var.server_name_suffix}-sql"
   resource_group_name = data.azurerm_resource_group.main.name
   location            = data.azurerm_resource_group.main.location
-
-  version = var.server_version
+  version             = var.server_version
 
   administrator_login          = local.database_username
   administrator_login_password = local.database_password
 
   public_network_access_enabled            = var.public_network_access_enabled
   express_vulnerability_assessment_enabled = var.express_vulnerability_assessment_enabled
+
+  dynamic "azuread_administrator" {
+    for_each = var.entra_admin == "" ? [] : [var.entra_admin]
+
+    content {
+      login_username = data.azuread_group.sql_entra_admin[0].display_name
+      object_id      = data.azuread_group.sql_entra_admin[0].object_id
+    }
+  }
 
   lifecycle {
     ignore_changes = [tags, azuread_administrator]
