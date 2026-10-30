@@ -34,4 +34,5 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_key_vault_id"></a> [key\_vault\_id](#output\_key\_vault\_id) | n/a |
 | <a name="output_map"></a> [map](#output\_map) | n/a |
