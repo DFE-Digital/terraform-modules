@@ -37,3 +37,7 @@ It’s recommended that complex services should have two key vaults, one for app
 ### `map`
 
 The map of secrets extracted from the Azure Key Vault.
+
+### `key_vault_id`
+
+The resource ID of the Azure Key Vault.
