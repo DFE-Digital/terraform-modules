@@ -38,8 +38,7 @@ resource "azurerm_cdn_frontdoor_custom_domain" "main" {
   dns_zone_id              = data.azurerm_dns_zone.main.id
   host_name                = startswith(each.key, "apex") ? var.zone : "${each.key}.${var.zone}"
   tls {
-    certificate_type    = "ManagedCertificate"
-    minimum_tls_version = "TLS12"
+    certificate_type = "ManagedCertificate"
   }
 }
 
