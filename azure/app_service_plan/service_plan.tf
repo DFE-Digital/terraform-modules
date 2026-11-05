@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "main" {
-  name                            = "${local.resource_name_prefix}${var.web_app_name}-asp"
+  name                            = local.service_plan_name
   location                        = data.azurerm_resource_group.main.location
   resource_group_name             = data.azurerm_resource_group.main.name
   maximum_elastic_worker_count    = var.maximum_elastic_worker_count
