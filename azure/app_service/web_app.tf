@@ -1,10 +1,10 @@
 resource "azurerm_windows_web_app" "main" {
   count = var.app_type == "web" ? 1 : 0
 
-  name                = "${local.resource_name_prefix}${var.web_app_name}-wa"
+  name                = "${local.resource_name_prefix}${var.config_short}-${var.web_app_name}-wa"
   location            = data.azurerm_resource_group.main.location
   resource_group_name = data.azurerm_resource_group.main.name
-  service_plan_id     = azurerm_service_plan.main.id
+  service_plan_id     = var.service_plan_id
   # app_settings                  = local.app_settings
   app_settings                  = local.effective_app_settings
   public_network_access_enabled = var.public_network_access_enabled
@@ -41,6 +41,7 @@ resource "azurerm_windows_web_app" "main" {
       dotnet_version               = try(var.application_stack.dotnet_version, null)
       java_embedded_server_enabled = try(var.application_stack.java_embedded_server_enabled, null)
       java_version                 = try(var.application_stack.java_version, null)
+      tomcat_version               = try(var.application_stack.tomcat_version, null)
       node_version                 = try(var.application_stack.node_version, null)
       php_version                  = try(var.application_stack.php_version, null)
       python                       = false
@@ -116,6 +117,7 @@ resource "azurerm_windows_web_app_slot" "main" {
       dotnet_version               = try(var.application_stack.dotnet_version, null)
       java_embedded_server_enabled = try(var.application_stack.java_embedded_server_enabled, null)
       java_version                 = try(var.application_stack.java_version, null)
+      tomcat_version               = try(var.application_stack.tomcat_version, null)
       node_version                 = try(var.application_stack.node_version, null)
       php_version                  = try(var.application_stack.php_version, null)
       python                       = false

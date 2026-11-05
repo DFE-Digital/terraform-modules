@@ -4,7 +4,7 @@ resource "azurerm_windows_function_app" "main" {
   name                          = var.function_app_name
   location                      = data.azurerm_resource_group.main.location
   resource_group_name           = data.azurerm_resource_group.main.name
-  service_plan_id               = azurerm_service_plan.main.id
+  service_plan_id               = var.service_plan_id
   storage_account_name          = var.storage_account_name
   storage_account_access_key    = var.storage_account_access_key
   virtual_network_subnet_id     = var.subnet_id

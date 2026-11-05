@@ -4,7 +4,6 @@ Terraform code for deploying an Azure Web App or Function App, App Service.
 
 - Azure Web Apps
 - Azure Function Apps
-- App Service Plans
 - Deployment Slots (optional)
 - Diagnostic Settings (optional)
 
@@ -23,10 +22,22 @@ For the list of requirements, inputs, outputs and resources, check the [terrafor
 ## Usage
 
 ```terraform
+module "edubase_app_service_plan" {
+  source = "./vendor/modules/azure//azure/app_service_plan"
+
+  subscription_short = "s158"
+  env_short          = var.env_short
+  service_short      = "gias"
+  config_short       = var.config_short
+  web_app_name       = "edubase"
+  sp_sku_name        = "S3"
+}
+
 module "edubase_web_app" {
   source = "./vendor/modules/azure//azure/app_service"
 
   app_type           = "web"
+  service_plan_id    = module.edubase_app_service_plan.id
   web_app_name       = "edubase"
   subscription_short = "s158"
   env_short          = var.env_short
@@ -34,7 +45,6 @@ module "edubase_web_app" {
   service_name       = var.service_name
   service_short      = "gias"
   config_short       = var.config_short
-  sp_sku_name        = "S3"
   logs = {
     http_logs = {
       file_system = {
@@ -74,3 +84,11 @@ If `azure_enable_monitoring` is `true`, it’s expected that the following resou
 - Function Apps require a Storage Account.
 - Deployment slots are supported for Web Apps and Premium Function Apps.
 - Managed Identity can be used for Azure resource authentication.
+- When moving from the previous combined module, move the plan state to the new module address to avoid recreating it. For example, adapt this root-module block to your module names:
+
+  ```terraform
+  moved {
+    from = module.edubase_web_app.azurerm_service_plan.main
+    to   = module.edubase_app_service_plan.azurerm_service_plan.main
+  }
+  ```

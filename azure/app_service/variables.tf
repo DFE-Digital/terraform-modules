@@ -29,47 +29,15 @@ variable "config_short" {
   description = "The short name of the environment configuration e.g. dv, ts, pd"
 }
 
-# Service Plan Variables
-variable "sp_name" {
-  type        = string
-  description = "The name of the application service plan."
-  default     = ""
-
-  nullable = false
-}
-
-variable "sp_os_type" {
-  type        = string
-  description = "The operating system type of the application service plan."
-  default     = "Windows"
-
-  nullable = false
-}
-
-variable "sp_sku_name" {
-  type        = string
-  description = "The SKU name of the application service plan."
-  default     = "S1"
-
-  nullable = false
-}
-
-variable "maximum_elastic_worker_count" {
-  type        = number
-  description = "The maximum number of elastic workers for the application service plan."
-  default     = null
-}
-
 variable "worker_count" {
   type        = number
-  description = "The number of workers (instances) for the application service plan."
+  description = "The number of workers (instances) for the Web App."
   default     = 1
 }
 
-variable "premium_plan_auto_scale_enabled" {
-  type        = bool
-  description = "Whether to enable auto-scaling for the premium application service plan."
-  default     = false
+variable "service_plan_id" {
+  type        = string
+  description = "The ID of the App Service Plan to use."
 }
 
 # Common Variables
@@ -140,6 +108,7 @@ variable "application_stack" {
     dotnet_core_version = optional(string)
     dotnet_version      = optional(string)
     java_version        = optional(string)
+    tomcat_version      = optional(string)
     node_version        = optional(string)
     php_version         = optional(string)
   })
