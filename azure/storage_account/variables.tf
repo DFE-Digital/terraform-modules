@@ -164,6 +164,22 @@ variable "dnszone_id" {
   default = null
 }
 
+variable "storage_tables_dnszone_name" {
+  default = null
+}
+
+variable "storage_tables_dnszone_id" {
+  default = null
+}
+
+variable "storage_queues_dnszone_name" {
+  default = null
+}
+
+variable "storage_queues_dnszone_id" {
+  default = null
+}
+
 variable "storage_tables" {
   type        = list(string)
   default     = []
