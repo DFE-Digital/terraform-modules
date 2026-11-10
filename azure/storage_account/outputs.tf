@@ -47,6 +47,10 @@ output "storage_private_queue_fqdn" {
   value = var.use_private_storage && length(var.queues) > 0 ? "${azurerm_storage_account.main.name}.privatelink.queue.core.windows.net" : null
 }
 
+output "storage_account_primary_table_endpoint" {
+  value = var.use_private_storage && length(var.storage_tables) > 0 ? "${azurerm_storage_account.main.name}.privatelink.table.core.windows.net" : null
+}
+
 output "queues" {
   description = "A map of queue names to their properties"
   value = {

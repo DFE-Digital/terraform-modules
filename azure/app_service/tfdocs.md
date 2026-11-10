@@ -6,7 +6,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 5.13.0 |
 
 ## Modules
 
@@ -17,6 +17,8 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_application_insights.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/application_insights) | resource |
+| [azurerm_linux_web_app.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_web_app) | resource |
+| [azurerm_linux_web_app_slot.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_web_app_slot) | resource |
 | [azurerm_log_analytics_workspace.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/log_analytics_workspace) | resource |
 | [azurerm_monitor_diagnostic_setting.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
 | [azurerm_monitor_diagnostic_setting.slots](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) | resource |
@@ -34,7 +36,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_always_on"></a> [always\_on](#input\_always\_on) | Whether to enable the Always On feature for the Web App. | `bool` | `true` | no |
 | <a name="input_app_settings"></a> [app\_settings](#input\_app\_settings) | A map of key-value pairs to configure the Web App settings. | `map(string)` | `{}` | no |
-| <a name="input_app_type"></a> [app\_type](#input\_app\_type) | The type of application to be deployed (e.g., web, function). | `string` | n/a | yes |
+| <a name="input_app_type"></a> [app\_type](#input\_app\_type) | The type of application to be deployed (e.g., linux\_web, windows\_web, web, function). type web is used for windows\_web apps. | `string` | n/a | yes |
 | <a name="input_application_insights_type"></a> [application\_insights\_type](#input\_application\_insights\_type) | The type of Application Insights resource to create (e.g., 'web', 'java', 'Node.JS'). | `string` | `"java"` | no |
 | <a name="input_application_stack"></a> [application\_stack](#input\_application\_stack) | The application stack configuration for the Web App. | <pre>object({<br/>    dotnet_core_version = optional(string)<br/>    dotnet_version      = optional(string)<br/>    java_version        = optional(string)<br/>    tomcat_version      = optional(string)<br/>    node_version        = optional(string)<br/>    php_version         = optional(string)<br/>  })</pre> | `{}` | no |
 | <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | Enable monitoring | `bool` | `true` | no |
@@ -46,7 +48,9 @@ No modules.
 | <a name="input_environment_slots"></a> [environment\_slots](#input\_environment\_slots) | n/a | <pre>map(object({<br/>    app_settings        = optional(map(string), {})<br/>    sticky_app_settings = optional(list(string), [])<br/>  }))</pre> | `{}` | no |
 | <a name="input_ftps_state"></a> [ftps\_state](#input\_ftps\_state) | The FTPS state for the Web App. Possible values are 'AllAllowed', 'FtpsOnly', or 'Disabled'. | `string` | `"Disabled"` | no |
 | <a name="input_function_app_name"></a> [function\_app\_name](#input\_function\_app\_name) | The name of the Function App that gets added as a suffix to the standard resource name. | `string` | `null` | no |
+| <a name="input_health_check_eviction_time_in_min"></a> [health\_check\_eviction\_time\_in\_min](#input\_health\_check\_eviction\_time\_in\_min) | The time in minutes after which an unhealthy instance will be evicted from the load balancer. | `number` | `2` | no |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | The path to the health check endpoint for the Web App. | `string` | `null` | no |
+| <a name="input_identity_ids"></a> [identity\_ids](#input\_identity\_ids) | (Optional) A list of User Assigned Managed Identity IDs to be assigned to the Web App. If empty, only the System Assigned Managed Identity will be used. | `list(string)` | `null` | no |
 | <a name="input_log_analytics_workspace_id"></a> [log\_analytics\_workspace\_id](#input\_log\_analytics\_workspace\_id) | The ID of the Log Analytics Workspace to which diagnostic logs will be sent. | `string` | `null` | no |
 | <a name="input_logs"></a> [logs](#input\_logs) | The logging configuration for the Web App. | <pre>object({<br/>    detailed_error_messages = optional(bool)<br/>    failed_request_tracing  = optional(bool)<br/>    http_logs = optional(object({<br/>      file_system = optional(object({<br/>        retention_in_days = optional(number)<br/>        retention_in_mb   = optional(number)<br/>      }))<br/>    }))<br/>  })</pre> | `{}` | no |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | The id of the subnet which will be used by the private endpoint | `string` | `null` | no |

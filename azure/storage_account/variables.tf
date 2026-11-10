@@ -163,3 +163,9 @@ variable "dnszone_name" {
 variable "dnszone_id" {
   default = null
 }
+
+variable "storage_tables" {
+  type        = list(string)
+  default     = []
+  description = "list of tables within an Azure Storage Account."
+}

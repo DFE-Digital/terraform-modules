@@ -43,9 +43,14 @@ variable "service_plan_id" {
 # Common Variables
 variable "app_type" {
   type        = string
-  description = "The type of application to be deployed (e.g., web, function)."
+  description = "The type of application to be deployed (e.g., linux_web, windows_web, web, function). type web is used for windows_web apps."
 
   nullable = false
+
+  validation {
+    condition     = contains(["windows_web", "linux_web", "web","function"], var.app_type)
+    error_message = "app_type must be either \"windows\" or \"linux\" or \"web\" or \"function\"."
+  }  
 }
 
 # Web App Variables
@@ -205,4 +210,16 @@ variable "create_log_analytics_workspace" {
   type        = bool
   description = "Whether to create a new Log Analytics Workspace or use an existing one."
   default     = false
+}
+
+variable "identity_ids" {
+  type        = list(string)
+  description = "(Optional) A list of User Assigned Managed Identity IDs to be assigned to the Web App. If empty, only the System Assigned Managed Identity will be used."
+  default     = null
+}
+
+variable "health_check_eviction_time_in_min" {
+  type        = number
+  description = "The time in minutes after which an unhealthy instance will be evicted from the load balancer."
+  default     = 2
 }

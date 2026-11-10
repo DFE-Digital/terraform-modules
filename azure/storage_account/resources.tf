@@ -147,3 +147,11 @@ resource "azurerm_private_endpoint" "storage_queue" {
     ignore_changes = [tags]
   }
 }
+
+resource "azurerm_storage_table" "main" {
+  for_each           = toset(var.storage_tables)
+  name               = each.value
+  # This varies by provider version, in 4.* storage_account_name is required, 5.* storage account ID instead of the name
+  #storage_account_id = azurerm_storage_account.main.id
+  storage_account_name = azurerm_storage_account.main.name
+}
