@@ -18,6 +18,7 @@ No modules.
 |------|------|
 | [azurerm_private_endpoint.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_private_endpoint.storage_queue](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+| [azurerm_private_endpoint.storage_table](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
 | [azurerm_storage_account.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
 | [azurerm_storage_container.containers](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
 | [azurerm_storage_encryption_scope.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_encryption_scope) | resource |
@@ -52,7 +53,11 @@ No modules.
 | <a name="input_queues"></a> [queues](#input\_queues) | List of queues to create on the storage account. Requires use\_private\_storage = true for private network access. | `list(object({ name = string }))` | `[]` | no |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name of the service | `string` | n/a | yes |
 | <a name="input_storage_account_name_override"></a> [storage\_account\_name\_override](#input\_storage\_account\_name\_override) | Override the generated storage account name with a custom name | `string` | `null` | no |
+| <a name="input_storage_queues_dnszone_id"></a> [storage\_queues\_dnszone\_id](#input\_storage\_queues\_dnszone\_id) | n/a | `any` | `null` | no |
+| <a name="input_storage_queues_dnszone_name"></a> [storage\_queues\_dnszone\_name](#input\_storage\_queues\_dnszone\_name) | n/a | `any` | `null` | no |
 | <a name="input_storage_tables"></a> [storage\_tables](#input\_storage\_tables) | list of tables within an Azure Storage Account. | `list(string)` | `[]` | no |
+| <a name="input_storage_tables_dnszone_id"></a> [storage\_tables\_dnszone\_id](#input\_storage\_tables\_dnszone\_id) | n/a | `any` | `null` | no |
+| <a name="input_storage_tables_dnszone_name"></a> [storage\_tables\_dnszone\_name](#input\_storage\_tables\_dnszone\_name) | n/a | `any` | `null` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | n/a | `any` | `null` | no |
 | <a name="input_use_private_storage"></a> [use\_private\_storage](#input\_use\_private\_storage) | Whether to deploy a private Storage Account | `bool` | `false` | no |
 

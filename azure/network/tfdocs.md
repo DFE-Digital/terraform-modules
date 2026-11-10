@@ -17,17 +17,20 @@ No modules.
 | Name | Type |
 |------|------|
 | [azurerm_private_dns_zone.apps](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
+| [azurerm_private_dns_zone.generic](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.postgres](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.redis](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.sql_logical_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.apps](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
+| [azurerm_private_dns_zone_virtual_network_link.generic](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.postgres](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.redis](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.sql_logical_server](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_private_dns_zone_virtual_network_link.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_dns_zone_virtual_network_link) | resource |
 | [azurerm_subnet.apps](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.postgres](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
+| [azurerm_subnet.private_endpoints](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.redis](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
 | [azurerm_subnet.storage](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/subnet) | resource |
@@ -38,18 +41,21 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | n/a | `list` | <pre>[<br/>  "10.3.0.0/18"<br/>]</pre> | no |
+| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | The subnet address range for the apps subnet. This is used for the web app and function app subnets and includes vnet integration. See https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration#windows-worker-ip-address-overlap for more information and ranges to avoid. | `list` | <pre>[<br/>  "10.3.0.0/18"<br/>]</pre> | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Standard resource prefix. Usually s189t01 (test) or s189p01 (production) | `string` | n/a | yes |
 | <a name="input_config"></a> [config](#input\_config) | Long name of the environment configuration, e.g. development, staging, production... | `string` | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the environment configuration, e.g. dv, st, pd... | `string` | n/a | yes |
 | <a name="input_enable_apps"></a> [enable\_apps](#input\_enable\_apps) | n/a | `bool` | `false` | no |
+| <a name="input_enable_generic_private_endpoints"></a> [enable\_generic\_private\_endpoints](#input\_enable\_generic\_private\_endpoints) | n/a | `bool` | `false` | no |
 | <a name="input_enable_postgres"></a> [enable\_postgres](#input\_enable\_postgres) | n/a | `bool` | `false` | no |
 | <a name="input_enable_redis"></a> [enable\_redis](#input\_enable\_redis) | n/a | `bool` | `false` | no |
 | <a name="input_enable_sql"></a> [enable\_sql](#input\_enable\_sql) | n/a | `bool` | `false` | no |
 | <a name="input_enable_storage"></a> [enable\_storage](#input\_enable\_storage) | n/a | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the deployed environment in AKS | `string` | n/a | yes |
+| <a name="input_generic_private_endpoints_subnet"></a> [generic\_private\_endpoints\_subnet](#input\_generic\_private\_endpoints\_subnet) | The subnet address range for the generic private endpoints subnet. This is used for private endpoints that are not in the other subnets, e.g. Key Vault, App Service, etc. | `list` | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | `"UK South"` | no |
 | <a name="input_postgres_subnet"></a> [postgres\_subnet](#input\_postgres\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.0.0/18"<br/>]</pre> | no |
+| <a name="input_private_dns_zones"></a> [private\_dns\_zones](#input\_private\_dns\_zones) | The name of the private DNS zone to create. This is used for private endpoints that are not in the other subnets, e.g. Key Vault, App Service, etc. | `list` | <pre>[<br/>  "privatelink.blob.core.windows.net"<br/>]</pre> | no |
 | <a name="input_redis_subnet"></a> [redis\_subnet](#input\_redis\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.64.0/18"<br/>]</pre> | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Full name of the service. Lowercase and hyphen separated | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name to identify the service. Up to 6 characters. | `string` | n/a | yes |
@@ -62,6 +68,9 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_apps_subnet"></a> [apps\_subnet](#output\_apps\_subnet) | A subnet dedicated to web and function apps |
+| <a name="output_generic_private_endpoints_privdns_id"></a> [generic\_private\_endpoints\_privdns\_id](#output\_generic\_private\_endpoints\_privdns\_id) | The IDs of the private DNS zones for generic private endpoints |
+| <a name="output_generic_private_endpoints_privdns_name"></a> [generic\_private\_endpoints\_privdns\_name](#output\_generic\_private\_endpoints\_privdns\_name) | The names of the private DNS zones for generic private endpoints |
+| <a name="output_generic_private_endpoints_subnet_id"></a> [generic\_private\_endpoints\_subnet\_id](#output\_generic\_private\_endpoints\_subnet\_id) | The ID of the generic private endpoints subnet |
 | <a name="output_postgres_privdns_id"></a> [postgres\_privdns\_id](#output\_postgres\_privdns\_id) | Connection URLs for additional PostgreSQL databases |
 | <a name="output_postgres_privdns_name"></a> [postgres\_privdns\_name](#output\_postgres\_privdns\_name) | Connection URLs for additional PostgreSQL databases |
 | <a name="output_postgres_subnet"></a> [postgres\_subnet](#output\_postgres\_subnet) | A subnet dedicated to PostgreSQL databases |
