@@ -12,8 +12,8 @@ resource "azurerm_windows_web_app" "main" {
   virtual_network_subnet_id     = var.subnet_id
 
   identity {
-    identity_ids = var.identity_ids
-    type         = "SystemAssigned, ${var.identity_ids != null ? "UserAssigned" : ""}"
+    identity_ids = var.user_assigned_identity_ids
+    type         = "${var.use_user_assigned_identity != null ? "UserAssigned" : ""}${var.use_user_assigned_identity != null && var.use_system_assigned_identity != null ? ", " : ""}${var.use_system_assigned_identity != null ? "SystemAssigned" : ""}${var.user_assigned_identity_ids != null ? "UserAssigned" : ""}"    
   }
 
   logs {

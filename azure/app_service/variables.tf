@@ -212,7 +212,7 @@ variable "create_log_analytics_workspace" {
   default     = false
 }
 
-variable "identity_ids" {
+variable "user_assigned_identity_ids" {
   type        = list(string)
   description = "(Optional) A list of User Assigned Managed Identity IDs to be assigned to the Web App. If empty, only the System Assigned Managed Identity will be used."
   default     = null
@@ -222,4 +222,16 @@ variable "health_check_eviction_time_in_min" {
   type        = number
   description = "The time in minutes after which an unhealthy instance will be evicted from the load balancer."
   default     = 2
+}
+
+variable "use_system_assigned_identity" {
+  type        = bool
+  description = "Whether to use a System Assigned Managed Identity for the Web App."
+  default     = true
+}
+
+variable "use_user_assigned_identity" {
+  type        = bool
+  description = "Whether to use User Assigned Managed Identities for the Web App."
+  default     = false
 }
