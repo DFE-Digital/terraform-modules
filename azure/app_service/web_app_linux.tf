@@ -14,7 +14,7 @@ resource "azurerm_linux_web_app" "main" {
   identity {
     identity_ids = var.identity_ids
     #type         = "SystemAssigned, ${var.identity_ids != null ? "UserAssigned" : ""}"
-    type         = "SystemAssigned"
+    type = "SystemAssigned"
   }
 
   logs {
@@ -55,7 +55,7 @@ resource "azurerm_linux_web_app" "main" {
   }
 }
 
-resource "azurerm_linux_web_app_slot" "main" {  
+resource "azurerm_linux_web_app_slot" "main" {
   for_each = var.app_type == "linux_web" ? var.slots : {}
 
   name           = each.key

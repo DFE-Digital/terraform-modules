@@ -158,7 +158,7 @@ resource "azurerm_private_endpoint" "storage_table" {
 
   private_dns_zone_group {
     name                 = var.storage_tables_dnszone_name
-    private_dns_zone_ids = [var.storage_tables_dnszone_id]      
+    private_dns_zone_ids = [var.storage_tables_dnszone_id]
   }
 
   private_service_connection {
@@ -175,8 +175,8 @@ resource "azurerm_private_endpoint" "storage_table" {
 
 
 resource "azurerm_storage_table" "main" {
-  for_each           = toset(var.storage_tables)
-  name               = each.value
+  for_each = toset(var.storage_tables)
+  name     = each.value
   # This varies by provider version, in 4.* storage_account_name is required, 5.* storage account ID instead of the name
   #storage_account_id = azurerm_storage_account.main.id
   storage_account_name = azurerm_storage_account.main.name

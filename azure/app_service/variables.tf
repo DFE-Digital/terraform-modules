@@ -48,9 +48,9 @@ variable "app_type" {
   nullable = false
 
   validation {
-    condition     = contains(["windows_web", "linux_web", "web","function"], var.app_type)
+    condition     = contains(["windows_web", "linux_web", "web", "function"], var.app_type)
     error_message = "app_type must be either \"windows\" or \"linux\" or \"web\" or \"function\"."
-  }  
+  }
 }
 
 # Web App Variables

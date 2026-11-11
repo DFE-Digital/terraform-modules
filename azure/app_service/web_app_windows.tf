@@ -58,7 +58,7 @@ resource "azurerm_windows_web_app" "main" {
 }
 
 resource "azurerm_windows_web_app_slot" "main" {
-  for_each =  var.app_type == "windows_web" || var.app_type == "web" ? var.slots : {}
+  for_each = var.app_type == "windows_web" || var.app_type == "web" ? var.slots : {}
 
   name           = each.key
   app_service_id = azurerm_windows_web_app.main[0].id

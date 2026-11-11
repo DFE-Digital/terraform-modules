@@ -34,31 +34,31 @@ locals {
   # conditional output values based on app type
   app_service_id = var.app_type == "windows_web" || var.app_type == "web" ? (
     azurerm_windows_web_app.main[0].id
-  ) : var.app_type == "linux_web" ? (
+    ) : var.app_type == "linux_web" ? (
     azurerm_linux_web_app.main[0].id
   ) : null
 
   app_service_name = var.app_type == "windows_web" || var.app_type == "web" ? (
     azurerm_windows_web_app.main[0].name
-  ) : var.app_type == "linux_web" ? (
+    ) : var.app_type == "linux_web" ? (
     azurerm_linux_web_app.main[0].name
   ) : null
 
   outbound_ip_addresses = var.app_type == "windows_web" || var.app_type == "web" ? (
     azurerm_windows_web_app.main[0].outbound_ip_addresses
-  ) : var.app_type == "linux_web" ? (
+    ) : var.app_type == "linux_web" ? (
     azurerm_linux_web_app.main[0].outbound_ip_addresses
   ) : null
 
   default_hostname = var.app_type == "windows_web" || var.app_type == "web" ? (
     azurerm_windows_web_app.main[0].default_hostname
-  ) : var.app_type == "linux_web" ? (
+    ) : var.app_type == "linux_web" ? (
     azurerm_linux_web_app.main[0].default_hostname
   ) : null
 
   possible_outbound_ip_addresses = var.app_type == "windows_web" || var.app_type == "web" ? (
     azurerm_windows_web_app.main[0].possible_outbound_ip_addresses
-  ) : var.app_type == "linux_web" ? (
+    ) : var.app_type == "linux_web" ? (
     azurerm_linux_web_app.main[0].possible_outbound_ip_addresses
   ) : null
 }
