@@ -13,7 +13,7 @@ resource "azurerm_linux_web_app" "main" {
 
   identity {
     identity_ids = var.user_assigned_identity_ids
-    type         = "${var.use_user_assigned_identity != null ? "UserAssigned" : ""}${var.use_user_assigned_identity != null && var.use_system_assigned_identity != null ? "," : ""}${var.use_system_assigned_identity != null ? "SystemAssigned" : ""}${var.user_assigned_identity_ids != null ? "UserAssigned" : ""}"    
+    type         = "${var.use_system_assigned_identity != null ? "SystemAssigned" : ""}${var.use_user_assigned_identity != null && var.use_system_assigned_identity != null ? ", " : ""}${var.user_assigned_identity_ids != null ? "UserAssigned" : ""}"    
   }
 
   logs {
