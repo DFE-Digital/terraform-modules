@@ -53,25 +53,25 @@ variable "enable_storage" {
 }
 
 variable "vnet_address" {
-  default = ["10.0.0.0/12"]
+  description = "Address space for the VNET"
 }
 
 variable "postgres_subnet" {
-  default = ["10.2.0.0/18"]
+  description = "Address space for the Postgres subnet"
 }
 
 variable "sql_subnet" {
-  default = ["10.2.192.0/18"]
+  description = "Address space for the SQL subnet"
 }
 
 variable "redis_subnet" {
-  default = ["10.2.64.0/18"]
+  description = "Address space for the Redis subnet"
 }
 
 variable "apps_subnet" {
-  default = ["10.3.0.0/18"]
+  description = "Address space for the Apps subnet"
 }
 
 variable "storage_subnet" {
-  default = ["10.2.128.0/18"]
+  description = "Address space for the Storage subnet"
 }

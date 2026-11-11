@@ -38,7 +38,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | n/a | `list` | <pre>[<br/>  "10.3.0.0/18"<br/>]</pre> | no |
+| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | Address space for the Apps subnet | `any` | n/a | yes |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Standard resource prefix. Usually s189t01 (test) or s189p01 (production) | `string` | n/a | yes |
 | <a name="input_config"></a> [config](#input\_config) | Long name of the environment configuration, e.g. development, staging, production... | `string` | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the environment configuration, e.g. dv, st, pd... | `string` | n/a | yes |
@@ -49,13 +49,13 @@ No modules.
 | <a name="input_enable_storage"></a> [enable\_storage](#input\_enable\_storage) | n/a | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the deployed environment in AKS | `string` | n/a | yes |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | `"UK South"` | no |
-| <a name="input_postgres_subnet"></a> [postgres\_subnet](#input\_postgres\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.0.0/18"<br/>]</pre> | no |
-| <a name="input_redis_subnet"></a> [redis\_subnet](#input\_redis\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.64.0/18"<br/>]</pre> | no |
+| <a name="input_postgres_subnet"></a> [postgres\_subnet](#input\_postgres\_subnet) | Address space for the Postgres subnet | `any` | n/a | yes |
+| <a name="input_redis_subnet"></a> [redis\_subnet](#input\_redis\_subnet) | Address space for the Redis subnet | `any` | n/a | yes |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Full name of the service. Lowercase and hyphen separated | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name to identify the service. Up to 6 characters. | `string` | n/a | yes |
-| <a name="input_sql_subnet"></a> [sql\_subnet](#input\_sql\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.192.0/18"<br/>]</pre> | no |
-| <a name="input_storage_subnet"></a> [storage\_subnet](#input\_storage\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.128.0/18"<br/>]</pre> | no |
-| <a name="input_vnet_address"></a> [vnet\_address](#input\_vnet\_address) | n/a | `list` | <pre>[<br/>  "10.0.0.0/12"<br/>]</pre> | no |
+| <a name="input_sql_subnet"></a> [sql\_subnet](#input\_sql\_subnet) | Address space for the SQL subnet | `any` | n/a | yes |
+| <a name="input_storage_subnet"></a> [storage\_subnet](#input\_storage\_subnet) | Address space for the Storage subnet | `any` | n/a | yes |
+| <a name="input_vnet_address"></a> [vnet\_address](#input\_vnet\_address) | Address space for the VNET | `any` | n/a | yes |
 
 ## Outputs
 
