@@ -29,8 +29,8 @@ resource "azurerm_key_vault_secret" "sql_admin_password" {
 
 resource "azurerm_mssql_server" "main" {
   name                = "${local.resource_prefix}-${var.server_name_suffix}-sql"
-  resource_group_name = data.azurerm_resource_group.main.name
-  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main[0].name
+  location            = data.azurerm_resource_group.main[0].location
   version             = var.server_version
 
   administrator_login          = local.database_username
@@ -54,23 +54,23 @@ resource "azurerm_mssql_server" "main" {
 }
 
 resource "azurerm_private_endpoint" "sql" {
-  for_each = var.private_endpoints
+  count = var.azure_sql_private_endpoint_enabled ? 1 : 0
 
-  name                = "${local.resource_prefix}-${each.key}-pe"
-  location            = data.azurerm_resource_group.main.location
-  resource_group_name = data.azurerm_resource_group.main.name
-  subnet_id           = var.private_endpoint_subnet_id
+  name                = "${azurerm_mssql_server.main.name}-pe"
+  location            = data.azurerm_resource_group.main[0].location
+  resource_group_name = data.azurerm_resource_group.main[0].name
+  subnet_id           = data.azurerm_subnet.sql[0].id
 
   private_service_connection {
-    name                           = "${each.key}-psc"
+    name                           = "${azurerm_mssql_server.main.name}-pe"
     private_connection_resource_id = azurerm_mssql_server.main.id
-    subresource_names              = [each.value.subresource]
+    subresource_names              = ["sqlServer"]
     is_manual_connection           = false
   }
 
   private_dns_zone_group {
-    name                 = each.value.resource_id
-    private_dns_zone_ids = [each.value.dns_zone_id]
+    name                 = data.azurerm_private_dns_zone.sql[0].name
+    private_dns_zone_ids = [data.azurerm_private_dns_zone.sql[0].id]
   }
 
   lifecycle {
@@ -90,11 +90,10 @@ resource "azurerm_mssql_database" "main" {
   zone_redundant = var.zone_redundant
 
   long_term_retention_policy {
-    immutable_backups_enabled = var.enable_immutable_backups
-    monthly_retention         = var.lt_ret_pol_monthly_retention
-    week_of_year              = var.lt_ret_pol_week_of_year
-    weekly_retention          = var.lt_ret_pol_weekly_retention
-    yearly_retention          = var.lt_ret_pol_yearly_retention
+    monthly_retention = var.lt_ret_pol_monthly_retention
+    week_of_year      = var.lt_ret_pol_week_of_year
+    weekly_retention  = var.lt_ret_pol_weekly_retention
+    yearly_retention  = var.lt_ret_pol_yearly_retention
   }
 
   short_term_retention_policy {
@@ -104,7 +103,6 @@ resource "azurerm_mssql_database" "main" {
 
   threat_detection_policy {
     disabled_alerts            = []
-    email_account_admins       = "Disabled"
     email_addresses            = []
     retention_days             = 0
     state                      = "Disabled"
@@ -131,11 +129,10 @@ resource "azurerm_mssql_database" "extra" {
   zone_redundant = var.zone_redundant
 
   long_term_retention_policy {
-    immutable_backups_enabled = var.enable_immutable_backups
-    monthly_retention         = var.lt_ret_pol_monthly_retention
-    week_of_year              = var.lt_ret_pol_week_of_year
-    weekly_retention          = var.lt_ret_pol_weekly_retention
-    yearly_retention          = var.lt_ret_pol_yearly_retention
+    monthly_retention = var.lt_ret_pol_monthly_retention
+    week_of_year      = var.lt_ret_pol_week_of_year
+    weekly_retention  = var.lt_ret_pol_weekly_retention
+    yearly_retention  = var.lt_ret_pol_yearly_retention
   }
 
   short_term_retention_policy {
@@ -145,7 +142,6 @@ resource "azurerm_mssql_database" "extra" {
 
   threat_detection_policy {
     disabled_alerts            = []
-    email_account_admins       = "Disabled"
     email_addresses            = []
     retention_days             = 0
     state                      = "Disabled"
@@ -175,7 +171,7 @@ resource "azurerm_monitor_metric_alert" "cpu" {
   for_each = var.databases
 
   name                = "${azurerm_mssql_database.main[each.key].name}-cpu"
-  resource_group_name = data.azurerm_resource_group.main.name
+  resource_group_name = data.azurerm_resource_group.main[0].name
   scopes              = [azurerm_mssql_database.main[each.key].id]
 
   window_size = var.alert_window_size
@@ -203,7 +199,7 @@ resource "azurerm_monitor_metric_alert" "storage" {
   for_each = var.databases
 
   name                = "${azurerm_mssql_database.main[each.key].name}-storage"
-  resource_group_name = data.azurerm_resource_group.main.name
+  resource_group_name = data.azurerm_resource_group.main[0].name
 
   scopes = [
     azurerm_mssql_database.main[each.key].id
@@ -223,5 +219,169 @@ resource "azurerm_monitor_metric_alert" "storage" {
 
   lifecycle {
     ignore_changes = [tags]
+  }
+}
+
+resource "azurerm_storage_account" "backup" {
+  count = local.azure_enable_backup_storage ? 1 : 0
+
+  name                             = "${var.azure_resource_prefix}${var.service_short}dbbkp${var.config_short}sa"
+  location                         = data.azurerm_resource_group.main[0].location
+  resource_group_name              = data.azurerm_resource_group.main[0].name
+  account_tier                     = "Standard"
+  account_replication_type         = "GRS"
+  allow_nested_items_to_be_public  = false
+  cross_tenant_replication_enabled = false
+  public_network_access_enabled    = var.azure_backup_storage_public_network_access_enabled
+
+  blob_properties {
+    delete_retention_policy {
+      days = 7
+    }
+
+    container_delete_retention_policy {
+      days = 7
+    }
+  }
+
+  lifecycle { ignore_changes = [tags] }
+}
+
+resource "azurerm_storage_management_policy" "backup" {
+  count = local.azure_enable_backup_storage ? 1 : 0
+
+  storage_account_id = azurerm_storage_account.backup[0].id
+
+  rule {
+    name    = "DeleteAfter7Days"
+    enabled = true
+    filters {
+      blob_types = ["blockBlob"]
+    }
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = 7
+      }
+    }
+  }
+}
+
+resource "azurerm_storage_container" "backup" {
+  count = local.azure_enable_backup_storage ? 1 : 0
+
+  name                  = "sql-database-backup"
+  storage_account_id    = azurerm_storage_account.backup[0].id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container_immutability_policy" "backup" {
+  count = local.azure_enable_backup_storage && var.environment == "production" ? 1 : 0
+
+  storage_container_resource_manager_id = "${azurerm_storage_container.backup[0].storage_account_id}/blobServices/default/containers/sql-database-backup"
+  immutability_period_in_days           = 14
+  protected_append_writes_all_enabled   = false
+  protected_append_writes_enabled       = false
+
+  locked = true
+}
+
+# Kubernetes
+resource "kubernetes_deployment" "main" {
+  count = var.use_azure ? 0 : 1
+
+  metadata {
+    name      = local.kubernetes_name
+    namespace = var.namespace
+  }
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = local.kubernetes_name
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = local.kubernetes_name
+        }
+      }
+      spec {
+        node_selector = {
+          "teacherservices.cloud/node_pool" = "applications"
+          "kubernetes.io/os"                = "linux"
+        }
+        dynamic "volume" {
+          for_each = length(local.extra_database_names) > 0 ? [1] : []
+
+          content {
+            name = "postgres-init"
+
+            config_map {
+              name = kubernetes_config_map.postgres_init[0].metadata[0].name
+            }
+          }
+        }
+        container {
+          name  = local.kubernetes_name
+          image = local.server_docker_image
+          # args  = try(slice(local.command, 1, length(local.command)), null)
+          resources {
+            requests = {
+              cpu    = var.cluster_configuration_map.cpu_min
+              memory = "256Mi"
+            }
+            limits = {
+              cpu    = 1
+              memory = "1Gi"
+            }
+          }
+          port {
+            container_port = 5432
+          }
+          env {
+            name  = "POSTGRES_USER"
+            value = local.database_username
+          }
+          env {
+            name  = "POSTGRES_PASSWORD"
+            value = local.database_password
+          }
+          dynamic "env" {
+            for_each = var.create_database ? [1] : []
+            content {
+              name  = "POSTGRES_DB"
+              value = local.database_name
+            }
+          }
+          dynamic "volume_mount" {
+            for_each = length(local.extra_database_names) > 0 ? [1] : []
+
+            content {
+              name       = "postgres-init"
+              mount_path = "/docker-entrypoint-initdb.d"
+              read_only  = true
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "main" {
+  count = var.use_azure ? 0 : 1
+
+  metadata {
+    name      = local.kubernetes_name
+    namespace = var.namespace
+  }
+  spec {
+    port {
+      port = 5432
+    }
+    selector = {
+      app = local.kubernetes_name
+    }
   }
 }

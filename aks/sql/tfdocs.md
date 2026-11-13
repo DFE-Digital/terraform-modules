@@ -8,6 +8,7 @@ No requirements.
 |------|---------|
 | <a name="provider_azuread"></a> [azuread](#provider\_azuread) | n/a |
 | <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | n/a |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
 ## Modules
@@ -27,13 +28,24 @@ No modules.
 | [azurerm_mssql_firewall_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_firewall_rule) | resource |
 | [azurerm_mssql_server.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/mssql_server) | resource |
 | [azurerm_private_endpoint.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/private_endpoint) | resource |
+| [azurerm_storage_account.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) | resource |
+| [azurerm_storage_container.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container) | resource |
+| [azurerm_storage_container_immutability_policy.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_container_immutability_policy) | resource |
+| [azurerm_storage_management_policy.backup](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy) | resource |
+| [kubernetes_deployment.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
+| [kubernetes_service.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [random_password.password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [random_string.username](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [azuread_group.sql_entra_admin](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/group) | data source |
 | [azurerm_monitor_action_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_action_group) | data source |
 | [azurerm_monitor_diagnostic_categories.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_diagnostic_categories) | data source |
+| [azurerm_private_dns_zone.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
+| [azurerm_private_dns_zone.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/private_dns_zone) | data source |
 | [azurerm_resource_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
 | [azurerm_resource_group.monitoring](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_subnet.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet) | data source |
+| [azurerm_subnet.sql](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subnet) | data source |
+| [azurerm_virtual_network.priv](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_network) | data source |
 
 ## Inputs
 
@@ -50,8 +62,10 @@ No modules.
 | <a name="input_azure_memory_threshold"></a> [azure\_memory\_threshold](#input\_azure\_memory\_threshold) | n/a | `number` | `80` | no |
 | <a name="input_azure_name_override"></a> [azure\_name\_override](#input\_azure\_name\_override) | Replace the generated name with hardcoded name | `string` | `null` | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | n/a | yes |
+| <a name="input_azure_sql_private_endpoint_enabled"></a> [azure\_sql\_private\_endpoint\_enabled](#input\_azure\_sql\_private\_endpoint\_enabled) | Whether to enable a private endpoint for the Azure SQL server | `bool` | `false` | no |
 | <a name="input_azure_sql_sku"></a> [azure\_sql\_sku](#input\_azure\_sql\_sku) | SKU of the Azure SQL database | `string` | `"GP_Gen5_2"` | no |
 | <a name="input_azure_storage_threshold"></a> [azure\_storage\_threshold](#input\_azure\_storage\_threshold) | n/a | `number` | `80` | no |
+| <a name="input_cluster_configuration_map"></a> [cluster\_configuration\_map](#input\_cluster\_configuration\_map) | Configuration map for the cluster | <pre>object({<br/>    resource_group_name = string,<br/>    resource_prefix     = string,<br/>    dns_zone_prefix     = optional(string),<br/>    cpu_min             = number<br/>  })</pre> | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the configuration | `string` | n/a | yes |
 | <a name="input_create_database"></a> [create\_database](#input\_create\_database) | Create default database. If the app creates the database instead of this module, set to false. Default: true | `bool` | `true` | no |
 | <a name="input_databases"></a> [databases](#input\_databases) | Map of database names and their configurations. | `map(any)` | `{}` | no |
@@ -68,9 +82,12 @@ No modules.
 | <a name="input_lt_ret_pol_week_of_year"></a> [lt\_ret\_pol\_week\_of\_year](#input\_lt\_ret\_pol\_week\_of\_year) | Specifies the week of the year to retain the backup for. The value is a number between 1 and 52. | `number` | `1` | no |
 | <a name="input_lt_ret_pol_weekly_retention"></a> [lt\_ret\_pol\_weekly\_retention](#input\_lt\_ret\_pol\_weekly\_retention) | Specifies the number of weeks to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format. | `string` | `"PT0S"` | no |
 | <a name="input_lt_ret_pol_yearly_retention"></a> [lt\_ret\_pol\_yearly\_retention](#input\_lt\_ret\_pol\_yearly\_retention) | Specifies the number of years to retain the backup for. PT0S Period Time zero seconds. The value is a duration in ISO 8601 format. | `string` | `"PT0S"` | no |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | Current namespace | `string` | n/a | yes |
 | <a name="input_private_endpoint_subnet_id"></a> [private\_endpoint\_subnet\_id](#input\_private\_endpoint\_subnet\_id) | n/a | `any` | `null` | no |
 | <a name="input_private_endpoints"></a> [private\_endpoints](#input\_private\_endpoints) | n/a | <pre>map(object({<br/>    resource_id = string<br/>    dns_zone_id = string<br/>    subresource = string<br/>  }))</pre> | `{}` | no |
 | <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled) | Whether public network access is allowed for the SQL logical server | `bool` | `true` | no |
+| <a name="input_server_docker_image"></a> [server\_docker\_image](#input\_server\_docker\_image) | Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server\_version>-alpine | `string` | `null` | no |
+| <a name="input_server_docker_repo"></a> [server\_docker\_repo](#input\_server\_docker\_repo) | n/a | `string` | `"ghcr.io/dfe-digital/teacher-services-cloud"` | no |
 | <a name="input_server_name_suffix"></a> [server\_name\_suffix](#input\_server\_name\_suffix) | The name of the Azure SQL, SQL logical server. If not provided, a name will be generated based on the service\_short and config\_short variables. | `string` | `null` | no |
 | <a name="input_server_version"></a> [server\_version](#input\_server\_version) | Version of the Azure SQL logical server | `string` | `"12.0"` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service | `string` | n/a | yes |
@@ -85,12 +102,15 @@ No modules.
 | <a name="input_threat_pol_state"></a> [threat\_pol\_state](#input\_threat\_pol\_state) | Specifies the state of the threat detection policy. Possible values are: Enabled, Disabled | `string` | `"Disabled"` | no |
 | <a name="input_threat_pol_storage_account_access_key"></a> [threat\_pol\_storage\_account\_access\_key](#input\_threat\_pol\_storage\_account\_access\_key) | Specifies the access key of the storage account to store threat detection logs. | `string` | `""` | no |
 | <a name="input_threat_pol_storage_endpoint"></a> [threat\_pol\_storage\_endpoint](#input\_threat\_pol\_storage\_endpoint) | Specifies the endpoint of the storage account to store threat detection logs. | `string` | `""` | no |
+| <a name="input_use_azure"></a> [use\_azure](#input\_use\_azure) | Whether to deploy using Azure Redis Cache service | `bool` | n/a | yes |
 | <a name="input_zone_redundant"></a> [zone\_redundant](#input\_zone\_redundant) | Whether replicas of the database will be spread across multiple availability zones | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| <a name="output_azure_backup_storage_account_name"></a> [azure\_backup\_storage\_account\_name](#output\_azure\_backup\_storage\_account\_name) | n/a |
+| <a name="output_azure_backup_storage_container_name"></a> [azure\_backup\_storage\_container\_name](#output\_azure\_backup\_storage\_container\_name) | n/a |
 | <a name="output_dotnet_connection_string"></a> [dotnet\_connection\_string](#output\_dotnet\_connection\_string) | n/a |
 | <a name="output_host"></a> [host](#output\_host) | n/a |
 | <a name="output_url"></a> [url](#output\_url) | n/a |
