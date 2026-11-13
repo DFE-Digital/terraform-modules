@@ -132,8 +132,8 @@ resource "azurerm_private_endpoint" "storage_queue" {
   subnet_id           = var.subnet_id # data.azurerm_subnet.priv[0].id
 
   private_dns_zone_group {
-    name                 = var.dnszone_name # data.azurerm_private_dns_zone.priv_queue[0].name
-    private_dns_zone_ids = [var.dnszone_id] # data.azurerm_private_dns_zone.priv_queue[0].id]
+    name                 = var.storage_queues_dnszone_name
+    private_dns_zone_ids = [var.storage_queues_dnszone_id]
   }
 
   private_service_connection {
@@ -146,4 +146,38 @@ resource "azurerm_private_endpoint" "storage_queue" {
   lifecycle {
     ignore_changes = [tags]
   }
+}
+
+resource "azurerm_private_endpoint" "storage_table" {
+  count = var.use_private_storage && length(var.storage_tables) > 0 ? 1 : 0
+
+  name                = "${local.storage_account_name}-table-pe"
+  location            = data.azurerm_resource_group.main.location
+  resource_group_name = data.azurerm_resource_group.main.name
+  subnet_id           = var.subnet_id
+
+  private_dns_zone_group {
+    name                 = var.storage_tables_dnszone_name
+    private_dns_zone_ids = [var.storage_tables_dnszone_id]
+  }
+
+  private_service_connection {
+    name                           = "${local.storage_account_name}-table-pe"
+    private_connection_resource_id = azurerm_storage_account.main.id
+    subresource_names              = ["table"]
+    is_manual_connection           = false
+  }
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
+}
+
+
+resource "azurerm_storage_table" "main" {
+  for_each = toset(var.storage_tables)
+  name     = each.value
+  # This varies by provider version, in 4.* storage_account_name is required, 5.* storage account ID instead of the name
+  #storage_account_id = azurerm_storage_account.main.id
+  storage_account_name = azurerm_storage_account.main.name
 }

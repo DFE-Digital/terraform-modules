@@ -1,6 +1,6 @@
 locals {
   resource_name_prefix = "${var.subscription_short}${var.env_short}-${var.service_short}-"
-  workspace_id         = var.create_log_analytics_workspace ? azurerm_log_analytics_workspace.main[0].id : var.log_analytics_workspace_id
+  workspace_id         = var.create_log_analytics_workspace ? azurerm_log_analytics_workspace.main[0].id : var.log_analytics_workspace_id 
 
   app_settings = merge(
     var.app_settings,
@@ -30,4 +30,35 @@ locals {
       {}
     )
   }
+
+  # conditional output values based on app type
+  app_service_id = var.app_type == "windows_web" || var.app_type == "web" ? (
+    azurerm_windows_web_app.main[0].id
+    ) : var.app_type == "linux_web" ? (
+    azurerm_linux_web_app.main[0].id
+  ) : null
+
+  app_service_name = var.app_type == "windows_web" || var.app_type == "web" ? (
+    azurerm_windows_web_app.main[0].name
+    ) : var.app_type == "linux_web" ? (
+    azurerm_linux_web_app.main[0].name
+  ) : null
+
+  outbound_ip_addresses = var.app_type == "windows_web" || var.app_type == "web" ? (
+    azurerm_windows_web_app.main[0].outbound_ip_addresses
+    ) : var.app_type == "linux_web" ? (
+    azurerm_linux_web_app.main[0].outbound_ip_addresses
+  ) : null
+
+  default_hostname = var.app_type == "windows_web" || var.app_type == "web" ? (
+    azurerm_windows_web_app.main[0].default_hostname
+    ) : var.app_type == "linux_web" ? (
+    azurerm_linux_web_app.main[0].default_hostname
+  ) : null
+
+  possible_outbound_ip_addresses = var.app_type == "windows_web" || var.app_type == "web" ? (
+    azurerm_windows_web_app.main[0].possible_outbound_ip_addresses
+    ) : var.app_type == "linux_web" ? (
+    azurerm_linux_web_app.main[0].possible_outbound_ip_addresses
+  ) : null
 }

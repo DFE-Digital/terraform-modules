@@ -69,9 +69,29 @@ variable "redis_subnet" {
 }
 
 variable "apps_subnet" {
-  default = ["10.3.0.0/18"]
+  description = "The subnet address range for the apps subnet. This is used for the web app and function app subnets and includes vnet integration. See https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration#windows-worker-ip-address-overlap for more information and ranges to avoid."
+  default     = ["10.3.0.0/18"]
 }
 
 variable "storage_subnet" {
   default = ["10.2.128.0/18"]
 }
+
+variable "enable_generic_private_endpoints" {
+  default = false
+}
+
+variable "generic_private_endpoints_subnet" {
+  description = "The subnet address range for the generic private endpoints subnet. This is used for private endpoints that are not in the other subnets, e.g. Key Vault, App Service, etc."
+  default     = []
+}
+
+variable "private_dns_zones" {
+  description = "The name of the private DNS zone to create. This is used for private endpoints that are not in the other subnets, e.g. Key Vault, App Service, etc."
+  default     = ["privatelink.blob.core.windows.net"]
+}
+
+# variable "create_default_vault_private_endpoints" {
+#   description = "Whether to create a private endpoint for the default app and inf Key Vaults."
+#   default = true
+# }
