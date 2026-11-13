@@ -20,6 +20,7 @@ No modules.
 | [kubernetes_deployment.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/deployment) | resource |
 | [kubernetes_ingress_v1.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/ingress_v1) | resource |
 | [kubernetes_pod_disruption_budget_v1.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/pod_disruption_budget_v1) | resource |
+| [kubernetes_secret.basicauth_secret](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_secret.ghcr_auth](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/secret) | resource |
 | [kubernetes_service.main](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/service) | resource |
 | [azurerm_monitor_action_group.main](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_action_group) | data source |
@@ -31,9 +32,11 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_azure_enable_monitoring"></a> [azure\_enable\_monitoring](#input\_azure\_enable\_monitoring) | Whether to enable monitoring of container failures | `bool` | `false` | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Prefix of Azure resources for the service | `string` | `null` | no |
+| <a name="input_basicauth_secret"></a> [basicauth\_secret](#input\_basicauth\_secret) | Basic auth secret | `string` | `null` | no |
 | <a name="input_cluster_configuration_map"></a> [cluster\_configuration\_map](#input\_cluster\_configuration\_map) | Configuration map for the cluster | <pre>object({<br/>    resource_group_name = string,<br/>    resource_prefix     = string,<br/>    dns_zone_prefix     = optional(string),<br/>    cpu_min             = number<br/>  })</pre> | n/a | yes |
 | <a name="input_command"></a> [command](#input\_command) | Custom command that overwrites Docker image | `list(string)` | `[]` | no |
 | <a name="input_docker_image"></a> [docker\_image](#input\_docker\_image) | Path to the docker image | `string` | n/a | yes |
+| <a name="input_enable_basicauth"></a> [enable\_basicauth](#input\_enable\_basicauth) | A boolean to indicate whether to enable basic auth | `bool` | `false` | no |
 | <a name="input_enable_gcp_wif"></a> [enable\_gcp\_wif](#input\_enable\_gcp\_wif) | Let the deployment use the GCP workload identity federation service account to get a token | `string` | `false` | no |
 | <a name="input_enable_logit"></a> [enable\_logit](#input\_enable\_logit) | A boolean to indicate whether to enable sending container logs to logit.io | `bool` | `false` | no |
 | <a name="input_enable_prometheus_monitoring"></a> [enable\_prometheus\_monitoring](#input\_enable\_prometheus\_monitoring) | a boolean to indicate whether to scrape(true) custom metrics for application or not(false) | `bool` | `false` | no |
