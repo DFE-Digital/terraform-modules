@@ -1,9 +1,10 @@
 locals {
-  database_name              = "${local.azure_name}-${var.service_short}-${var.environment}"
-  database_username          = var.admin_username != null ? var.admin_username : "u${random_string.username[0].result}"
-  original_database_password = var.admin_password != null ? var.admin_password : random_password.password[0].result
-  database_password          = replace(local.original_database_password, "/\\$+/", "$") # Remove sequences of multiple dollar signs.
-  extra_database_names       = [for db in var.extra_databases : "${local.database_name}_${db}"]
+  database_name               = "${local.azure_name}-${var.service_short}-${var.environment}"
+  database_username           = var.admin_username != null ? var.admin_username : "u${random_string.username[0].result}"
+  original_database_password  = var.admin_password != null ? var.admin_password : random_password.password[0].result
+  database_password           = replace(local.original_database_password, "/\\$+/", "$") # Remove sequences of multiple dollar signs.
+  extra_database_names        = [for db in var.extra_databases : "${local.database_name}_${db}"]
+  azure_enable_backup_storage = var.use_azure && var.azure_enable_backup_storage
 
   name_suffix          = var.server_name_suffix != null ? "-${var.server_name_suffix}" : ""
   azure_generated_name = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-sql${local.name_suffix}"
@@ -22,4 +23,8 @@ locals {
     PT12H = "PT5M"
   }
   alert_frequency = local.alert_frequency_map[var.alert_window_size]
+
+  kubernetes_name     = "${var.service_name}-${var.environment}-sql${local.name_suffix}"
+  server_docker_image = var.server_docker_image == null ? "${var.server_docker_repo}:postgres-${var.server_version}-alpine" : var.server_docker_image
+  # command             = var.use_airbyte ? ["postgres", "-c", "wal_level=logical", "-c", "max_wal_senders=2", "-c", "max_replication_slots=1", "-c", "max_slot_wal_keep_size=2048"] : null
 }

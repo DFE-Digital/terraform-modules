@@ -24,6 +24,11 @@ variable "config_short" {
   description = "Short name of the configuration"
 }
 
+variable "use_azure" {
+  type        = bool
+  description = "Whether to deploy using Azure Redis Cache service"
+}
+
 variable "private_endpoint_subnet_id" {
   default = null
 }
@@ -270,6 +275,12 @@ variable "threat_pol_storage_endpoint" {
   nullable = false
 }
 
+variable "azure_sql_private_endpoint_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to enable a private endpoint for the Azure SQL server"
+}
+
 variable "azure_backup_storage_private_endpoint_enabled" {
   type        = bool
   default     = false
@@ -312,4 +323,31 @@ variable "entra_admin" {
   type        = string
   default     = ""
   description = "The Entra group or individual that are allowed to use a database query editor in the portal"
+}
+
+variable "cluster_configuration_map" {
+  type = object({
+    resource_group_name = string,
+    resource_prefix     = string,
+    dns_zone_prefix     = optional(string),
+    cpu_min             = number
+  })
+  description = "Configuration map for the cluster"
+}
+
+variable "namespace" {
+  type        = string
+  description = "Current namespace"
+}
+
+variable "server_docker_image" {
+  type        = string
+  default     = null
+  description = "Docker Hub image for the kubernetes deployment, eg. postgis/postgis:16-3.5. Default is postgres:<server_version>-alpine"
+}
+
+variable "server_docker_repo" {
+  type     = string
+  nullable = false
+  default  = "ghcr.io/dfe-digital/teacher-services-cloud"
 }

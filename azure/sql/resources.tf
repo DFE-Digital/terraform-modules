@@ -90,11 +90,10 @@ resource "azurerm_mssql_database" "main" {
   zone_redundant = var.zone_redundant
 
   long_term_retention_policy {
-    immutable_backups_enabled = var.enable_immutable_backups
-    monthly_retention         = var.lt_ret_pol_monthly_retention
-    week_of_year              = var.lt_ret_pol_week_of_year
-    weekly_retention          = var.lt_ret_pol_weekly_retention
-    yearly_retention          = var.lt_ret_pol_yearly_retention
+    monthly_retention = var.lt_ret_pol_monthly_retention
+    week_of_year      = var.lt_ret_pol_week_of_year
+    weekly_retention  = var.lt_ret_pol_weekly_retention
+    yearly_retention  = var.lt_ret_pol_yearly_retention
   }
 
   short_term_retention_policy {
@@ -103,13 +102,13 @@ resource "azurerm_mssql_database" "main" {
   }
 
   threat_detection_policy {
-    disabled_alerts            = []
-    email_account_admins       = "Disabled"
-    email_addresses            = []
-    retention_days             = 0
-    state                      = "Disabled"
-    storage_account_access_key = null
-    storage_endpoint           = null
+    disabled_alerts              = []
+    email_account_admins_enabled = false
+    email_addresses              = []
+    retention_days               = 0
+    state                        = "Disabled"
+    storage_account_access_key   = null
+    storage_endpoint             = null
   }
 
   lifecycle {
@@ -131,11 +130,10 @@ resource "azurerm_mssql_database" "extra" {
   zone_redundant = var.zone_redundant
 
   long_term_retention_policy {
-    immutable_backups_enabled = var.enable_immutable_backups
-    monthly_retention         = var.lt_ret_pol_monthly_retention
-    week_of_year              = var.lt_ret_pol_week_of_year
-    weekly_retention          = var.lt_ret_pol_weekly_retention
-    yearly_retention          = var.lt_ret_pol_yearly_retention
+    monthly_retention = var.lt_ret_pol_monthly_retention
+    week_of_year      = var.lt_ret_pol_week_of_year
+    weekly_retention  = var.lt_ret_pol_weekly_retention
+    yearly_retention  = var.lt_ret_pol_yearly_retention
   }
 
   short_term_retention_policy {
@@ -144,13 +142,13 @@ resource "azurerm_mssql_database" "extra" {
   }
 
   threat_detection_policy {
-    disabled_alerts            = []
-    email_account_admins       = "Disabled"
-    email_addresses            = []
-    retention_days             = 0
-    state                      = "Disabled"
-    storage_account_access_key = null
-    storage_endpoint           = null
+    disabled_alerts              = []
+    email_account_admins_enabled = false
+    email_addresses              = []
+    retention_days               = 0
+    state                        = "Disabled"
+    storage_account_access_key   = null
+    storage_endpoint             = null
   }
 
   lifecycle {
