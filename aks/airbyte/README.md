@@ -20,20 +20,18 @@ Ask the SD infra ops to either create the base resources or create a workspace a
 
 
 ### 2. Create secrets in the relevant Azure Key Vault.
-Once the base resources have been created, the following 5 secrets will need to be added to the infrastructure Azure Key Vault for the target environment. Some services require the secrets set up in their app Key Vault in which case just add AIRBYTE-CLIENT-ID and AIRBYTE-CLIENT-SECRET
+Once the base resources have been created, the following 5 secrets will need to be added to the infrastructure Azure Key Vault for the target environment. Some services require the secrets set up in their app Key Vault in which case just add AIRBYTE-CLIENT-ID and AIRBYTE-CLIENT-SECRET.
 For example s189p01-rtt-pd-kv for rtt production but s189p01-ittms-pd-inf-kv for ittms production.
 
 - AIRBYTE-CLIENT-ID - Airbyte UI -> Settings->Applications->Client ID
 - AIRBYTE-CLIENT-SECRET - Airbyte UI -> Settings->Applications->Client Secret
 - AIRBYTE-WORKSPACE-ID - The part of the URL before /settings
 - AIRBYTE-REPLICATION-PASSWORD -  Create one. Follow the standards used by other accounts.
-- Add AIRBYTE-BQ-SA - GCP -> IAM and admin->Service accounts -> email address in full. These can vary wildly but generally start `app-wif`.
+- AIRBYTE-BQ-SA - GCP -> IAM and admin->Service accounts -> email address in full. These can vary wildly but generally start `app-wif`.
 
-### 3. Create these GCP resources if they don't already exist
+### 2. Create these GCP resources if they don't already exist
 
-To log into GCP see [below](#google-cloud-authentication)
-
-#### Custom roles:
+Custom roles:
 
 Airbyte_workflow_IAM with permissions (with id Airbyte_workflow_IAM)
 - resourcemanager.projects.getIamPolicy
@@ -268,6 +266,46 @@ Add `"connection_status": "active"` to the env.tfvars.json to enable it.
 
 - set azure_enable_monitoring = true in the terraform for the postgres module
 - this may require a new resource group and azure monitor to be created
+
+
+### 9. Create Airbyte Config File
+
+Add a new file to our terraform config named `airbyte_stream_config.json`
+For example `terraform/application/config/airbyte_stream_config.json`
+
+### 9. Creating a Review App
+
+Before deploying Airbyte to an environment, you should create a Review App to ensure all necessary integration with the services applications are covered.
+
+-  Add the following section to any Workflows involved in deploying and managing review apps. It needs to fit in the steps section
+```
+      - name: Set Airbyte
+        if: (contains(github.event.pull_request.labels.*.name, 'airbyte'))
+        run: |
+          echo "TF_VAR_pg_airbyte_enabled=true" >> $GITHUB_ENV
+          echo "TF_VAR_airbyte_enabled=true" >> $GITHUB_ENV
+          echo "TF_VAR_connection_status=active" >> $GITHUB_ENV
+```
+- Add the following section to the Makefile
+```
+airbyte: ## Add airbyte for review apps
+	$(if $(PR_NUMBER), , $(error Missing environment variable "PR_NUMBER", Please specify a pr number for your review app))
+	$(eval export TF_VAR_pg_airbyte_enabled=true)
+	$(eval export TF_VAR_airbyte_enabled=true)
+	$(eval export TF_VAR_connection_status=active)
+```
+- Add the following variable to the review.tfvars.json file.
+```
+"pg_airbyte_enabled": true
+```
+- Create a PR and add the GitHub label `airbyte`. If the label does not exist, create one with `Edit labels` and a description of `Required for Airbyte in a review app`
+- Add the devops label and add the deploy label  if necessary.
+
+### 10. Deploying to an Environment
+
+When the PR is ready and the you're confident Airbyte can be enabled in an environment, you must deploy manually rather than merging the PR.
+
+
 
 ## Google Cloud Authentication
 
