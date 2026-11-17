@@ -98,3 +98,14 @@ Terraform Docs can be used in two ways:
 ```sh
 docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.19.0 markdown /terraform-docs > tfdocs.md
 ```
+
+- Run tfdocs against each subfolder from current
+```sh
+find . -type d -name '.terraform' -prune -o \
+  -type f -name '*.tf' -printf '%h\n' |
+  sort -u |
+  while IFS= read -r dir; do
+    echo "tfdocs $dir"
+    (cd "$dir" && docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.19.0 markdown /terraform-docs > tfdocs.md)
+  done
+```
