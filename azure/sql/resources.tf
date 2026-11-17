@@ -102,13 +102,14 @@ resource "azurerm_mssql_database" "main" {
   }
 
   threat_detection_policy {
-    disabled_alerts              = []
-    email_account_admins_enabled = false
-    email_addresses              = []
-    retention_days               = 0
-    state                        = "Disabled"
-    storage_account_access_key   = null
-    storage_endpoint             = null
+    disabled_alerts = []
+    # Note: The following line is commented out because it is not supported in version 4.x of the AzureRM provider
+    # email_account_admins_enabled = false
+    email_addresses            = []
+    retention_days             = 0
+    state                      = "Disabled"
+    storage_account_access_key = null
+    storage_endpoint           = null
   }
 
   lifecycle {
@@ -142,13 +143,14 @@ resource "azurerm_mssql_database" "extra" {
   }
 
   threat_detection_policy {
-    disabled_alerts              = []
-    email_account_admins_enabled = false
-    email_addresses              = []
-    retention_days               = 0
-    state                        = "Disabled"
-    storage_account_access_key   = null
-    storage_endpoint             = null
+    disabled_alerts = []
+    # Note: The following line is commented out because it is not supported in version 4.x of the AzureRM provider
+    # email_account_admins_enabled = false
+    email_addresses            = []
+    retention_days             = 0
+    state                      = "Disabled"
+    storage_account_access_key = null
+    storage_endpoint           = null
   }
 
   lifecycle {
