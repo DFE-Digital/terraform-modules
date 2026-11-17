@@ -19,6 +19,7 @@ No modules.
 | [azurerm_federated_identity_credential.github_actions_wif](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential) | resource |
 | [azurerm_user_assigned_identity.ga_wif](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) | resource |
 | [azurerm_resource_group.resource_group](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) | data source |
+| [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) | data source |
 
 ## Inputs
 
@@ -35,4 +36,6 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_ga_wif_config"></a> [ga\_wif\_config](#output\_ga\_wif\_config) | Configuration for workflows of services declared in var.ga\_wif\_namespaces |
