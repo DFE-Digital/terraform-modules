@@ -22,6 +22,12 @@ locals {
     "azure.workload.identity/use" = "true"
   } : {}
 
+  basic_auth_annotations = var.enable_basicauth ? {
+    "nginx.ingress.kubernetes.io/auth-type"   = "basic"
+    "nginx.ingress.kubernetes.io/auth-secret" = kubernetes_secret.basicauth_secret[0].metadata[0].name
+    "nginx.ingress.kubernetes.io/auth-realm"  = "Authentication Required"
+  } : {}
+
   maintenance_service_port = 80
 }
 
@@ -224,8 +230,9 @@ resource "kubernetes_ingress_v1" "main" {
   wait_for_load_balancer = true
 
   metadata {
-    name      = each.value
-    namespace = var.namespace
+    name        = each.value
+    namespace   = var.namespace
+    annotations = var.enable_basicauth ? merge(local.basic_auth_annotations) : {}
   }
 
   spec {
@@ -286,3 +293,15 @@ resource "kubernetes_secret" "ghcr_auth" {
   }
 }
 
+resource "kubernetes_secret" "basicauth_secret" {
+  count = var.enable_basicauth ? 1 : 0
+
+  metadata {
+    name      = "basicauth"
+    namespace = var.namespace
+  }
+
+  data = {
+    auth = var.basicauth_secret
+  }
+}
