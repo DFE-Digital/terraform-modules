@@ -3,6 +3,7 @@ data "azurerm_resource_group" "main" {
 }
 
 resource "azurerm_virtual_network" "vnet" {
+  count = local.create_vnet ? 1 : 0
 
   location            = var.location
   name                = "${var.azure_resource_prefix}-${var.service_short}-${var.config_short}-vnet"
