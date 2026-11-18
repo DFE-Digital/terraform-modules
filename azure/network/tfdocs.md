@@ -41,7 +41,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | The subnet address range for the apps subnet. This is used for the web app and function app subnets and includes vnet integration. See https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration#windows-worker-ip-address-overlap for more information and ranges to avoid. | `list` | <pre>[<br/>  "10.3.0.0/18"<br/>]</pre> | no |
+| <a name="input_apps_subnet"></a> [apps\_subnet](#input\_apps\_subnet) | n/a | `list(string)` | `null` | no |
 | <a name="input_azure_resource_prefix"></a> [azure\_resource\_prefix](#input\_azure\_resource\_prefix) | Standard resource prefix. Usually s189t01 (test) or s189p01 (production) | `string` | n/a | yes |
 | <a name="input_config"></a> [config](#input\_config) | Long name of the environment configuration, e.g. development, staging, production... | `string` | n/a | yes |
 | <a name="input_config_short"></a> [config\_short](#input\_config\_short) | Short name of the environment configuration, e.g. dv, st, pd... | `string` | n/a | yes |
@@ -54,14 +54,14 @@ No modules.
 | <a name="input_environment"></a> [environment](#input\_environment) | Name of the deployed environment in AKS | `string` | n/a | yes |
 | <a name="input_generic_private_endpoints_subnet"></a> [generic\_private\_endpoints\_subnet](#input\_generic\_private\_endpoints\_subnet) | The subnet address range for the generic private endpoints subnet. This is used for private endpoints that are not in the other subnets, e.g. Key Vault, App Service, etc. | `list` | `[]` | no |
 | <a name="input_location"></a> [location](#input\_location) | n/a | `string` | `"UK South"` | no |
-| <a name="input_postgres_subnet"></a> [postgres\_subnet](#input\_postgres\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.0.0/18"<br/>]</pre> | no |
+| <a name="input_postgres_subnet"></a> [postgres\_subnet](#input\_postgres\_subnet) | n/a | `list(string)` | `null` | no |
 | <a name="input_private_dns_zones"></a> [private\_dns\_zones](#input\_private\_dns\_zones) | The name of the private DNS zone to create. This is used for private endpoints that are not in the other subnets, e.g. Key Vault, App Service, etc. | `list` | `[]` | no |
-| <a name="input_redis_subnet"></a> [redis\_subnet](#input\_redis\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.64.0/18"<br/>]</pre> | no |
+| <a name="input_redis_subnet"></a> [redis\_subnet](#input\_redis\_subnet) | n/a | `list(string)` | `null` | no |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Full name of the service. Lowercase and hyphen separated | `string` | n/a | yes |
 | <a name="input_service_short"></a> [service\_short](#input\_service\_short) | Short name to identify the service. Up to 6 characters. | `string` | n/a | yes |
-| <a name="input_sql_subnet"></a> [sql\_subnet](#input\_sql\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.192.0/18"<br/>]</pre> | no |
-| <a name="input_storage_subnet"></a> [storage\_subnet](#input\_storage\_subnet) | n/a | `list` | <pre>[<br/>  "10.2.128.0/18"<br/>]</pre> | no |
-| <a name="input_vnet_address"></a> [vnet\_address](#input\_vnet\_address) | n/a | `list` | <pre>[<br/>  "10.0.0.0/12"<br/>]</pre> | no |
+| <a name="input_sql_subnet"></a> [sql\_subnet](#input\_sql\_subnet) | n/a | `list(string)` | `null` | no |
+| <a name="input_storage_subnet"></a> [storage\_subnet](#input\_storage\_subnet) | n/a | `list(string)` | `null` | no |
+| <a name="input_vnet_address"></a> [vnet\_address](#input\_vnet\_address) | n/a | `list(string)` | `null` | no |
 
 ## Outputs
 
