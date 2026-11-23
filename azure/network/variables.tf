@@ -53,28 +53,32 @@ variable "enable_storage" {
 }
 
 variable "vnet_address" {
-  default = ["10.0.0.0/12"]
+  type = list(string)
 }
 
 variable "postgres_subnet" {
-  default = ["10.2.0.0/18"]
+  type    = list(string)
+  default = null
 }
 
 variable "sql_subnet" {
-  default = ["10.2.192.0/18"]
+  type    = list(string)
+  default = null
 }
 
 variable "redis_subnet" {
-  default = ["10.2.64.0/18"]
+  type    = list(string)
+  default = null
 }
 
 variable "apps_subnet" {
-  description = "The subnet address range for the apps subnet. This is used for the web app and function app subnets and includes vnet integration. See https://learn.microsoft.com/en-us/azure/app-service/overview-vnet-integration#windows-worker-ip-address-overlap for more information and ranges to avoid."
-  default     = ["10.3.0.0/18"]
+  type    = list(string)
+  default = null
 }
 
 variable "storage_subnet" {
-  default = ["10.2.128.0/18"]
+  type    = list(string)
+  default = null
 }
 
 variable "enable_generic_private_endpoints" {

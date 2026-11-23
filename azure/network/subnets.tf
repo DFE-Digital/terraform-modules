@@ -1,6 +1,6 @@
 
 resource "azurerm_subnet" "postgres" {
-  count = var.enable_postgres ? 1 : 0
+  count = local.create_postgres ? 1 : 0
 
   name                 = "postgres-snet"
   virtual_network_name = azurerm_virtual_network.vnet.name
@@ -19,7 +19,7 @@ resource "azurerm_subnet" "postgres" {
 }
 
 resource "azurerm_subnet" "sql" {
-  count = var.enable_sql ? 1 : 0
+  count = local.create_sql ? 1 : 0
 
   name                 = "sql-snet"
   virtual_network_name = azurerm_virtual_network.vnet.name
@@ -30,7 +30,7 @@ resource "azurerm_subnet" "sql" {
 }
 
 resource "azurerm_subnet" "redis" {
-  count = var.enable_redis ? 1 : 0
+  count = local.create_redis ? 1 : 0
 
   name                 = "redis-snet"
   virtual_network_name = azurerm_virtual_network.vnet.name
@@ -41,7 +41,7 @@ resource "azurerm_subnet" "redis" {
 }
 
 resource "azurerm_subnet" "apps" {
-  count = var.enable_apps ? 1 : 0
+  count = local.create_apps ? 1 : 0
 
   name                 = "apps-snet"
   virtual_network_name = azurerm_virtual_network.vnet.name
@@ -60,7 +60,7 @@ resource "azurerm_subnet" "apps" {
 }
 
 resource "azurerm_subnet" "storage" {
-  count = var.enable_storage ? 1 : 0
+  count = local.create_storage ? 1 : 0
 
   name                 = "private-storage-snet"
   virtual_network_name = azurerm_virtual_network.vnet.name
