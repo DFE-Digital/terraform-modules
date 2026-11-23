@@ -1,5 +1,5 @@
 resource "azurerm_private_dns_zone" "postgres" {
-  count = var.enable_postgres ? 1 : 0
+  count = local.create_postgres ? 1 : 0
 
   name                = var.environment == var.config ? "${var.config}.internal.postgres.database.azure.com" : "${var.environment}.${var.config}.internal.postgres.database.azure.com"
   resource_group_name = data.azurerm_resource_group.main.name
@@ -8,7 +8,7 @@ resource "azurerm_private_dns_zone" "postgres" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "postgres" {
-  count = var.enable_postgres ? 1 : 0
+  count = local.create_postgres ? 1 : 0
 
   name                  = azurerm_private_dns_zone.postgres[0].name
   resource_group_name   = data.azurerm_resource_group.main.name
@@ -19,7 +19,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "postgres" {
 }
 
 resource "azurerm_private_dns_zone" "sql_logical_server" {
-  count = var.enable_sql ? 1 : 0
+  count = local.create_sql ? 1 : 0
 
   # name                = var.environment == var.config ? "${var.config}.internal.sql.database.azure.com" : "${var.environment}.${var.config}.internal.sql.database.azure.com"
   name                = "privatelink.database.windows.net"
@@ -29,7 +29,7 @@ resource "azurerm_private_dns_zone" "sql_logical_server" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "sql_logical_server" {
-  count = var.enable_sql ? 1 : 0
+  count = local.create_sql ? 1 : 0
 
   name                  = azurerm_private_dns_zone.sql_logical_server[0].name
   resource_group_name   = data.azurerm_resource_group.main.name
@@ -40,7 +40,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "sql_logical_server" {
 }
 
 resource "azurerm_private_dns_zone" "redis" {
-  count = var.enable_redis ? 1 : 0
+  count = local.create_redis ? 1 : 0
 
   name                = "redis.azure.net"
   resource_group_name = data.azurerm_resource_group.main.name
@@ -49,7 +49,7 @@ resource "azurerm_private_dns_zone" "redis" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "redis" {
-  count = var.enable_redis ? 1 : 0
+  count = local.create_redis ? 1 : 0
 
   name                  = "redis.azure.net"
   resource_group_name   = data.azurerm_resource_group.main.name
@@ -60,7 +60,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "redis" {
 }
 
 resource "azurerm_private_dns_zone" "apps" {
-  count = var.enable_apps ? 1 : 0
+  count = local.create_apps ? 1 : 0
 
   name                = "privatelink.azurewebsites.net"
   resource_group_name = data.azurerm_resource_group.main.name
@@ -69,7 +69,7 @@ resource "azurerm_private_dns_zone" "apps" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "apps" {
-  count = var.enable_apps ? 1 : 0
+  count = local.create_apps ? 1 : 0
 
   name                  = azurerm_private_dns_zone.apps[0].name
   resource_group_name   = data.azurerm_resource_group.main.name
@@ -80,7 +80,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "apps" {
 }
 
 resource "azurerm_private_dns_zone" "storage" {
-  count = var.enable_storage ? 1 : 0
+  count = local.create_storage ? 1 : 0
 
   name                = "privatelink.blob.core.windows.net"
   resource_group_name = data.azurerm_resource_group.main.name
@@ -89,7 +89,7 @@ resource "azurerm_private_dns_zone" "storage" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "storage" {
-  count = var.enable_storage ? 1 : 0
+  count = local.create_storage ? 1 : 0
 
   name                  = "privatelink.blob.core.windows.net"
   resource_group_name   = data.azurerm_resource_group.main.name
