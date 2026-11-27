@@ -195,3 +195,10 @@ variable "working_dir" {
   description = "Container working directory (mapped to container.working_dir)"
   nullable    = true
 }
+
+variable "basicauth_secret" {
+  type        = string
+  sensitive   = true
+  description = "Basic auth secret"
+  default     = null
+}
